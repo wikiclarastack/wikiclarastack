@@ -56,7 +56,7 @@
             <div class="social-links">
                 <a href="https://instagram.com/clarastacknyc" target="_blank">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073z"/>
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.073-1.689-.073-4.948 0-3.204.013-3.583.072-4.949.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073z"/>
                         <path d="M12 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                     </svg>
                     @clarastacknyc
@@ -266,6 +266,129 @@
 
             <div class="settings-section">
                 <button class="logout-btn" onclick="logout()" data-en="Logout" data-pt="Sair">Sair</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="admin-panel" style="display: none;">
+        <div class="admin-panel-container">
+            <div class="admin-header">
+                <h1>⚙️ <span data-en="Admin Panel" data-pt="Painel Administrativo">Painel Administrativo</span></h1>
+                <button onclick="closeAdminPanel()">✕</button>
+            </div>
+
+            <div class="admin-tabs">
+                <button class="admin-tab-btn active" onclick="showAdminTab('dashboard')">
+                    <span data-en="Dashboard" data-pt="Dashboard">Dashboard</span>
+                </button>
+                <button class="admin-tab-btn" onclick="showAdminTab('users')">
+                    <span data-en="Users" data-pt="Usuários">Usuários</span>
+                </button>
+                <button class="admin-tab-btn" onclick="showAdminTab('posts')">
+                    <span data-en="Posts" data-pt="Postagens">Postagens</span>
+                </button>
+                <button class="admin-tab-btn" onclick="showAdminTab('gallery')">
+                    <span data-en="Gallery" data-pt="Galeria">Galeria</span>
+                </button>
+                <button class="admin-tab-btn" onclick="showAdminTab('chat')">
+                    <span data-en="Chat" data-pt="Chat">Chat</span>
+                </button>
+                <button class="admin-tab-btn" onclick="showAdminTab('settings')">
+                    <span data-en="Site Settings" data-pt="Config. Site">Config. Site</span>
+                </button>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="admin-dashboard" class="admin-tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3 id="totalUsers">0</h3>
+                        <p data-en="Total Users" data-pt="Total de Usuários">Total de Usuários</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="activeUsersCount">0</h3>
+                        <p data-en="Active Now" data-pt="Ativos Agora">Ativos Agora</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="totalMessages">0</h3>
+                        <p data-en="Chat Messages" data-pt="Mensagens no Chat">Mensagens no Chat</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="totalVisitors">0</h3>
+                        <p data-en="Total Visitors" data-pt="Total de Visitantes">Total de Visitantes</p>
+                    </div>
+                </div>
+
+                <h3 data-en="Active Users" data-pt="Usuários Ativos">Usuários Ativos</h3>
+                <div id="activeUsersList" class="active-users-list"></div>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="admin-users" class="admin-tab-content">
+                <div class="admin-section">
+                    <h3 data-en="User Management" data-pt="Gerenciamento de Usuários">Gerenciamento de Usuários</h3>
+                    <div id="usersList" class="users-list"></div>
+                </div>
+            </div>
+
+            <!-- Posts Tab -->
+            <div id="admin-posts" class="admin-tab-content">
+                <div class="admin-section">
+                    <h3 data-en="Create New Post" data-pt="Criar Nova Postagem">Criar Nova Postagem</h3>
+                    <input type="text" id="postTitle" placeholder="Post Title / Título da Postagem">
+                    <textarea id="postContent" rows="4" placeholder="Post Content / Conteúdo da Postagem"></textarea>
+                    <button onclick="createPost()">
+                        <span data-en="Create Post" data-pt="Criar Postagem">Criar Postagem</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Gallery Tab -->
+            <div id="admin-gallery" class="admin-tab-content">
+                <div class="admin-section">
+                    <h3 data-en="Add Image to Gallery" data-pt="Adicionar Imagem à Galeria">Adicionar Imagem à Galeria</h3>
+                    <input type="url" id="galleryImageUrl" placeholder="Image URL">
+                    <button onclick="addToGallery()">
+                        <span data-en="Add to Gallery" data-pt="Adicionar à Galeria">Adicionar à Galeria</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Tab -->
+            <div id="admin-chat" class="admin-tab-content">
+                <div class="admin-section">
+                    <h3 data-en="Chat Management" data-pt="Gerenciamento do Chat">Gerenciamento do Chat</h3>
+                    <label>
+                        <span data-en="Chat Cooldown (seconds)" data-pt="Cooldown do Chat (segundos)">Cooldown do Chat (segundos)</span>
+                    </label>
+                    <input type="number" id="chatCooldownInput" value="0" min="0">
+                    <button onclick="updateChatCooldown()">
+                        <span data-en="Update Cooldown" data-pt="Atualizar Cooldown">Atualizar Cooldown</span>
+                    </button>
+                    <button onclick="clearAllMessages()" class="danger-btn">
+                        <span data-en="Clear All Messages" data-pt="Limpar Todas as Mensagens">Limpar Todas as Mensagens</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Site Settings Tab -->
+            <div id="admin-settings" class="admin-tab-content">
+                <div class="admin-section">
+                    <h3 data-en="Site Control" data-pt="Controle do Site">Controle do Site</h3>
+                    <button onclick="toggleMaintenance()" id="maintenanceBtn" class="warning-btn">
+                        <span data-en="Enable Maintenance Mode" data-pt="Ativar Modo Manutenção">Ativar Modo Manutenção</span>
+                    </button>
+                    <div id="maintenancePasswordSection" style="display: none; margin-top: 20px;">
+                        <label>
+                            <span data-en="Set Access Password" data-pt="Definir Senha de Acesso">Definir Senha de Acesso</span>
+                        </label>
+                        <input type="password" id="maintenancePasswordInput" placeholder="Enter password">
+                        <button onclick="setMaintenancePassword()">
+                            <span data-en="Save Password" data-pt="Salvar Senha">Salvar Senha</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
