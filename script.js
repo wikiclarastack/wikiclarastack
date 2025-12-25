@@ -187,12 +187,12 @@ async function checkSession() {
         })
       }
 
-      logout()
       alert(
         currentLanguage === "en"
           ? "Your account has been suspended due to IP change. Contact admin."
           : "Sua conta foi suspensa devido a mudança de IP. Contate o administrador.",
       )
+      // logout()
     } else {
       currentUser = user
       updateUIForLoggedInUser()
@@ -251,122 +251,248 @@ function closeSettings() {
 }
 
 function openAdminPanel() {
-  window.open("admin.html", "_blank")
+  if (!currentUser || !currentUser.isAdmin) {
+    alert("Access denied")
+    return
+  }
+  document.getElementById("adminPanel").style.display = "block"
+  loadAdminDashboard()
+  updateLanguage()
 }
 
-async function register() {
-  const username = document.getElementById("registerUsername").value.trim()
-  const email = document.getElementById("registerEmail").value.trim()
-  const password = document.getElementById("registerPassword").value
+function closeAdminPanel() {
+  document.getElementById("adminPanel").style.display = "none"
+}
 
-  if (!username || !email || !password) {
-    alert(currentLanguage === "en" ? "Please fill all fields" : "Preencha todos os campos")
-    return
-  }
-
-  const ip = await getIPAddress()
-
-  // Check if username exists
-  if (users.find((u) => u.username === username)) {
-    alert(currentLanguage === "en" ? "Username already exists" : "Nome de usuário já existe")
-    return
-  }
-
-  // Check if email exists
-  if (users.find((u) => u.email === email)) {
-    alert(currentLanguage === "en" ? "Email already registered" : "Email já registrado")
-    return
-  }
-
-  const newUser = {
-    username,
-    email,
-    password,
-    ip,
-    verified: false,
-    banned: false,
-    isAdmin: false,
-    canPostImages: false,
-    registeredAt: new Date().toISOString(),
-    avatar: "https://via.placeholder.com/100",
-  }
-
-  users.push(newUser)
-  localStorage.setItem("users", JSON.stringify(users))
-
-  await sendWebhook(WEBHOOKS.newUser, {
-    content: `✅ New registration: **${username}** (${email}) from IP ${ip}`,
+function showAdminTab(tabName) {
+  // Hide all tabs
+  document.querySelectorAll(".admin-tab-content").forEach((tab) => {
+    tab.classList.remove("active")
+  })
+  document.querySelectorAll(".admin-tab-btn").forEach((btn) => {
+    btn.classList.remove("active")
   })
 
-  closeAuthModal()
-  alert(currentLanguage === "en" ? "Registration successful! Please login." : "Registro bem-sucedido! Faça login.")
+  // Show selected tab
+  document.getElementById(`admin-${tabName}`).classList.add("active")
+  event.target.classList.add("active")
+
+  // Load content based on tab
+  if (tabName === "dashboard") loadAdminDashboard()
+  if (tabName === "users") loadUsersList()
+  if (tabName === "chat") loadChatSettings()
+  if (tabName === "settings") loadSiteSettings()
 }
 
-async function login() {
-  const username = document.getElementById("loginUsername").value.trim()
-  const password = document.getElementById("loginPassword").value
-  const ip = await getIPAddress()
+function loadAdminDashboard() {
+  document.getElementById("totalUsers").textContent = users.length
+  document.getElementById("activeUsersCount").textContent = activeUsers.length
+  document.getElementById("totalMessages").textContent = chatMessages.length
+  document.getElementById("totalVisitors").textContent = visitors.length
 
-  if (!username || !password) {
-    alert(currentLanguage === "en" ? "Please fill all fields" : "Preencha todos os campos")
-    return
-  }
+  // Load active users
+  const activeUsersList = document.getElementById("activeUsersList")
+  activeUsersList.innerHTML = ""
 
-  // Admin login
-  if (username === "admin" && password === "admin") {
-    currentUser = {
-      username: "admin",
-      isAdmin: true,
-      ip,
-      avatar: "https://icons.veryicon.com/png/o/miscellaneous/yuanql/icon-admin.png",
+  activeUsers.forEach((username) => {
+    const user = users.find((u) => u.username === username)
+    if (user) {
+      const badge = document.createElement("div")
+      badge.className = "active-user-badge"
+      badge.innerHTML = `
+        <img src="${user.avatar || "https://via.placeholder.com/30"}" alt="${username}">
+        <span>${username}</span>
+      `
+      activeUsersList.appendChild(badge)
     }
-    localStorage.setItem("currentUser", JSON.stringify(currentUser))
-    updateUIForLoggedInUser()
-    closeAuthModal()
-    return
+  })
+}
+
+function loadUsersList() {
+  const usersList = document.getElementById("usersList")
+  usersList.innerHTML = ""
+
+  users.forEach((user) => {
+    const userCard = document.createElement("div")
+    userCard.className = "user-card"
+    userCard.innerHTML = `
+      <div class="user-info">
+        <img src="${user.avatar || "https://via.placeholder.com/50"}" alt="${user.username}" class="user-avatar">
+        <div class="user-details">
+          <h4>
+            ${user.username}
+            ${user.verified ? '<img src="https://cdn-icons-png.flaticon.com/512/7641/7641727.png" width="16" alt="Verified">' : ""}
+            ${user.isAdmin ? '<img src="https://icons.veryicon.com/png/o/miscellaneous/yuanql/icon-admin.png" width="16" alt="Admin">' : ""}
+          </h4>
+          <p>${user.email} | IP: ${user.ip} ${user.banned ? "| ⛔ BANNED" : ""}</p>
+        </div>
+      </div>
+      <div class="user-actions">
+        <button class="${user.verified ? "unverify-btn" : "verify-btn"}" onclick="toggleVerify('${user.username}')">
+          ${user.verified ? "Unverify" : "Verify"}
+        </button>
+        <button class="${user.banned ? "unban-btn" : "ban-btn"}" onclick="toggleBan('${user.username}')">
+          ${user.banned ? "Unban" : "Ban"}
+        </button>
+        <button class="promote-btn" onclick="toggleAdmin('${user.username}')">
+          ${user.isAdmin ? "Remove Admin" : "Make Admin"}
+        </button>
+        <button class="image-perm-btn" onclick="toggleImagePermission('${user.username}')">
+          ${user.canPostImages ? "Remove Image Perm" : "Allow Images"}
+        </button>
+      </div>
+    `
+    usersList.appendChild(userCard)
+  })
+}
+
+function toggleVerify(username) {
+  const userIndex = users.findIndex((u) => u.username === username)
+  if (userIndex !== -1) {
+    users[userIndex].verified = !users[userIndex].verified
+    localStorage.setItem("users", JSON.stringify(users))
+    loadUsersList()
   }
+}
 
-  // Regular user login
-  const user = users.find((u) => u.username === username && u.password === password)
-
-  if (!user) {
-    alert(currentLanguage === "en" ? "Invalid credentials" : "Credenciais inválidas")
-    return
-  }
-
-  if (user.banned) {
-    alert(currentLanguage === "en" ? "Your account is suspended" : "Sua conta está suspensa")
-    return
-  }
-
-  // Check for admins created by main admin
-  if (!user.isAdmin && user.ip !== ip) {
-    user.banned = true
+async function toggleBan(username) {
+  const userIndex = users.findIndex((u) => u.username === username)
+  if (userIndex !== -1) {
+    users[userIndex].banned = !users[userIndex].banned
     localStorage.setItem("users", JSON.stringify(users))
 
-    await sendWebhook(WEBHOOKS.suspended, {
-      content: `🚫 Account suspended: ${username} (IP mismatch: ${user.ip} vs ${ip})`,
-    })
+    if (users[userIndex].banned) {
+      await sendWebhook(WEBHOOKS.suspended, {
+        content: `🚫 User banned by admin: ${username}`,
+      })
+    }
 
-    alert(currentLanguage === "en" ? "IP address changed. Account suspended." : "Endereço IP alterado. Conta suspensa.")
+    loadUsersList()
+  }
+}
+
+function toggleAdmin(username) {
+  const userIndex = users.findIndex((u) => u.username === username)
+  if (userIndex !== -1) {
+    users[userIndex].isAdmin = !users[userIndex].isAdmin
+    localStorage.setItem("users", JSON.stringify(users))
+    loadUsersList()
+  }
+}
+
+function toggleImagePermission(username) {
+  const userIndex = users.findIndex((u) => u.username === username)
+  if (userIndex !== -1) {
+    users[userIndex].canPostImages = !users[userIndex].canPostImages
+    localStorage.setItem("users", JSON.stringify(users))
+    loadUsersList()
+  }
+}
+
+function createPost() {
+  const title = document.getElementById("postTitle").value.trim()
+  const content = document.getElementById("postContent").value.trim()
+
+  if (!title || !content) {
+    alert("Please fill in all fields")
     return
   }
 
-  currentUser = user
-  localStorage.setItem("currentUser", JSON.stringify(currentUser))
-  updateUIForLoggedInUser()
-  addActiveUser(user.username)
-  closeAuthModal()
+  const notifications = JSON.parse(localStorage.getItem("globalNotifications")) || []
+  notifications.unshift({
+    author: "Admin",
+    content: `${title}: ${content}`,
+    timestamp: new Date().toISOString(),
+  })
+
+  localStorage.setItem("globalNotifications", JSON.stringify(notifications))
+
+  document.getElementById("postTitle").value = ""
+  document.getElementById("postContent").value = ""
+
+  alert("Post created successfully!")
 }
 
-// Logout
-function logout() {
-  if (currentUser) {
-    removeActiveUser(currentUser.username)
+function addToGallery() {
+  const url = document.getElementById("galleryImageUrl").value.trim()
+
+  if (!url) {
+    alert("Please enter an image URL")
+    return
   }
-  currentUser = null
-  localStorage.removeItem("currentUser")
-  updateUIForLoggedInUser()
+
+  gallery.push(url)
+  localStorage.setItem("gallery", JSON.stringify(gallery))
+  document.getElementById("galleryImageUrl").value = ""
+  loadGallery()
+  alert("Image added to gallery!")
+}
+
+function loadChatSettings() {
+  const currentCooldown = localStorage.getItem("chatCooldown") || "0"
+  document.getElementById("chatCooldownInput").value = currentCooldown
+}
+
+function updateChatCooldown() {
+  const cooldown = document.getElementById("chatCooldownInput").value
+  localStorage.setItem("chatCooldown", cooldown)
+  alert("Chat cooldown updated!")
+}
+
+function clearAllMessages() {
+  if (confirm("Are you sure you want to clear all chat messages?")) {
+    localStorage.setItem("chatMessages", JSON.stringify([]))
+    chatMessages.length = 0
+    loadChatMessages()
+    alert("All messages cleared!")
+  }
+}
+
+function loadSiteSettings() {
+  const maintenanceMode = localStorage.getItem("maintenanceMode") === "true"
+  const btn = document.getElementById("maintenanceBtn")
+
+  if (maintenanceMode) {
+    btn.innerHTML =
+      '<span data-en="Disable Maintenance Mode" data-pt="Desativar Modo Manutenção">Desativar Modo Manutenção</span>'
+    btn.classList.remove("warning-btn")
+    btn.classList.add("danger-btn")
+  } else {
+    btn.innerHTML =
+      '<span data-en="Enable Maintenance Mode" data-pt="Ativar Modo Manutenção">Ativar Modo Manutenção</span>'
+    btn.classList.remove("danger-btn")
+    btn.classList.add("warning-btn")
+  }
+
+  updateLanguage()
+}
+
+function toggleMaintenance() {
+  const currentMode = localStorage.getItem("maintenanceMode") === "true"
+
+  if (!currentMode) {
+    document.getElementById("maintenancePasswordSection").style.display = "block"
+  } else {
+    localStorage.setItem("maintenanceMode", "false")
+    loadSiteSettings()
+    alert("Maintenance mode disabled!")
+  }
+}
+
+function setMaintenancePassword() {
+  const password = document.getElementById("maintenancePasswordInput").value
+
+  if (!password) {
+    alert("Please enter a password")
+    return
+  }
+
+  localStorage.setItem("maintenanceMode", "true")
+  localStorage.setItem("maintenancePassword", password)
+  document.getElementById("maintenancePasswordSection").style.display = "none"
+  document.getElementById("maintenancePasswordInput").value = ""
+  loadSiteSettings()
+  alert("Maintenance mode enabled! Password saved.")
 }
 
 function updateUIForLoggedInUser() {
@@ -588,12 +714,16 @@ function sendMessage() {
 window.onclick = (event) => {
   const authModal = document.getElementById("authModal")
   const settingsModal = document.getElementById("settingsModal")
+  const adminPanel = document.getElementById("adminPanel")
 
   if (event.target === authModal) {
     authModal.style.display = "none"
   }
   if (event.target === settingsModal) {
     settingsModal.style.display = "none"
+  }
+  if (event.target === adminPanel) {
+    adminPanel.style.display = "none"
   }
 }
 
@@ -605,4 +735,10 @@ if (chatInput) {
       sendMessage()
     }
   })
+}
+
+function logout() {
+  currentUser = null
+  localStorage.removeItem("currentUser")
+  updateUIForLoggedInUser()
 }
