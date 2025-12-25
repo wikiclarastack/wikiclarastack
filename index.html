@@ -1,31 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clara Stack - Official Website</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- User Profile Corner -->
+    <div id="userProfileCorner" class="user-profile-corner" style="display: none;">
+        <img id="cornerUserAvatar" src="https://via.placeholder.com/40" alt="User">
+        <span id="cornerUserName">User</span>
+    </div>
+
+    <!-- Maintenance Screen -->
+    <div id="maintenanceScreen" class="maintenance-screen" style="display: none;">
+        <div class="maintenance-content">
+            <h1>🔧 Site em Manutenção / Under Maintenance</h1>
+            <p>O site está temporariamente indisponível.</p>
+            <p>The site is temporarily unavailable.</p>
+            <div class="admin-access-form">
+                <input type="password" id="maintenancePassword" placeholder="Admin Password">
+                <button onclick="checkMaintenancePassword()">Acessar / Access</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Navigation -->
     <nav class="navbar">
-        <div class="container">
-            <div class="logo">
-                <h1 data-en="Clara Stack" data-pt="Clara Stack">Clara Stack</h1>
-            </div>
+        <div class="nav-container">
+            <div class="nav-brand">Clara Stack</div>
             <div class="nav-links">
-                <a href="#home" class="nav-link" data-en="Home" data-pt="Início">Home</a>
-                <a href="#about" class="nav-link" data-en="About" data-pt="Sobre">About</a>
-                <a href="#gallery" class="nav-link" data-en="Gallery" data-pt="Galeria">Gallery</a>
-                <a href="#chat" class="nav-link" data-en="Chat" data-pt="Chat">Chat</a>
-                <button id="loginBtn" class="btn-primary" data-en="Login" data-pt="Entrar">Login</button>
-                <button id="registerBtn" class="btn-secondary" data-en="Register" data-pt="Registrar">Register</button>
-                <div id="userMenu" class="user-menu" style="display: none;">
-                    <span id="usernameDisplay"></span>
-                    <button id="settingsBtn" class="btn-icon"><i class="fas fa-cog"></i></button>
-                    <button id="logoutBtn" class="btn-icon"><i class="fas fa-sign-out-alt"></i></button>
-                </div>
+                <a href="#home" data-en="Home" data-pt="Início">Início</a>
+                <a href="#about" data-en="About" data-pt="Sobre">Sobre</a>
+                <a href="#works" data-en="Works" data-pt="Trabalhos">Trabalhos</a>
+                <a href="#gallery" data-en="Gallery" data-pt="Galeria">Galeria</a>
+                <a href="#chat" data-en="Chat" data-pt="Chat">Chat</a>
+                <a href="#" id="authLink" onclick="showAuthModal()">Login</a>
+                <a href="#" id="settingsLink" onclick="showSettings()" style="display: none;">
+                    <span data-en="Settings" data-pt="Configurações">Configurações</span>
+                </a>
+                <a href="#" id="adminPanelLink" onclick="openAdminPanel()" style="display: none;">
+                    <span data-en="Admin Panel" data-pt="Painel Admin">Painel Admin</span>
+                </a>
             </div>
         </div>
     </nav>
@@ -34,62 +51,122 @@
     <section id="home" class="hero">
         <div class="hero-content">
             <img src="https://image.tmdb.org/t/p/w500/yMK3IADqV2oReJMKdkrcEIBxdtu.jpg" alt="Clara Stack" class="hero-image">
-            <h2 class="hero-title">Clara Stack</h2>
-            <p class="hero-subtitle" data-en="Actress | Rising Star" data-pt="Atriz | Estrela em Ascensão">Actress | Rising Star</p>
+            <h1 class="hero-title">Clara Stack</h1>
+            <p class="hero-subtitle" data-en="Actress & Rising Star" data-pt="Atriz & Estrela em Ascensão">Atriz & Estrela em Ascensão</p>
             <div class="social-links">
-                <a href="https://instagram.com/clarastacknyc" target="_blank"><i class="fab fa-instagram"></i></a>
-                <a href="https://tiktok.com/@clara.stack" target="_blank"><i class="fab fa-tiktok"></i></a>
+                <a href="https://instagram.com/clarastacknyc" target="_blank">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073z"/>
+                        <path d="M12 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                    </svg>
+                    @clarastacknyc
+                </a>
+                <a href="https://tiktok.com/@clara.stack" target="_blank">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                    </svg>
+                    @clara.stack
+                </a>
             </div>
         </div>
     </section>
 
+    <!-- Notifications -->
+    <div id="notificationsContainer" class="notifications-container"></div>
+
     <!-- About Section -->
-    <section id="about" class="about">
+    <section id="about" class="section">
         <div class="container">
-            <h2 data-en="Known For" data-pt="Conhecida Por">Known For</h2>
-            <div class="projects-grid">
-                <div class="project-card">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/It_welcome_to_derry_logo.svg/2560px-It_welcome_to_derry_logo.svg.png" alt="IT: Welcome to Derry">
-                    <h3>IT: Welcome to Derry</h3>
-                    <p data-en="HBO Series" data-pt="Série HBO">HBO Series</p>
+            <h2 class="section-title" data-en="About Clara" data-pt="Sobre Clara">Sobre Clara</h2>
+            <div class="about-content">
+                <img src="https://ntvb.tmsimg.com/assets/assets/GNLZZGG002G2JKZ.jpg" alt="Clara Stack" class="about-image">
+                <div class="about-text">
+                    <p data-en="Clara Stack is a talented young actress who has been captivating audiences with her performances across television and film." data-pt="Clara Stack é uma jovem atriz talentosa que vem cativando o público com suas performances na televisão e no cinema.">
+                        Clara Stack é uma jovem atriz talentosa que vem cativando o público com suas performances na televisão e no cinema.
+                    </p>
+                    <p data-en="Known for her versatility and natural charisma, Clara has quickly become one of the most promising rising stars in Hollywood." data-pt="Conhecida por sua versatilidade e carisma natural, Clara rapidamente se tornou uma das estrelas mais promissoras de Hollywood.">
+                        Conhecida por sua versatilidade e carisma natural, Clara rapidamente se tornou uma das estrelas mais promissoras de Hollywood.
+                    </p>
                 </div>
-                <div class="project-card">
-                    <h3>Hawkeye</h3>
-                    <p data-en="Marvel Miniseries" data-pt="Minissérie Marvel">Marvel Miniseries</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Works Section -->
+    <section id="works" class="section">
+        <div class="container">
+            <h2 class="section-title" data-en="Featured Works" data-pt="Trabalhos em Destaque">Trabalhos em Destaque</h2>
+            
+            <!-- IT: Welcome to Derry - Destaque Principal -->
+            <div class="featured-work">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/It_welcome_to_derry_logo.svg/2560px-It_welcome_to_derry_logo.svg.png" alt="IT: Welcome to Derry" class="featured-logo">
+                <p class="work-description" data-en="Clara stars in HBO's horror series set in the terrifying world of Stephen King's IT." data-pt="Clara estrela na série de terror da HBO ambientada no aterrorizante mundo de IT de Stephen King.">
+                    Clara estrela na série de terror da HBO ambientada no aterrorizante mundo de IT de Stephen King.
+                </p>
+            </div>
+
+            <div class="works-grid">
+                <!-- The Naughty Nine -->
+                <div class="work-card">
+                    <img src="https://static.wikia.nocookie.net/disney/images/0/09/The_Naughty_Nine_Alternative_Poster.jpg" alt="The Naughty Nine">
+                    <div class="work-info">
+                        <h3>The Naughty Nine</h3>
+                        <p class="work-type">Disney Film</p>
+                        <p class="work-description" data-en="A holiday adventure film" data-pt="Um filme de aventura natalino">Um filme de aventura natalino</p>
+                    </div>
                 </div>
-                <div class="project-card">
-                    <h3>The Naughty Nine</h3>
-                    <p data-en="Film" data-pt="Filme">Film</p>
+
+                <!-- Hawkeye -->
+                <div class="work-card">
+                    <img src="https://m.media-amazon.com/images/M/MV5BOGU5ZDBlOTAtOTZmYS00MWE0LTg0NzktNDcxZGJhN2FhZmM2XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Hawkeye">
+                    <div class="work-info">
+                        <h3>Hawkeye</h3>
+                        <p class="work-type" data-en="Marvel Series" data-pt="Série Marvel">Série Marvel</p>
+                        <p class="work-description" data-en="Marvel's action-packed miniseries" data-pt="Minissérie repleta de ação da Marvel">Minissérie repleta de ação da Marvel</p>
+                    </div>
                 </div>
-                <div class="project-card">
-                    <h3>Madam Secretary</h3>
-                    <p data-en="TV Series" data-pt="Série de TV">TV Series</p>
+
+                <!-- Madam Secretary -->
+                <div class="work-card">
+                    <img src="https://m.media-amazon.com/images/M/MV5BYTVhZDkzNjUtMmQ2ZS00Y2MwLWI2YjEtYjFhOTE2NmRiNTU2XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Madam Secretary">
+                    <div class="work-info">
+                        <h3>Madam Secretary</h3>
+                        <p class="work-type" data-en="TV Series" data-pt="Série de TV">Série de TV</p>
+                        <p class="work-description" data-en="Political drama series" data-pt="Série dramática política">Série dramática política</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Gallery Section -->
-    <section id="gallery" class="gallery">
+    <section id="gallery" class="section">
         <div class="container">
-            <h2 data-en="Gallery" data-pt="Galeria">Gallery</h2>
-            <div class="gallery-grid">
-                <img src="https://image.tmdb.org/t/p/w500/yMK3IADqV2oReJMKdkrcEIBxdtu.jpg" alt="Clara Stack 1">
-                <img src="https://ntvb.tmsimg.com/assets/assets/GNLZZGG002G2JKZ.jpg" alt="Clara Stack 2">
+            <h2 class="section-title" data-en="Photo Gallery" data-pt="Galeria de Fotos">Galeria de Fotos</h2>
+            <div class="gallery-grid" id="galleryGrid">
+                <img src="https://image.tmdb.org/t/p/w500/yMK3IADqV2oReJMKdkrcEIBxdtu.jpg" alt="Clara Stack">
+                <img src="https://ntvb.tmsimg.com/assets/assets/GNLZZGG002G2JKZ.jpg" alt="Clara Stack">
                 <img src="https://media.gettyimages.com/id/2242330361/photo/los-angeles-premiere-of-hbo-original-series-it-welcome-to-derry-red-carpet.jpg?s=1024x1024&w=gi&k=20&c=SATqk9OF8uyP8-6xKlIUS4AhKcPg3unpDSieOnkrGrc=" alt="Matilda and Clara Stack">
             </div>
         </div>
     </section>
 
-    <!-- Chat Section -->
-    <section id="chat" class="chat-section">
+    <!-- Global Chat Section -->
+    <section id="chat" class="section">
         <div class="container">
-            <h2 data-en="Community Chat" data-pt="Chat da Comunidade">Community Chat</h2>
-            <div class="chat-container" id="chatContainer">
+            <h2 class="section-title" data-en="Global Chat" data-pt="Chat Global">Chat Global</h2>
+            <div id="chatLoginPrompt" class="chat-login-prompt">
+                <p data-en="Please login to use the chat" data-pt="Faça login para usar o chat">Faça login para usar o chat</p>
+                <button onclick="showAuthModal()" data-en="Login" data-pt="Entrar">Entrar</button>
+            </div>
+            <div id="chatContainer" class="chat-container" style="display: none;">
                 <div id="chatMessages" class="chat-messages"></div>
-                <div class="chat-input">
-                    <input type="text" id="chatInput" placeholder="Type a message..." data-en-placeholder="Type a message..." data-pt-placeholder="Digite uma mensagem...">
-                    <button id="sendMessage" class="btn-primary" data-en="Send" data-pt="Enviar">Send</button>
+                <div class="chat-input-container">
+                    <input type="text" id="chatInput" placeholder="Digite sua mensagem..." data-en-placeholder="Type your message..." data-pt-placeholder="Digite sua mensagem...">
+                    <button onclick="sendMessage()" data-en="Send" data-pt="Enviar">Enviar</button>
+                </div>
+                <div id="chatCooldown" class="chat-cooldown" style="display: none;">
+                    <span data-en="Please wait" data-pt="Aguarde">Aguarde</span> <span id="cooldownTimer">0</span>s
                 </div>
             </div>
         </div>
@@ -99,109 +176,96 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <div class="footer-credits">
-                    <p data-en="Website created by" data-pt="Site criado por">Website created by</p>
-                    <a href="https://linktr.ee/silva777only" target="_blank">silva777only</a>
-                    <p data-en="at no cost to the actress" data-pt="sem custo algum para a atriz">at no cost to the actress</p>
-                    <a href="https://portfoliosilva.github.io/portfoliosilva/" target="_blank" data-en="Portfolio" data-pt="Portfólio">Portfolio</a>
-                </div>
-                <div class="footer-disclaimer">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg" alt="HBO Max" class="hbo-logo">
-                    <p data-en="Images involving IT: Welcome to Derry are property of HBO Max. For removal requests, contact the site owner via" data-pt="Imagens que envolvem IT: Welcome to Derry são propriedade da HBO Max. Para remoção, entre em contato com o dono via">
-                        Images involving IT: Welcome to Derry are property of HBO Max. For removal requests, contact the site owner via
+                <div class="footer-section">
+                    <h3 data-en="Credits" data-pt="Créditos">Créditos</h3>
+                    <p data-en="Website created by silva777only at no cost to the actress" data-pt="Site criado por silva777only sem custo algum para a atriz">
+                        Site criado por silva777only sem custo algum para a atriz
                     </p>
-                    <a href="https://portfoliosilva.github.io/portfoliosilva/" target="_blank">Contact</a>
+                    <div class="creator-links">
+                        <a href="https://linktr.ee/silva777only" target="_blank">Linktree</a>
+                        <a href="https://portfoliosilva.github.io/portfoliosilva/" target="_blank" data-en="Portfolio" data-pt="Portfólio">Portfólio</a>
+                    </div>
                 </div>
-                <div class="footer-copyright">
-                    <p>&copy; 2025 Clara Stack Official Website. All rights reserved.</p>
-                    <p data-en="Protected content. Unauthorized reproduction is prohibited." data-pt="Conteúdo protegido. Reprodução não autorizada é proibida.">Protected content. Unauthorized reproduction is prohibited.</p>
+                
+                <div class="footer-section">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg" alt="HBO Max" class="hbo-logo">
+                    <p class="disclaimer" data-en="Images related to IT: Welcome to Derry are property of HBO Max. For removal requests, contact the site owner via portfolio contact page." data-pt="Imagens relacionadas a IT: Welcome to Derry são propriedade da HBO Max. Para solicitações de remoção, entre em contato com o dono do site através da página de contato do portfólio.">
+                        Imagens relacionadas a IT: Welcome to Derry são propriedade da HBO Max. Para solicitações de remoção, entre em contato com o dono do site através da página de contato do portfólio.
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <p class="copyright">© 2025 Clara Stack Official Website. <span data-en="All rights reserved." data-pt="Todos os direitos reservados.">Todos os direitos reservados.</span></p>
+                    <p class="copyright" data-en="This website is protected by copyright law. Unauthorized reproduction or distribution is prohibited." data-pt="Este site é protegido por lei de direitos autorais. Reprodução ou distribuição não autorizada é proibida.">
+                        Este site é protegido por lei de direitos autorais. Reprodução ou distribuição não autorizada é proibida.
+                    </p>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Modals -->
-    <!-- Login Modal -->
-    <div id="loginModal" class="modal">
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 data-en="Login" data-pt="Entrar">Login</h2>
-            <form id="loginForm">
-                <input type="text" id="loginUsername" placeholder="Username" data-en-placeholder="Username" data-pt-placeholder="Usuário" required>
-                <input type="password" id="loginPassword" placeholder="Password" data-en-placeholder="Password" data-pt-placeholder="Senha" required>
-                <button type="submit" class="btn-primary" data-en="Login" data-pt="Entrar">Login</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Register Modal -->
-    <div id="registerModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 data-en="Register" data-pt="Registrar">Register</h2>
-            <form id="registerForm">
-                <input type="text" id="registerUsername" placeholder="Username" data-en-placeholder="Username" data-pt-placeholder="Usuário" required>
-                <input type="email" id="registerEmail" placeholder="Email" required>
-                <input type="password" id="registerPassword" placeholder="Password" data-en-placeholder="Password" data-pt-placeholder="Senha" required>
-                <button type="submit" class="btn-primary" data-en="Register" data-pt="Registrar">Register</button>
-            </form>
+            <span class="close" onclick="closeAuthModal()">&times;</span>
+            <div id="loginForm">
+                <h2 data-en="Login" data-pt="Entrar">Entrar</h2>
+                <input type="text" id="loginUsername" placeholder="Username" data-en-placeholder="Username" data-pt-placeholder="Usuário">
+                <input type="password" id="loginPassword" placeholder="Password" data-en-placeholder="Password" data-pt-placeholder="Senha">
+                <button onclick="login()" data-en="Login" data-pt="Entrar">Entrar</button>
+                <p><a href="#" onclick="showRegisterForm()" data-en="Don't have an account? Register" data-pt="Não tem uma conta? Registre-se">Não tem uma conta? Registre-se</a></p>
+            </div>
+            <div id="registerForm" style="display: none;">
+                <h2 data-en="Register" data-pt="Registrar">Registrar</h2>
+                <input type="text" id="registerUsername" placeholder="Username" data-en-placeholder="Username" data-pt-placeholder="Usuário">
+                <input type="email" id="registerEmail" placeholder="Email" data-en-placeholder="Email" data-pt-placeholder="Email">
+                <input type="password" id="registerPassword" placeholder="Password" data-en-placeholder="Password" data-pt-placeholder="Senha">
+                <button onclick="register()" data-en="Register" data-pt="Registrar">Registrar</button>
+                <p><a href="#" onclick="showLoginForm()" data-en="Already have an account? Login" data-pt="Já tem uma conta? Entre">Já tem uma conta? Entre</a></p>
+            </div>
         </div>
     </div>
 
     <!-- Settings Modal -->
     <div id="settingsModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 data-en="Settings" data-pt="Configurações">Settings</h2>
-            <div class="settings-container">
-                <div class="setting-group">
-                    <label data-en="Profile Picture" data-pt="Foto de Perfil">Profile Picture</label>
-                    <input type="file" id="profilePicture" accept="image/*">
+            <span class="close" onclick="closeSettings()">&times;</span>
+            <h2 data-en="Settings" data-pt="Configurações">Configurações</h2>
+            
+            <div class="settings-section">
+                <h3 data-en="Profile" data-pt="Perfil">Perfil</h3>
+                <div class="profile-picture-upload">
+                    <img id="currentProfilePic" src="https://via.placeholder.com/100" alt="Profile">
+                    <input type="file" id="profilePicInput" accept="image/*" onchange="updateProfilePicture()">
+                    <label for="profilePicInput" data-en="Change Photo" data-pt="Mudar Foto">Mudar Foto</label>
                 </div>
-                <div class="setting-group">
-                    <label data-en="Username" data-pt="Nome de Usuário">Username</label>
-                    <input type="text" id="settingsUsername">
-                </div>
-                <div class="setting-group">
-                    <label data-en="Change Password" data-pt="Mudar Senha">Change Password</label>
-                    <input type="password" id="settingsPassword" placeholder="New password" data-en-placeholder="New password" data-pt-placeholder="Nova senha">
-                </div>
-                <div class="setting-group">
-                    <label data-en="Theme" data-pt="Tema">Theme</label>
-                    <select id="themeSelect">
-                        <option value="light" data-en="Light" data-pt="Claro">Light</option>
-                        <option value="dark" data-en="Dark" data-pt="Escuro">Dark</option>
-                        <option value="system" data-en="System" data-pt="Sistema">System</option>
-                    </select>
-                </div>
-                <button id="saveSettings" class="btn-primary" data-en="Save Changes" data-pt="Salvar Alterações">Save Changes</button>
+                <label data-en="Username" data-pt="Nome de Usuário">Nome de Usuário</label>
+                <input type="text" id="settingsUsername" placeholder="Username">
+                <label data-en="New Password" data-pt="Nova Senha">Nova Senha</label>
+                <input type="password" id="settingsPassword" placeholder="Leave blank to keep current" data-en-placeholder="Leave blank to keep current" data-pt-placeholder="Deixe em branco para manter a atual">
+                <button onclick="updateProfile()" data-en="Update Profile" data-pt="Atualizar Perfil">Atualizar Perfil</button>
             </div>
-        </div>
-    </div>
 
-    <!-- Admin Panel Modal -->
-    <div id="adminModal" class="modal">
-        <div class="modal-content admin-panel">
-            <span class="close">&times;</span>
-            <h2 data-en="Admin Panel" data-pt="Painel Administrativo">Admin Panel</h2>
-            <div class="admin-tabs">
-                <button class="tab-btn active" data-tab="users" data-en="Users" data-pt="Usuários">Users</button>
-                <button class="tab-btn" data-tab="chat" data-en="Chat Logs" data-pt="Logs do Chat">Chat Logs</button>
-                <button class="tab-btn" data-tab="visitors" data-en="Visitors" data-pt="Visitantes">Visitors</button>
+            <div class="settings-section">
+                <h3 data-en="Language" data-pt="Idioma">Idioma</h3>
+                <select id="languageSelect" onchange="changeLanguage()">
+                    <option value="auto" data-en="Auto-detect" data-pt="Auto-detectar">Auto-detectar</option>
+                    <option value="en">English</option>
+                    <option value="pt">Português</option>
+                </select>
             </div>
-            <div id="adminContent" class="admin-content">
-                <div class="tab-content active" data-content="users">
-                    <h3 data-en="User Management" data-pt="Gerenciamento de Usuários">User Management</h3>
-                    <div id="usersList"></div>
-                </div>
-                <div class="tab-content" data-content="chat">
-                    <h3 data-en="Chat Messages" data-pt="Mensagens do Chat">Chat Messages</h3>
-                    <div id="chatLogs"></div>
-                </div>
-                <div class="tab-content" data-content="visitors">
-                    <h3 data-en="Site Visitors" data-pt="Visitantes do Site">Site Visitors</h3>
-                    <div id="visitorsList"></div>
-                </div>
+
+            <div class="settings-section">
+                <h3 data-en="Theme" data-pt="Tema">Tema</h3>
+                <select id="themeSelect" onchange="changeTheme()">
+                    <option value="system" data-en="System" data-pt="Sistema">Sistema</option>
+                    <option value="dark" data-en="Dark" data-pt="Escuro">Escuro</option>
+                    <option value="light" data-en="Light" data-pt="Claro">Claro</option>
+                </select>
+            </div>
+
+            <div class="settings-section">
+                <button class="logout-btn" onclick="logout()" data-en="Logout" data-pt="Sair">Sair</button>
             </div>
         </div>
     </div>
