@@ -13,21 +13,17 @@ const translations = {
     nav_projects: "Trabalhos",
     nav_gallery: "Galeria",
     nav_chat: "Chat",
-    login_button: "Login",
-    login_title: "Login",
+    login_button: "Entrar",
+    login_title: "Entrar",
     register_title: "Registrar",
     register_button: "Criar Conta",
     no_account: "Não tem conta?",
     have_account: "Já tem conta?",
     settings_title: "Configurações",
     profile_section: "Perfil",
-    change_photo: "Mudar Foto",
+    choose_photo: "Escolher Foto",
     update_username: "Atualizar Username",
     update_password: "Atualizar Senha",
-    appearance_section: "Aparência",
-    light_mode: "Modo Claro",
-    dark_mode: "Modo Escuro",
-    system_mode: "Sistema",
     language_section: "Idioma",
     logout_button: "Sair",
     hero_title: "Clara Stack",
@@ -100,13 +96,9 @@ const translations = {
     have_account: "Already have an account?",
     settings_title: "Settings",
     profile_section: "Profile",
-    change_photo: "Change Photo",
+    choose_photo: "Choose Photo",
     update_username: "Update Username",
     update_password: "Update Password",
-    appearance_section: "Appearance",
-    light_mode: "Light Mode",
-    dark_mode: "Dark Mode",
-    system_mode: "System",
     language_section: "Language",
     logout_button: "Logout",
     hero_title: "Clara Stack",
@@ -170,15 +162,15 @@ const translations = {
 // Estado global da aplicação
 const appState = {
   currentUser: null,
-  currentLanguage: "pt",
-  currentTheme: "system",
+  currentLanguage: "en",
+  currentTheme: "dark",
   chatCooldown: 0,
   lastMessageTime: 0,
   userIP: null,
 }
 
 // Inicializar servidor local (simulação de backend)
-function initServer() {
+function initializeServer() {
   if (!localStorage.getItem("server_users")) {
     const defaultUsers = {
       admin: {
@@ -296,13 +288,8 @@ function translatePage() {
 }
 
 // Sistema de temas
-function applyTheme(theme) {
-  if (theme === "system") {
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-    document.body.setAttribute("data-theme", prefersDark ? "dark" : "light")
-  } else {
-    document.body.setAttribute("data-theme", theme)
-  }
+function applyTheme() {
+  document.body.setAttribute("data-theme", "dark")
 }
 
 // Autenticação
@@ -946,7 +933,7 @@ function updateActiveUsersList() {
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("[v0] Inicializando aplicação...")
 
-  initServer()
+  initializeServer()
 
   await detectUserRegion()
 
@@ -1048,7 +1035,6 @@ document.getElementById("registerFormElement").addEventListener("submit", (e) =>
 document.getElementById("settingsBtn").addEventListener("click", () => {
   document.getElementById("settingsModal").classList.remove("hidden")
   document.getElementById("currentProfileImg").src = appState.currentUser.profileImage
-  document.getElementById("themeSelector").value = appState.currentTheme
   document.getElementById("languageSelector").value = appState.currentLanguage
 })
 
@@ -1109,12 +1095,6 @@ document.getElementById("updatePassword").addEventListener("click", () => {
   syncToAllTabs("users_updated")
   showNotification("Senha atualizada!", "success")
   document.getElementById("changePassword").value = ""
-})
-
-document.getElementById("themeSelector").addEventListener("change", (e) => {
-  appState.currentTheme = e.target.value
-  localStorage.setItem("theme", e.target.value)
-  applyTheme(e.target.value)
 })
 
 document.getElementById("languageSelector").addEventListener("change", (e) => {
