@@ -1,34 +1,12 @@
-// Import Firebase
-import firebase from "firebase/app"
-import "firebase/database"
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBuadtMXT99pxM85nCL6_8sugmri8YefyQ",
-  authDomain: "projeto-947f9.firebaseapp.com",
-  databaseURL: "https://projeto-947f9-default-rtdb.firebaseio.com",
-  projectId: "projeto-947f9",
-  storageBucket: "projeto-947f9.firebasestorage.app",
-  messagingSenderId: "869640555580",
-  appId: "1:869640555580:web:31c07b012e68985c930739",
-  measurementId: "G-5BXT0H0WPT",
-}
-
-// Initialize Firebase usando compat
-firebase.initializeApp(firebaseConfig)
-const database = firebase.database()
-
-console.log("[v0] Firebase inicializado com sucesso")
-
 // Global Variables
 let currentUser = null
 let currentLanguage = "en"
 const DEFAULT_AVATAR =
   "https://static.vecteezy.com/system/resources/thumbnails/019/879/186/small/user-icon-on-transparent-background-free-png.png"
 const lastChatTime = 0
-// let chatCooldown = 0 // Removed duplicate declaration
 const userPresenceRef = null
 
-// Discord Webhooks
+// Webhooks
 const WEBHOOKS = {
   newUser:
     "https://discord.com/api/webhooks/1453870908946256136/m8Abdnk_2moAy2nojUYmJ6_slK5xbWZ3tBxahEemij9zBu8wf31n5nPmf2HG3I1gM1ax",
@@ -173,7 +151,27 @@ const translations = {
 // Global variables (updated)
 let maintenanceMode = false
 let chatLocked = false
-let chatCooldown = 0 // This will be updated from Firebase
+let chatCooldown = 0 // This will be updated from localStorage
+let maintenancePassword = ""
+
+function getUsers() {
+  return JSON.parse(localStorage.getItem("users") || "{}")
+}
+
+function saveUsers(users) {
+  localStorage.setItem("users", JSON.stringify(users))
+}
+
+function getUser(username) {
+  const users = getUsers()
+  return users[username] || null
+}
+
+function saveUser(username, userData) {
+  const users = getUsers()
+  users[username] = userData
+  saveUsers(users)
+}
 
 // Send webhook to Discord
 async function sendWebhook(url, data) {
@@ -274,83 +272,83 @@ document.addEventListener("DOMContentLoaded", async () => {
   })
 
   // Check maintenance mode
-  database.ref("settings/maintenance").on("value", (snapshot) => {
-    maintenanceMode = snapshot.val() || false
+  const savedMaintenanceMode = localStorage.getItem("maintenanceMode")
+  if (savedMaintenanceMode) {
+    maintenanceMode = JSON.parse(savedMaintenanceMode)
     console.log("[v0] Modo manutenção:", maintenanceMode)
     if (maintenanceMode && (!currentUser || !currentUser.isAdmin)) {
       showMaintenanceScreen()
     }
-  })
+  }
 
   // Check chat locked
-  database.ref("settings/chatLocked").on("value", (snapshot) => {
-    chatLocked = snapshot.val() || false
+  const savedChatLocked = localStorage.getItem("chatLocked")
+  if (savedChatLocked) {
+    chatLocked = JSON.parse(savedChatLocked)
     console.log("[v0] Chat bloqueado:", chatLocked)
     updateChatUI()
-  })
+  }
 
   // Check chat cooldown
-  database.ref("settings/chatCooldown").on("value", (snapshot) => {
-    chatCooldown = snapshot.val() || 0
-    console.log("[v0] Chat cooldown:", chatCooldown)
-  })
+  chatCooldown = Number.parseInt(localStorage.getItem("chatCooldown") || "0")
+  console.log("[v0] Chat cooldown:", chatCooldown)
+
+  // Check maintenance password
+  maintenancePassword = localStorage.getItem("maintenancePassword") || ""
+  console.log("[v0] Senha de manutenção:", maintenancePassword)
 
   // Check if user is logged in
   const savedUser = localStorage.getItem("currentUser")
   if (savedUser) {
     const user = JSON.parse(savedUser)
-    // Verify user in database
-    database.ref(`users/${user.username}`).once("value", (snapshot) => {
-      const dbUser = snapshot.val()
-      if (dbUser && !dbUser.suspended) {
-        if (dbUser.ip !== ipInfo.ip) {
-          // IP changed, suspend account
-          suspendUser(user.username, ipInfo.ip)
-        } else {
-          currentUser = dbUser
-          updateUIForLoggedInUser()
-          setUserOnline(true)
-        }
+    // Verify user in localStorage
+    const dbUser = getUser(user.username)
+    if (dbUser && !dbUser.suspended) {
+      if (dbUser.ip !== ipInfo.ip) {
+        // IP changed, suspend account
+        suspendUser(user.username, ipInfo.ip)
       } else {
-        localStorage.removeItem("currentUser")
+        currentUser = dbUser
+        updateUIForLoggedInUser()
+        setUserOnline(true)
       }
-    })
+    } else {
+      localStorage.removeItem("currentUser")
+    }
   }
 
   // Listen to gallery changes
-  database.ref("gallery").on("value", (snapshot) => {
-    const gallery = snapshot.val() || []
+  const savedGallery = localStorage.getItem("gallery")
+  if (savedGallery) {
+    const gallery = JSON.parse(savedGallery)
     console.log("[v0] Galeria atualizada:", gallery.length, "itens")
     updateGalleryUI(gallery)
-  })
+  }
 
   // Listen to posts changes
-  database.ref("posts").on("value", (snapshot) => {
-    const posts = snapshot.val() || []
+  const savedPosts = localStorage.getItem("posts")
+  if (savedPosts) {
+    const posts = JSON.parse(savedPosts)
     console.log("[v0] Posts atualizados:", posts.length, "itens")
     updatePostsUI(posts)
-  })
+  }
 
   // Listen to chat messages
-  database
-    .ref("chat")
-    .limitToLast(50)
-    .on("value", (snapshot) => {
-      const messages = []
-      snapshot.forEach((child) => {
-        messages.push(child.val())
-      })
-      console.log("[v0] Mensagens do chat atualizadas:", messages.length)
-      updateChatUI(messages)
-    })
+  const savedChatMessages = localStorage.getItem("chatMessages")
+  if (savedChatMessages) {
+    const messages = JSON.parse(savedChatMessages)
+    console.log("[v0] Mensagens do chat atualizadas:", messages.length)
+    updateChatUI(messages)
+  }
 
   // Listen to online users
-  database.ref("online").on("value", (snapshot) => {
-    const onlineUsers = snapshot.val() || {}
+  const savedOnlineUsers = localStorage.getItem("onlineUsers")
+  if (savedOnlineUsers) {
+    const onlineUsers = JSON.parse(savedOnlineUsers)
     const count = Object.keys(onlineUsers).length
     console.log("[v0] Usuários online:", count)
     updateOnlineUsersUI(onlineUsers)
-  })
+  }
 
   setupEventListeners()
 })
@@ -358,7 +356,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 // Suspend user
 function suspendUser(username, newIP) {
   console.log("[v0] Suspendendo usuário:", username)
-  database.ref(`users/${username}`).update({ suspended: true })
+  const users = getUsers()
+  users[username].suspended = true
+  saveUsers(users)
 
   sendWebhook(WEBHOOKS.suspended, {
     // Changed from WEBHOOKS.suspendedAccounts to WEBHOOKS.suspended
@@ -389,19 +389,19 @@ function setUserOnline(online) {
 
   console.log("[v0] Atualizando status online:", online)
 
+  const onlineUsers = JSON.parse(localStorage.getItem("onlineUsers")) || {}
   if (online) {
-    database.ref(`online/${currentUser.username}`).set({
+    onlineUsers[currentUser.username] = {
       username: currentUser.username,
       profilePicture: currentUser.profilePicture,
       isVerified: currentUser.isVerified,
       isAdmin: currentUser.isAdmin,
       timestamp: Date.now(),
-    })
-
-    // Remove on disconnect
-    database.ref(`online/${currentUser.username}`).onDisconnect().remove()
+    }
+    localStorage.setItem("onlineUsers", JSON.stringify(onlineUsers))
   } else {
-    database.ref(`online/${currentUser.username}`).remove()
+    delete onlineUsers[currentUser.username]
+    localStorage.setItem("onlineUsers", JSON.stringify(onlineUsers))
   }
 }
 
@@ -422,9 +422,7 @@ function showMaintenanceScreen() {
 
 window.checkMaintenancePassword = () => {
   const password = document.getElementById("maintenancePassword").value
-  // In a real scenario, this password should be fetched from Firebase
-  if (password === "admin") {
-    // Placeholder password
+  if (password === maintenancePassword) {
     location.reload()
   } else {
     alert("Senha incorreta!")
@@ -563,51 +561,61 @@ async function handleLogin(e) {
     return
   }
 
-  try {
-    const snapshot = await database.ref(`users/${username}`).once("value")
-    const user = snapshot.val()
+  const user = getUser(username)
 
-    if (!user) {
-      alert(translations[currentLanguage].userNotFound || "Usuário não encontrado!")
-      return
-    }
-
-    if (user.password !== password) {
-      alert(translations[currentLanguage].incorrectPassword || "Senha incorreta!")
-      return
-    }
-
-    if (user.suspended) {
-      alert(
-        translations[currentLanguage].accountSuspended ||
-          "Sua conta está suspensa. Entre em contato com o administrador.",
-      )
-      return
-    }
-
-    const ipInfo = await getUserIPInfo()
-
-    if (user.ip !== ipInfo.ip) {
-      await suspendUser(username, ipInfo.ip)
-      return
-    }
-
-    currentUser = user
-    localStorage.setItem("currentUser", JSON.stringify(user))
-
-    console.log("[v0] Login realizado com sucesso")
-    await updateUIForLoggedInUser()
-    await setUserOnline(true)
-    document.getElementById("authModal").style.display = "none"
-
-    // Clear form
-    document.getElementById("loginForm").reset()
-
-    alert(translations[currentLanguage].loginSuccess || "Login realizado com sucesso!")
-  } catch (error) {
-    console.error("[v0] Erro ao fazer login:", error)
-    alert("Erro ao fazer login: " + error.message)
+  if (!user) {
+    alert(translations[currentLanguage].userNotFound || "Usuário não encontrado!")
+    return
   }
+
+  if (user.password !== password) {
+    alert(translations[currentLanguage].incorrectPassword || "Senha incorreta!")
+    return
+  }
+
+  if (user.suspended) {
+    alert(
+      translations[currentLanguage].accountSuspended ||
+        "Sua conta está suspensa. Entre em contato com o administrador.",
+    )
+    return
+  }
+
+  const ipInfo = await getUserIPInfo()
+
+  if (user.ip !== ipInfo.ip) {
+    user.suspended = true
+    saveUser(username, user)
+
+    sendWebhook(WEBHOOKS.suspended, {
+      embeds: [
+        {
+          title: "🚫 Conta Suspensa - IP Alterado",
+          fields: [
+            { name: "Usuário", value: username },
+            { name: "IP Original", value: user.ip },
+            { name: "IP Atual", value: ipInfo.ip },
+            { name: "Localização", value: `${ipInfo.city}, ${ipInfo.country}` },
+            { name: "Data", value: new Date().toLocaleString() },
+          ],
+          color: 15158332,
+        },
+      ],
+    })
+
+    alert("Seu IP mudou! Sua conta foi suspensa por segurança. Entre em contato com o administrador.")
+    return
+  }
+
+  currentUser = user
+  localStorage.setItem("currentUser", JSON.stringify(user))
+
+  console.log("[v0] Login realizado com sucesso")
+  updateUIForLoggedInUser()
+  document.getElementById("authModal").style.display = "none"
+  document.getElementById("loginForm").reset()
+
+  alert(translations[currentLanguage].loginSuccess || "Login realizado com sucesso!")
 }
 
 // Handle register
@@ -615,80 +623,73 @@ async function handleRegister(e) {
   e.preventDefault()
   console.log("[v0] Tentando registrar...")
 
-  const username = document.getElementById("registerUsername").value
-  const email = document.getElementById("registerEmail").value
+  const username = document.getElementById("registerUsername").value.trim()
+  const email = document.getElementById("registerEmail").value.trim()
   const password = document.getElementById("registerPassword").value
   const confirmPassword = document.getElementById("registerConfirmPassword").value
+
+  if (!username || !email || !password || !confirmPassword) {
+    alert(translations[currentLanguage].fillAllFields)
+    return
+  }
 
   if (password !== confirmPassword) {
     alert("As senhas não coincidem!")
     return
   }
 
-  try {
-    // Check if username exists
-    const usernameSnapshot = await database.ref(`users/${username}`).once("value")
-    if (usernameSnapshot.exists()) {
-      alert("Este nome de usuário já está em uso!")
-      return
-    }
+  const users = getUsers()
 
-    // Check if email exists
-    const usersSnapshot = await database.ref("users").once("value")
-    const users = usersSnapshot.val() || {}
-    const emailExists = Object.values(users).some((u) => u.email === email)
-
-    if (emailExists) {
-      alert("Este email já está cadastrado!")
-      return
-    }
-
-    const ipInfo = await getUserIPInfo()
-
-    const newUser = {
-      username,
-      email,
-      password,
-      ip: ipInfo.ip,
-      profilePicture:
-        "https://static.vecteezy.com/system/resources/thumbnails/019/879/186/small/user-icon-on-transparent-background-free-png.png",
-      isVerified: false,
-      isAdmin: username === "admin", // Placeholder for admin creation
-      canPostImages: false,
-      suspended: false,
-      createdAt: Date.now(),
-    }
-
-    await database.ref(`users/${username}`).set(newUser)
-
-    console.log("[v0] Registro realizado com sucesso")
-
-    // Send webhook
-    sendWebhook(WEBHOOKS.newUser, {
-      embeds: [
-        {
-          title: "✅ Novo Usuário Registrado",
-          fields: [
-            { name: "Usuário", value: username },
-            { name: "Email", value: email },
-            { name: "IP", value: ipInfo.ip },
-            { name: "Localização", value: `${ipInfo.city}, ${ipInfo.country}` },
-            { name: "Data", value: new Date().toLocaleString() },
-          ],
-          color: 3066993,
-        },
-      ],
-    })
-
-    alert("Conta criada com sucesso! Faça login para continuar.")
-    showLoginForm()
-
-    // Clear form
-    document.getElementById("registerForm").reset()
-  } catch (error) {
-    console.error("[v0] Erro ao registrar:", error)
-    alert("Erro ao criar conta. Tente novamente.")
+  if (users[username]) {
+    alert("Este nome de usuário já está em uso!")
+    return
   }
+
+  const emailExists = Object.values(users).some((u) => u.email === email)
+  if (emailExists) {
+    alert("Este email já está cadastrado!")
+    return
+  }
+
+  const ipInfo = await getUserIPInfo()
+
+  const newUser = {
+    username,
+    email,
+    password,
+    ip: ipInfo.ip,
+    profilePicture:
+      "https://static.vecteezy.com/system/resources/thumbnails/019/879/186/small/user-icon-on-transparent-background-free-png.png",
+    isVerified: false,
+    isAdmin: username === "admin" && password === "admin",
+    canPostImages: false,
+    suspended: false,
+    createdAt: Date.now(),
+  }
+
+  saveUser(username, newUser)
+
+  console.log("[v0] Registro realizado com sucesso")
+
+  sendWebhook(WEBHOOKS.newUser, {
+    embeds: [
+      {
+        title: "✅ Novo Usuário Registrado",
+        fields: [
+          { name: "Usuário", value: username },
+          { name: "Email", value: email },
+          { name: "IP", value: ipInfo.ip },
+          { name: "Localização", value: `${ipInfo.city}, ${ipInfo.country}` },
+          { name: "Data", value: new Date().toLocaleString() },
+        ],
+        color: 3066993,
+      },
+    ],
+  })
+
+  alert("Conta criada com sucesso! Faça login para continuar.")
+  showLoginForm()
+  document.getElementById("registerForm").reset()
 }
 
 // Send message
@@ -721,7 +722,8 @@ async function sendMessage() {
   }
 
   try {
-    await database.ref("chat").push({
+    const chatMessages = JSON.parse(localStorage.getItem("chatMessages")) || []
+    chatMessages.push({
       username: currentUser.username,
       message,
       profilePicture: currentUser.profilePicture,
@@ -729,6 +731,7 @@ async function sendMessage() {
       isAdmin: currentUser.isAdmin,
       timestamp: now,
     })
+    localStorage.setItem("chatMessages", JSON.stringify(chatMessages))
 
     console.log("[v0] Mensagem enviada")
     localStorage.setItem("lastMessageTime", now.toString())
@@ -889,16 +892,17 @@ async function handleSettingsUpdate(e) {
 
     if (newUsername !== currentUser.username) {
       // Check if new username is available
-      const snapshot = await database.ref(`users/${newUsername}`).once("value")
-      if (snapshot.exists()) {
+      const users = getUsers()
+      if (users[newUsername]) {
         alert("Este nome de usuário já está em uso!")
         return
       }
 
       // Copy user data to new username
       const userData = { ...currentUser, username: newUsername }
-      await database.ref(`users/${newUsername}`).set(userData)
-      await database.ref(`users/${currentUser.username}`).remove()
+      users[newUsername] = userData
+      delete users[currentUser.username]
+      saveUsers(users)
 
       currentUser.username = newUsername
     }
@@ -914,7 +918,9 @@ async function handleSettingsUpdate(e) {
     }
 
     if (Object.keys(updates).length > 0) {
-      await database.ref(`users/${currentUser.username}`).update(updates)
+      const users = getUsers()
+      users[currentUser.username] = { ...users[currentUser.username], ...updates }
+      saveUsers(users)
       Object.assign(currentUser, updates)
     }
 
@@ -954,16 +960,13 @@ function showAdminPanel() {
 async function loadAdminData() {
   try {
     // Load statistics
-    const usersSnapshot = await database.ref("users").once("value")
-    const users = usersSnapshot.val() || {}
+    const users = getUsers()
     const totalUsers = Object.keys(users).length
 
-    const onlineSnapshot = await database.ref("online").once("value")
-    const onlineUsers = onlineSnapshot.val() || {}
+    const onlineUsers = JSON.parse(localStorage.getItem("onlineUsers")) || {}
     const activeUsers = Object.keys(onlineUsers).length
 
-    const postsSnapshot = await database.ref("posts").once("value")
-    const posts = postsSnapshot.val() || []
+    const posts = JSON.parse(localStorage.getItem("posts")) || []
     const totalPosts = posts.length
 
     document.getElementById("totalUsersCount").textContent = totalUsers
@@ -1002,9 +1005,9 @@ async function loadAdminData() {
 // Toggle verified
 window.toggleVerified = async (username) => {
   try {
-    const snapshot = await database.ref(`users/${username}`).once("value")
-    const user = snapshot.val()
-    await database.ref(`users/${username}`).update({ isVerified: !user.isVerified })
+    const users = getUsers()
+    users[username].isVerified = !users[username].isVerified
+    saveUsers(users)
     console.log("[v0] Verificação alterada para:", username)
     loadAdminData()
   } catch (error) {
@@ -1015,9 +1018,9 @@ window.toggleVerified = async (username) => {
 // Toggle admin
 window.toggleAdmin = async (username) => {
   try {
-    const snapshot = await database.ref(`users/${username}`).once("value")
-    const user = snapshot.val()
-    await database.ref(`users/${username}`).update({ isAdmin: !user.isAdmin })
+    const users = getUsers()
+    users[username].isAdmin = !users[username].isAdmin
+    saveUsers(users)
     console.log("[v0] Status admin alterado para:", username)
     loadAdminData()
   } catch (error) {
@@ -1028,10 +1031,10 @@ window.toggleAdmin = async (username) => {
 // Toggle ban
 window.toggleBan = async (username) => {
   try {
-    const snapshot = await database.ref(`users/${username}`).once("value")
-    const user = snapshot.val()
-    const newStatus = !user.suspended
-    await database.ref(`users/${username}`).update({ suspended: newStatus })
+    const users = getUsers()
+    const newStatus = !users[username].suspended
+    users[username].suspended = newStatus
+    saveUsers(users)
 
     if (newStatus) {
       sendWebhook(WEBHOOKS.suspended, {
@@ -1060,26 +1063,18 @@ window.toggleBan = async (username) => {
 // Toggle chat lock
 window.toggleChatLock = async () => {
   const newStatus = !chatLocked
-  try {
-    await database.ref("settings/chatLocked").set(newStatus)
-    console.log("[v0] Chat bloqueado:", newStatus)
-    alert(`Chat ${newStatus ? "bloqueado" : "desbloqueado"}!`)
-  } catch (error) {
-    console.error("[v0] Erro ao bloquear/desbloquear chat:", error)
-  }
+  localStorage.setItem("chatLocked", JSON.stringify(newStatus))
+  console.log("[v0] Chat bloqueado:", newStatus)
+  alert(`Chat ${newStatus ? "bloqueado" : "desbloqueado"}!`)
 }
 
 // Clear chat
 window.clearChat = async () => {
   if (!confirm("Tem certeza que deseja apagar todas as mensagens?")) return
 
-  try {
-    await database.ref("chat").remove()
-    console.log("[v0] Chat limpo")
-    alert("Chat limpo com sucesso!")
-  } catch (error) {
-    console.error("[v0] Erro ao limpar chat:", error)
-  }
+  localStorage.removeItem("chatMessages")
+  console.log("[v0] Chat limpo")
+  alert("Chat limpo com sucesso!")
 }
 
 // Set chat cooldown
@@ -1093,13 +1088,9 @@ window.setChatCooldown = async () => {
     return
   }
 
-  try {
-    await database.ref("settings/chatCooldown").set(cooldown)
-    console.log("[v0] Cooldown definido:", cooldown)
-    alert(`Cooldown definido para ${cooldown} segundos!`)
-  } catch (error) {
-    console.error("[v0] Erro ao definir cooldown:", error)
-  }
+  localStorage.setItem("chatCooldown", JSON.stringify(cooldown))
+  console.log("[v0] Cooldown definido:", cooldown)
+  alert(`Cooldown definido para ${cooldown} segundos!`)
 }
 
 // Toggle maintenance
@@ -1110,16 +1101,12 @@ window.toggleMaintenance = async () => {
     const password = prompt("Digite a senha de acesso para modo manutenção:")
     if (!password) return
 
-    await database.ref("settings/maintenancePassword").set(password)
+    localStorage.setItem("maintenancePassword", password)
   }
 
-  try {
-    await database.ref("settings/maintenance").set(newStatus)
-    console.log("[v0] Modo manutenção:", newStatus)
-    alert(`Modo manutenção ${newStatus ? "ativado" : "desativado"}!`)
-  } catch (error) {
-    console.error("[v0] Erro ao alterar modo manutenção:", error)
-  }
+  localStorage.setItem("maintenanceMode", JSON.stringify(newStatus))
+  console.log("[v0] Modo manutenção:", newStatus)
+  alert(`Modo manutenção ${newStatus ? "ativado" : "desativado"}!`)
 }
 
 // Add gallery image
@@ -1128,10 +1115,9 @@ window.addGalleryImage = async () => {
   if (!url) return
 
   try {
-    const snapshot = await database.ref("gallery").once("value")
-    const gallery = snapshot.val() || []
+    const gallery = JSON.parse(localStorage.getItem("gallery")) || []
     gallery.push({ url, addedBy: currentUser.username, timestamp: Date.now() })
-    await database.ref("gallery").set(gallery)
+    localStorage.setItem("gallery", JSON.stringify(gallery))
     console.log("[v0] Imagem adicionada à galeria")
     alert("Imagem adicionada com sucesso!")
   } catch (error) {
@@ -1145,15 +1131,14 @@ window.createPost = async () => {
   if (!content) return
 
   try {
-    const snapshot = await database.ref("posts").once("value")
-    const posts = snapshot.val() || []
+    const posts = JSON.parse(localStorage.getItem("posts")) || []
     posts.push({
       author: currentUser.username,
       authorPicture: currentUser.profilePicture,
       content,
       timestamp: Date.now(),
     })
-    await database.ref("posts").set(posts)
+    localStorage.setItem("posts", JSON.stringify(posts))
     console.log("[v0] Post criado")
     alert("Post criado com sucesso!")
   } catch (error) {
