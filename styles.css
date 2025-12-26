@@ -14,12 +14,26 @@
   --admin-color: #ff0000;
 }
 
+/* Tema escuro por padrão */
+body {
+  background-color: #121212;
+  color: #ffffff;
+}
+
 [data-theme="dark"] {
   --background: #121212;
   --surface: #1e1e1e;
   --text-primary: #ffffff;
   --text-secondary: #aaaaaa;
   --border: #333333;
+}
+
+[data-theme="light"] {
+  --background: #ffffff;
+  --surface: #f5f5f5;
+  --text-primary: #000000;
+  --text-secondary: #666666;
+  --border: #dddddd;
 }
 
 * {
@@ -522,12 +536,12 @@ header {
 
 .hero-image {
   width: 100%;
-  max-width: 350px;
+  max-width: 400px;
   height: auto;
   aspect-ratio: 4 / 5;
   object-fit: cover;
   border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
 .hero-text {
@@ -548,13 +562,37 @@ header {
   color: var(--text-secondary);
 }
 
+/* Estilo para nome destacado */
+.brand-highlight {
+  color: var(--primary-color);
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Disclaimer no topo */
+.disclaimer {
+  background: rgba(255, 193, 7, 0.1);
+  border-left: 4px solid var(--warning);
+  padding: 1rem 2rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Redes sociais com logos maiores e melhor aparência */
 .social-links {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .social-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.75rem 1.5rem;
   background: var(--primary-color);
   color: white;
@@ -567,6 +605,19 @@ header {
 .social-btn:hover {
   transform: translateY(-3px);
   background: var(--secondary-color);
+}
+
+.social-btn.instagram {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+.social-btn.tiktok {
+  background: #000000;
+}
+
+.social-btn svg {
+  width: 24px;
+  height: 24px;
 }
 
 /* Notifications */
@@ -661,12 +712,12 @@ header {
 
 .about-content img {
   width: 100%;
-  max-width: 350px;
+  max-width: 400px;
   height: auto;
   aspect-ratio: 4 / 5;
   object-fit: cover;
   border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
 .about-text {
@@ -736,7 +787,7 @@ header {
 
 .project-card img {
   width: 100%;
-  height: 300px;
+  height: 400px;
   object-fit: cover;
 }
 
@@ -781,7 +832,7 @@ header {
 
 .character-card img {
   width: 100%;
-  height: 500px;
+  height: 600px;
   object-fit: cover;
 }
 
@@ -826,7 +877,7 @@ header {
 
 .gallery-item img {
   width: 100%;
-  height: 350px;
+  height: 450px;
   object-fit: cover;
   transition: transform 0.3s;
 }
@@ -1001,6 +1052,34 @@ footer {
   color: var(--primary-color);
 }
 
+/* Links sociais no footer */
+.social-links-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.social-link-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.social-link-footer:hover {
+  color: var(--primary-color);
+}
+
+/* Estilo para créditos especiais */
+.made-with-love {
+  font-style: italic;
+  color: var(--primary-color);
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
 .hbo-logo {
   width: 150px;
   margin-bottom: 1rem;
@@ -1027,6 +1106,35 @@ footer {
   display: none;
 }
 
+.actor-offer {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(196, 30, 58, 0.1);
+  border-radius: 8px;
+  border-left: 4px solid var(--primary-color);
+  font-size: 0.9rem;
+}
+
+/* Imagens maiores na galeria e projetos */
+.project-card img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 450px;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.character-card img {
+  width: 100%;
+  height: 600px;
+  object-fit: cover;
+}
+
 /* Melhorada responsividade geral */
 @media (max-width: 1024px) {
   .admin-panel {
@@ -1037,19 +1145,8 @@ footer {
   .navbar {
     padding: 1rem;
   }
-}
 
-@media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-  }
-
-  .nav-brand h1 {
-    font-size: 1.5rem;
-  }
-
+  /* Completando media queries que estavam cortadas */
   .nav-links {
     flex-direction: row;
     gap: 1rem;
@@ -1084,83 +1181,7 @@ footer {
   }
 
   .about-content {
-    flex-direction: column;
-  }
-
-  .about-content img {
-    max-width: 300px;
-  }
-
-  .project-card.featured {
-    grid-column: span 1;
-  }
-
-  .gallery-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  }
-
-  .social-links {
-    justify-content: center;
-  }
-
-  .modal-content {
-    width: 95%;
-    padding: 1.5rem;
-  }
-
-  .user-profile {
-    flex-direction: row;
-    justify-content: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .nav-links {
-    gap: 0.5rem;
-    font-size: 0.85rem;
-  }
-
-  .nav-links a {
-    padding: 0.25rem;
-  }
-
-  .hero-image {
-    max-width: 100%;
-  }
-
-  .about-content img {
-    max-width: 100%;
-  }
-
-  h2 {
-    font-size: 1.75rem !important;
-  }
-
-  .projects-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .gallery-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .chat-messages {
-    height: 400px;
-  }
-
-  .user-actions {
-    flex-direction: column;
-  }
-
-  .user-actions button {
-    width: 100%;
-  }
-
-  .auth-buttons {
-    width: 100%;
-  }
-
-  .auth-buttons button {
-    flex: 1;
+    flex-direction: column; /* Added to improve responsiveness for about section */
+    text-align: center; /* Added to improve responsiveness for about section */
   }
 }
