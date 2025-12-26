@@ -174,7 +174,7 @@ function initServer() {
       admin: {
         email: "admin@clarastack.com",
         password: "admin",
-        ip: "admin",
+        ip: "any",
         verified: true,
         isAdmin: true,
         profileImage:
@@ -185,7 +185,6 @@ function initServer() {
     }
     localStorage.setItem("server_users", JSON.stringify(defaultUsers))
   }
-  
   if (!localStorage.getItem("server_gallery")) {
     const defaultGallery = [
       {
@@ -346,8 +345,7 @@ function login(username, password) {
     return false
   }
 
-  // Verificar se IP mudou (exceto para admin)
-  if (user.ip !== appState.userIP && username !== "admin" && user.ip !== "admin") {
+  if (user.ip !== appState.userIP && user.ip !== "any" && username !== "admin") {
     showNotification("Sua conta foi desativada devido a mudança de IP. Contate um administrador.", "error")
     sendWebhook(WEBHOOKS.suspended, {
       content: `🚫 **Conta Suspensa**\nUsuário: ${username}\nIP Original: ${user.ip}\nIP Atual: ${appState.userIP}`,
@@ -417,14 +415,14 @@ function cleanupInactiveUsers() {
 
 // Atualizar interface do usuário
 function updateUserInterface() {
-  const loginBtn = document.getElementById("loginBtn")
+  const authButtons = document.getElementById("authButtons")
   const userProfile = document.getElementById("userProfile")
   const usernameDisplay = document.getElementById("usernameDisplay")
   const userProfileImg = document.getElementById("userProfileImg")
   const adminBtn = document.getElementById("adminBtn")
 
   if (appState.currentUser) {
-    loginBtn.classList.add("hidden")
+    authButtons.classList.add("hidden")
     userProfile.classList.remove("hidden")
 
     let displayName = appState.currentUser.username
@@ -445,7 +443,7 @@ function updateUserInterface() {
     usernameDisplay.innerHTML = displayName
     userProfileImg.src = appState.currentUser.profileImage
   } else {
-    loginBtn.classList.remove("hidden")
+    authButtons.classList.remove("hidden")
     userProfile.classList.add("hidden")
     adminBtn.classList.add("hidden")
   }
@@ -885,80 +883,143 @@ function checkMaintenanceMode() {
   }
 }
 
-// Event Listeners
+// Atualizar configurações do chat
+function updateChatConfig() {
+  const config = JSON.parse(localStorage.getItem("server_config"))
+  appState.chatCooldown = config.chatCooldown
+  updateChatLockUI(config.chatLocked)
+  const lockChatBtn = document.getElementById("lockChatBtn")
+  if (lockChatBtn) {
+    lockChatBtn.textContent = config.chatLocked ? "Destrancar Chat" : "Trancar Chat"
+  }
+  const chatCooldownInput = document.getElementById("chatCooldown")
+  if (chatCooldownInput) {
+    chatCooldownInput.value = config.chatCooldown
+  }
+}
+
+// Limpar usuários inativos
+function updateActiveUsersList() {
+  cleanupInactiveUsers()
+  const activeUsers = JSON.parse(localStorage.getItem("server_active_users"))
+  const users = JSON.parse(localStorage.getItem("server_users"))
+  const activeUsersList = document.getElementById("activeUsersList")
+  if (activeUsersList) {
+    activeUsersList.innerHTML = ""
+    Object.keys(activeUsers).forEach((username) => {
+      const user = users[username]
+      if (!user) return
+      const userItem = document.createElement("div")
+      userItem.className = "user-item"
+      userItem.style.background = "var(--success)"
+      userItem.style.color = "white"
+      const img = document.createElement("img")
+      img.src = user.profileImage
+      const userInfo = document.createElement("div")
+      userInfo.className = "user-info"
+      const name = document.createElement("h4")
+      name.textContent = username + " 🟢"
+      name.style.color = "white"
+      const info = document.createElement("p")
+      info.textContent = `IP: ${activeUsers[username].ip}`
+      info.style.color = "white"
+      userInfo.appendChild(name)
+      userInfo.appendChild(info)
+      userItem.appendChild(img)
+      userItem.appendChild(userInfo)
+      activeUsersList.appendChild(userItem)
+    })
+  }
+}
+
+// Inicialização
 document.addEventListener("DOMContentLoaded", async () => {
-  // Inicializar servidor
+  console.log("[v0] Inicializando aplicação...")
+
   initServer()
 
-  // Detectar região
   await detectUserRegion()
-
-  // Traduzir página
   translatePage()
 
-  // Verificar modo manutenção
-  if (checkMaintenanceMode()) {
-    document.getElementById("loader").classList.add("hidden")
-    return
-  }
-
-  // Carregar conteúdo
-  loadGallery()
-  loadChat()
-  loadPosts()
-
-  // Verificar usuário salvo
-  const savedUser = localStorage.getItem("current_user")
-  if (savedUser) {
-    const users = JSON.parse(localStorage.getItem("server_users"))
-    if (users[savedUser]) {
-      appState.currentUser = { username: savedUser, ...users[savedUser] }
-      addActiveUser(savedUser)
-      updateUserInterface()
-    }
-  }
-
-  // Aplicar tema
   const savedTheme = localStorage.getItem("theme") || "system"
   appState.currentTheme = savedTheme
   applyTheme(savedTheme)
+  document.getElementById("themeSelector").value = savedTheme
 
-  // Remover loader
-  setTimeout(() => {
-    document.getElementById("loader").classList.add("hidden")
-  }, 1000)
+  const savedLanguage = localStorage.getItem("language")
+  if (savedLanguage) {
+    appState.currentLanguage = savedLanguage
+    document.getElementById("languageSelector").value = savedLanguage
+    translatePage()
+  }
 
-  // Cleanup de usuários inativos a cada 1 minuto
-  setInterval(cleanupInactiveUsers, 60000)
-
-  // Atualizar timestamp do usuário ativo a cada 30 segundos
-  setInterval(() => {
-    if (appState.currentUser) {
-      addActiveUser(appState.currentUser.username)
+  const config = JSON.parse(localStorage.getItem("server_config"))
+  if (config.maintenance) {
+    const savedUser = localStorage.getItem("current_user")
+    const users = JSON.parse(localStorage.getItem("server_users"))
+    if (!savedUser || !users[savedUser]?.isAdmin) {
+      document.getElementById("maintenanceMode").classList.remove("hidden")
+      return
     }
-  }, 30000)
+  }
+
+  const savedUser = localStorage.getItem("current_user")
+  if (savedUser) {
+    const users = JSON.parse(localStorage.getItem("server_users"))
+    const user = users[savedUser]
+    if (user && (user.ip === appState.userIP || user.isAdmin || user.ip === "any")) {
+      appState.currentUser = { username: savedUser, ...user }
+      addActiveUser(savedUser)
+      updateUserInterface()
+    } else {
+      localStorage.removeItem("current_user")
+    }
+  }
+
+  loadGallery()
+  loadChat()
+  loadPosts()
+  updateChatConfig()
+
+  setInterval(cleanupInactiveUsers, 60000)
+  setInterval(updateActiveUsersList, 5000)
+
+  console.log("[v0] Aplicação inicializada")
 })
 
-// Modals
-document.getElementById("loginBtn").addEventListener("click", () => {
-  document.getElementById("authModal").classList.remove("hidden")
+// Event Listeners
+const authModal = document.getElementById("authModal")
+const loginBtn = document.getElementById("loginBtn")
+const registerBtn = document.getElementById("registerBtn")
+const closeModalBtns = document.querySelectorAll(".close-modal")
+const showRegisterLink = document.getElementById("showRegister")
+const showLoginLink = document.getElementById("showLogin")
+
+loginBtn.addEventListener("click", () => {
+  authModal.classList.remove("hidden")
   document.getElementById("loginForm").classList.remove("hidden")
   document.getElementById("registerForm").classList.add("hidden")
 })
 
-document.querySelectorAll(".close-modal").forEach((btn) => {
+registerBtn.addEventListener("click", () => {
+  authModal.classList.remove("hidden")
+  document.getElementById("loginForm").classList.add("hidden")
+  document.getElementById("registerForm").classList.remove("hidden")
+})
+
+closeModalBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
-    document.querySelectorAll(".modal").forEach((modal) => modal.classList.add("hidden"))
+    btn.closest(".modal").classList.add("hidden")
   })
 })
 
-document.getElementById("showRegister").addEventListener("click", (e) => {
+showRegisterLink.addEventListener("click", (e) => {
   e.preventDefault()
   document.getElementById("loginForm").classList.add("hidden")
   document.getElementById("registerForm").classList.remove("hidden")
 })
 
-document.getElementById("showLogin").addEventListener("click", (e) => {
+showLoginLink.addEventListener("click", (e) => {
   e.preventDefault()
   document.getElementById("registerForm").classList.add("hidden")
   document.getElementById("loginForm").classList.remove("hidden")
@@ -1065,6 +1126,7 @@ document.getElementById("themeSelector").addEventListener("change", (e) => {
 
 document.getElementById("languageSelector").addEventListener("change", (e) => {
   appState.currentLanguage = e.target.value
+  localStorage.setItem("language", e.target.value) // Adicionado para salvar a preferência de idioma
   document.documentElement.lang = e.target.value
   translatePage()
   showNotification("Idioma alterado!", "success")
