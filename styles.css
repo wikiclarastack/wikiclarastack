@@ -338,8 +338,8 @@ nav {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.9);
-  z-index: 3000;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 2500;
   overflow-y: auto;
   padding: 20px;
 }
@@ -347,10 +347,18 @@ nav {
 .admin-content {
   background: var(--card-bg);
   max-width: 1200px;
+  min-height: 600px;
   margin: 0 auto;
   padding: 2rem;
   border-radius: 10px;
   position: relative;
+}
+
+.admin-content h2 {
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color);
 }
 
 .admin-tabs {
@@ -368,24 +376,49 @@ nav {
   cursor: pointer;
   border-radius: 5px;
   transition: background 0.3s;
+  min-width: 100px;
 }
 
 .admin-tab-btn.active {
   background: var(--primary-color);
+  font-weight: bold;
 }
 
 .admin-tab-content {
   display: none;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .admin-tab-content.active {
   display: block;
 }
 
+.admin-tab-content h3 {
+  color: var(--text-color);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 1.3rem;
+}
+
 .users-list {
   display: grid;
   gap: 1rem;
   margin-top: 1rem;
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 10px;
 }
 
 .user-item {
@@ -397,12 +430,14 @@ nav {
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
+  border: 1px solid var(--border-color);
 }
 
 .user-info {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .user-info img {
@@ -433,6 +468,8 @@ nav {
   cursor: pointer;
   color: white;
   transition: opacity 0.3s;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 .user-actions button:hover {
@@ -455,6 +492,52 @@ nav {
   background: #28a745;
 }
 
+#adminGalleryUrl,
+#adminGalleryCaption,
+#adminPostContent,
+#chatCooldown,
+#notificationText {
+  width: 100%;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background: var(--input-bg);
+  color: var(--text-color);
+  font-size: 1rem;
+}
+
+#adminPostContent {
+  min-height: 100px;
+  resize: vertical;
+}
+
+#addGalleryImage,
+#createPost,
+#setCooldown,
+#lockChat,
+#clearChat,
+#sendNotification {
+  padding: 0.8rem 1.5rem;
+  margin: 0.5rem 0.5rem 0.5rem 0;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+#addGalleryImage:hover,
+#createPost:hover,
+#setCooldown:hover,
+#lockChat:hover,
+#clearChat:hover,
+#sendNotification:hover {
+  background: var(--secondary-color);
+}
+
 .danger-btn {
   background: #dc3545;
   color: white;
@@ -466,6 +549,10 @@ nav {
   margin: 0.5rem;
 }
 
+.danger-btn:hover {
+  background: #c82333;
+}
+
 .success-btn {
   background: #28a745;
   color: white;
@@ -475,6 +562,38 @@ nav {
   cursor: pointer;
   font-weight: bold;
   margin: 0.5rem;
+}
+
+.success-btn:hover {
+  background: #218838;
+}
+
+#galleryManager {
+  margin-top: 2rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+#galleryManager .gallery-item {
+  position: relative;
+}
+
+#galleryManager .gallery-item button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+  z-index: 10;
+}
+
+#galleryManager .gallery-item button:hover {
+  background: #c82333;
 }
 
 /* Hero Section */
@@ -914,11 +1033,31 @@ footer a:hover {
 
   .admin-content {
     padding: 1rem;
+    margin: 10px;
+  }
+
+  .admin-tabs {
+    gap: 0.3rem;
+  }
+
+  .admin-tab-btn {
+    padding: 0.5rem 0.7rem;
+    font-size: 0.85rem;
+    min-width: auto;
   }
 
   .user-item {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .user-actions {
+    width: 100%;
+  }
+
+  .user-actions button {
+    flex: 1;
+    min-width: calc(50% - 0.25rem);
   }
 }
 
