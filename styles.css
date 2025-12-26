@@ -236,7 +236,7 @@ header {
 /* Featured Section */
 .featured {
   padding: 80px 20px;
-  background-color: var(--bg-color);
+  background: linear-gradient(135deg, rgba(229, 9, 20, 0.05) 0%, var(--bg-color) 100%);
 }
 
 .featured h2 {
@@ -273,6 +273,24 @@ header {
 .featured-show {
   color: var(--primary-color);
   font-size: 1.2rem;
+}
+
+.featured-highlight {
+  cursor: pointer;
+  border: 3px solid var(--primary-color);
+  box-shadow: 0 0 30px rgba(229, 9, 20, 0.5);
+  transition: all 0.3s;
+}
+
+.featured-highlight:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 50px rgba(229, 9, 20, 0.8);
+}
+
+.featured-description {
+  font-size: 1rem;
+  color: #ccc;
+  margin-top: 0.5rem;
 }
 
 /* Works Section */
@@ -711,6 +729,124 @@ footer {
   background-color: #28a745;
 }
 
+/* Notable Character Section */
+.notable-character {
+  padding: 80px 20px;
+  background-color: var(--secondary-color);
+}
+
+.notable-character h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  color: var(--primary-color);
+}
+
+/* Adding styles for user profile header in top right */
+.user-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+#headerUserAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary-color);
+}
+
+#headerUsername {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.verified-badge-header {
+  color: var(--primary-color);
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.settings-btn-header {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.4rem;
+  transition: color 0.3s, transform 0.3s;
+}
+
+.settings-btn-header:hover {
+  color: var(--primary-color);
+  transform: rotate(90deg);
+}
+
+/* Redirect modal styles */
+.redirect-modal {
+  text-align: center;
+  max-width: 600px;
+}
+
+.redirect-modal h2 {
+  color: var(--primary-color);
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.redirect-url {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: 5px;
+  word-break: break-all;
+  margin: 1rem 0;
+  font-family: monospace;
+  color: #4a9eff;
+}
+
+.redirect-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.btn-yes,
+.btn-no {
+  padding: 0.8rem 2.5rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 600;
+}
+
+.btn-yes {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-yes:hover {
+  background-color: #218838;
+  transform: scale(1.05);
+}
+
+.btn-no {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-no:hover {
+  background-color: #c82333;
+  transform: scale(1.05);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .hamburger {
@@ -732,6 +868,11 @@ footer {
 
   .nav-links.active {
     right: 0;
+  }
+
+  /* Responsive user profile header */
+  .user-profile-header {
+    margin-top: 1rem;
   }
 
   .hero h1 {
