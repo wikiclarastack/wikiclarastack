@@ -825,7 +825,7 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
 // IT: Welcome to Derry redirect handler
 function handleITRedirect() {
   const redirectUrl =
-    "https://www.google.com/aclk?sa=L&ai=DChsSEwilu9zG99uRAxUIZ0gAHc3hF5UYACICCAEQABoCY2U&co=1&gclid=Cj0KCQiAgbnKBhDgARIsAGCDdlcbmHt1C0YlZ3xRnFR_6tgKNxa4iwUMRwOKiFF9KeH7iUJ3KmuqIVkaAmYEEALw_wcB&cid=CAAS3QHkaB2OkeqnpS4f7fKMHp84g9gopnJMyhTKMFuOjv77waUgJH_gwpYmnLkHh1jsmSzsPpIKa92dCuHW0bwb8AT2Brk_BlhEJxkyHRTrylsih3PnKl70MD2Zy0l4fDMZqvYb0Ogi6cT7_TRTvtOWQQZwGBrx0xAN2eYlopYeJd6b3JM_6i6r0xmq_WnacWk3mcgoF6eSxpIo25lI3jvhAmYn9tIcZ0xtXVQg9RBw-CpfpBglHsPs_JVINubV1MBq3BBc1qLSUz2L0ArGPfDTYKI9ErL8EZPPfyXusoxN_A&cce=2&sig=AOD64_1nT-8kQKHDi3ziOR9P8q0_66zwVg&q&adurl&ved=2ahUKEwjQpdXG99uRAxVsqpUCHQSlENUQ0Qx6BAgREAE"
+    "https://play.hbomax.com/show/6c39354a-c52d-46d7-982c-b5d196988189?utm_source=universal_search"
 
   const modal = document.getElementById("redirectModal")
   const urlDisplay = document.getElementById("redirectUrl")
