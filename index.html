@@ -10,11 +10,6 @@
     <meta property="og:image" content="https://image.tmdb.org/t/p/w500/yMK3IADqV2oReJMKdkrcEIBxdtu.jpg">
 </head>
 <body>
-    <!-- Loader -->
-    <div id="loader" class="loader">
-        <div class="loader-spinner"></div>
-    </div>
-
     <!-- Maintenance Mode -->
     <div id="maintenanceMode" class="maintenance-mode hidden">
         <div class="maintenance-content">
@@ -182,7 +177,11 @@
                     <button id="settingsBtn" class="btn-icon" title="Configurações">⚙️</button>
                     <button id="adminBtn" class="btn-icon admin-only hidden" title="Admin">👑</button>
                 </div>
-                <button id="loginBtn" class="btn-primary" data-translate="login_button">Login</button>
+                <!-- Adicionados botões separados de Login e Registrar -->
+                <div id="authButtons" class="auth-buttons">
+                    <button id="loginBtn" class="btn-primary" data-translate="login_button">Login</button>
+                    <button id="registerBtn" class="btn-secondary" data-translate="register_button">Registrar</button>
+                </div>
             </div>
         </nav>
     </header>
