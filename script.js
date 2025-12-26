@@ -1,572 +1,1206 @@
-// Configuration
-const CONFIG = {
-  discordWebhooks: {
-    suspendedAccounts:
-      "https://discord.com/api/webhooks/1453870994233233672/ECP6u8tLh4ui2t3HOagXinv9QkeAU8mUScKLKkiY47mFNejrQhGU9v3xRNaHI4UjeqfC",
-    siteLog:
-      "https://discord.com/api/webhooks/1453871095672340612/U1fotOujLXmOESKp0JJXLEa3zcqGnImE2ENz_Vpw8ekLI81wD0uvDbTWIkHLMV9SE3K0",
-  },
-  adminCredentials: {
-    username: "admin",
-    password: "admin",
-  },
-  defaultGallery: [
-    "https://image.tmdb.org/t/p/original/yMK3IADqV2oReJMKdkrcEIBxdtu.jpg",
-    "https://image.tmdb.org/t/p/original/6vS09IasA8vU2vXjXq9tG7POnCj.jpg",
-    "https://image.tmdb.org/t/p/original/7Xp799uL6vIDWof2mYmUu6pS8p9.jpg",
-    "https://image.tmdb.org/t/p/original/m9YpS27Yv5K2z7r6K6u9O6uJ2uJ.jpg",
-    "https://image.tmdb.org/t/p/original/8Z09v6A9uS8P6r6u8O6uJ2uJ2uJ.jpg",
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvTMnnpP9p4yr3TbS1aqUktmPvVVyy7lvwqQ&s",
-    "https://static.tvtropes.org/pmwiki/pub/images/img_4865_8.jpeg",
-  ],
+// Webhooks do Discord
+const WEBHOOKS = {
+  suspended:
+    "https://discord.com/api/webhooks/1453870994233233672/ECP6u8tLh4ui2t3HOagXinv9QkeAU8mUScKLKkiY47mFNejrQhGU9v3xRNaHI4UjeqfC",
+  log: "https://discord.com/api/webhooks/1453871095672340612/U1fotOujLXmOESKp0JJXLEa3zcqGnImE2ENz_Vpw8ekLI81wD0uvDbTWIkHLMV9SE3K0",
 }
 
-// State Management
-let currentUser = null
-let currentLanguage = "pt"
-let currentIP = null
-
-// Utility Functions
-function generateID() {
-  return Date.now() + Math.random().toString(36).substr(2, 9)
+// Traduções
+const translations = {
+  pt: {
+    nav_home: "Início",
+    nav_about: "Sobre",
+    nav_projects: "Trabalhos",
+    nav_gallery: "Galeria",
+    nav_chat: "Chat",
+    login_button: "Login",
+    login_title: "Login",
+    register_title: "Registrar",
+    register_button: "Criar Conta",
+    no_account: "Não tem conta?",
+    have_account: "Já tem conta?",
+    settings_title: "Configurações",
+    profile_section: "Perfil",
+    change_photo: "Mudar Foto",
+    update_username: "Atualizar Username",
+    update_password: "Atualizar Senha",
+    appearance_section: "Aparência",
+    light_mode: "Modo Claro",
+    dark_mode: "Modo Escuro",
+    system_mode: "Sistema",
+    language_section: "Idioma",
+    logout_button: "Sair",
+    hero_title: "Clara Stack",
+    hero_subtitle: "Atriz | Lilly Bainbridge em IT: Welcome to Derry",
+    about_title: "Sobre Clara Stack",
+    about_text:
+      'Clara Stack é uma talentosa atriz americana conhecida por seu papel marcante como Lilly Bainbridge na série "IT: Welcome to Derry" da HBO Max. Ela começou sua carreira no teatro, interpretando Matilda no musical "Matilda the Musical" em Nova York.',
+    curiosities_title: "Curiosidades",
+    curiosity_1: "Começou no teatro interpretando Matilda no musical Matilda the Musical em Nova York",
+    curiosity_2: "Seus pais são Eoin e Amanda Stack",
+    curiosity_3: "Tem uma irmã gêmea chamada Maggie Stack",
+    projects_title: "Trabalhos",
+    project_it_desc: "Série HBO Max - Lilly Bainbridge",
+    featured_badge: "Destaque",
+    project_naughty_desc: "Filme Disney",
+    project_hawkeye_desc: "Minissérie Marvel",
+    project_madam_desc: "Série de TV",
+    character_title: "Personagem Mais Marcante",
+    gallery_title: "Galeria",
+    chat_title: "Chat Global",
+    chat_locked_message: "🔒 O chat está trancado no momento",
+    chat_placeholder: "Digite sua mensagem...",
+    send_button: "Enviar",
+    follow_title: "Siga Clara Stack",
+    credits_title: "Créditos",
+    credits_text: "Site desenvolvido por",
+    portfolio_link: "Portfólio",
+    copyright_hbo:
+      "As imagens que envolvem a série IT: Welcome to Derry são de propriedade da HBO Max. Para remoção, entre em contato via portfólio.",
+    rights_reserved: "Todos os direitos reservados.",
+    unauthorized_warning: "⚠️ Reprodução não autorizada é proibida.",
+    admin_panel_title: "Painel Administrativo",
+    users_tab: "Usuários",
+    gallery_tab: "Galeria",
+    posts_tab: "Postagens",
+    settings_tab: "Configurações",
+    registered_users: "Usuários Registrados",
+    active_users: "Usuários Ativos",
+    add_gallery_image: "Adicionar Imagem à Galeria",
+    add_button: "Adicionar",
+    create_post: "Criar Postagem",
+    publish_button: "Publicar",
+    site_settings: "Configurações do Site",
+    chat_cooldown: "Cooldown do Chat (segundos):",
+    update_button: "Atualizar",
+    lock_chat: "Trancar Chat",
+    clear_chat: "Limpar Chat",
+    shutdown_site: "Modo Manutenção",
+    maintenance_title: "🔧 Site em Manutenção",
+    maintenance_text: "Voltaremos em breve!",
+    access_button: "Acessar",
+    news_title: "Notícias",
+  },
+  en: {
+    nav_home: "Home",
+    nav_about: "About",
+    nav_projects: "Works",
+    nav_gallery: "Gallery",
+    nav_chat: "Chat",
+    login_button: "Login",
+    login_title: "Login",
+    register_title: "Register",
+    register_button: "Create Account",
+    no_account: "Don't have an account?",
+    have_account: "Already have an account?",
+    settings_title: "Settings",
+    profile_section: "Profile",
+    change_photo: "Change Photo",
+    update_username: "Update Username",
+    update_password: "Update Password",
+    appearance_section: "Appearance",
+    light_mode: "Light Mode",
+    dark_mode: "Dark Mode",
+    system_mode: "System",
+    language_section: "Language",
+    logout_button: "Logout",
+    hero_title: "Clara Stack",
+    hero_subtitle: "Actress | Lilly Bainbridge in IT: Welcome to Derry",
+    about_title: "About Clara Stack",
+    about_text:
+      'Clara Stack is a talented American actress known for her striking role as Lilly Bainbridge in the HBO Max series "IT: Welcome to Derry". She began her career in theater, playing Matilda in the musical "Matilda the Musical" in New York.',
+    curiosities_title: "Fun Facts",
+    curiosity_1: "Started in theater playing Matilda in the musical Matilda the Musical in New York",
+    curiosity_2: "Her parents are Eoin and Amanda Stack",
+    curiosity_3: "Has a twin sister named Maggie Stack",
+    projects_title: "Works",
+    project_it_desc: "HBO Max Series - Lilly Bainbridge",
+    featured_badge: "Featured",
+    project_naughty_desc: "Disney Movie",
+    project_hawkeye_desc: "Marvel Miniseries",
+    project_madam_desc: "TV Series",
+    character_title: "Most Iconic Character",
+    gallery_title: "Gallery",
+    chat_title: "Global Chat",
+    chat_locked_message: "🔒 Chat is currently locked",
+    chat_placeholder: "Type your message...",
+    send_button: "Send",
+    follow_title: "Follow Clara Stack",
+    credits_title: "Credits",
+    credits_text: "Website developed by",
+    portfolio_link: "Portfolio",
+    copyright_hbo:
+      "Images involving the IT: Welcome to Derry series are property of HBO Max. For removal, contact via portfolio.",
+    rights_reserved: "All rights reserved.",
+    unauthorized_warning: "⚠️ Unauthorized reproduction is prohibited.",
+    admin_panel_title: "Admin Panel",
+    users_tab: "Users",
+    gallery_tab: "Gallery",
+    posts_tab: "Posts",
+    settings_tab: "Settings",
+    registered_users: "Registered Users",
+    active_users: "Active Users",
+    add_gallery_image: "Add Image to Gallery",
+    add_button: "Add",
+    create_post: "Create Post",
+    publish_button: "Publish",
+    site_settings: "Site Settings",
+    chat_cooldown: "Chat Cooldown (seconds):",
+    update_button: "Update",
+    lock_chat: "Lock Chat",
+    clear_chat: "Clear Chat",
+    shutdown_site: "Maintenance Mode",
+    maintenance_title: "🔧 Under Maintenance",
+    maintenance_text: "We will be back soon!",
+    access_button: "Access",
+    news_title: "News",
+  },
 }
 
-async function getIPAddress() {
-  try {
-    const response = await fetch("https://api.ipify.org?format=json")
-    const data = await response.json()
-    return data.ip
-  } catch (error) {
-    console.error("Error getting IP:", error)
-    return "unknown"
+// Estado global da aplicação
+const appState = {
+  currentUser: null,
+  currentLanguage: "pt",
+  currentTheme: "system",
+  chatCooldown: 0,
+  lastMessageTime: 0,
+  userIP: null,
+}
+
+// Inicializar servidor local (simulação de backend)
+function initServer() {
+  if (!localStorage.getItem("server_users")) {
+    localStorage.setItem("server_users", JSON.stringify({}))
   }
-}
-
-async function getIPInfo(ip) {
-  if (ip === "unknown") return { country: "Unknown", city: "Unknown", region: "Unknown" }
-  try {
-    const response = await fetch(`https://ipapi.co/${ip}/json/`)
-    const data = await response.json()
-    return {
-      country: data.country_name || "Unknown",
-      city: data.city || "Unknown",
-      region: data.region || "Unknown",
+  if (!localStorage.getItem("server_gallery")) {
+    const defaultGallery = [
+      {
+        url: "https://media.gettyimages.com/id/2242330361/photo/los-angeles-premiere-of-hbo-original-series-it-welcome-to-derry-red-carpet.jpg?s=1024x1024&w=gi&k=20&c=SATqk9OF8uyP8-6xKlIUS4AhKcPg3unpDSieOnkrGrc=",
+        caption: "Matilda and Clara Stack - IT: Welcome to Derry Premiere",
+      },
+      {
+        url: "https://media.gettyimages.com/id/2242313791/photo/los-angeles-premiere-of-hbo-original-series-it-welcome-to-derry.jpg?s=1024x1024&w=gi&k=20&c=ozLhw5EvhFSpQeDS36PfCZIG0bY4ofPNxelcsJSN3ew=",
+        caption: "Clara Stack at IT: Welcome to Derry Premiere",
+      },
+      {
+        url: "https://elcomercio.pe/resizer/v2/ZLEZYAYGJBAYNNIRVWBIOMJ6Z4.jpg?auth=585dcbc947baaa48292c190c1cce1d5fb0444fa13e83d411f29e0c5638ee7452&width=1200&height=1371&quality=75&smart=true",
+        caption: "Clara Stack as Lilly Bainbridge",
+      },
+      {
+        url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvTMnnpP9p4yr3TbS1aqUktmPvVVyy7lvwqQ&s",
+        caption: "Behind the Scenes",
+      },
+    ]
+    localStorage.setItem("server_gallery", JSON.stringify(defaultGallery))
+  }
+  if (!localStorage.getItem("server_chat")) {
+    localStorage.setItem("server_chat", JSON.stringify([]))
+  }
+  if (!localStorage.getItem("server_posts")) {
+    localStorage.setItem("server_posts", JSON.stringify([]))
+  }
+  if (!localStorage.getItem("server_config")) {
+    const config = {
+      chatLocked: false,
+      chatCooldown: 3,
+      maintenance: false,
+      maintenancePassword: "admin",
     }
-  } catch (error) {
-    return { country: "Unknown", city: "Unknown", region: "Unknown" }
+    localStorage.setItem("server_config", JSON.stringify(config))
+  }
+  if (!localStorage.getItem("server_active_users")) {
+    localStorage.setItem("server_active_users", JSON.stringify({}))
   }
 }
 
-async function sendDiscordWebhook(webhookUrl, message) {
+// Detectar região do usuário
+async function detectUserRegion() {
   try {
-    await fetch(webhookUrl, {
+    const response = await fetch("https://ipapi.co/json/")
+    const data = await response.json()
+    appState.userIP = data.ip
+
+    // Enviar log para Discord
+    sendWebhook(WEBHOOKS.log, {
+      content: `🌍 **Novo visitante**\nIP: ${data.ip}\nPaís: ${data.country_name}\nCidade: ${data.city}`,
+    })
+
+    // Se for dos EUA, mudar idioma para inglês
+    if (data.country_code === "US") {
+      appState.currentLanguage = "en"
+      document.documentElement.lang = "en"
+    }
+
+    return data
+  } catch (error) {
+    console.error("Erro ao detectar região:", error)
+    appState.userIP = "unknown"
+    return { country_code: "BR" }
+  }
+}
+
+// Enviar webhook para Discord
+async function sendWebhook(url, data) {
+  try {
+    await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content: message }),
+      body: JSON.stringify(data),
     })
   } catch (error) {
-    console.error("Discord webhook error:", error)
+    console.error("Erro ao enviar webhook:", error)
   }
 }
 
-function detectLanguage() {
-  const userLang = navigator.language || navigator.userLanguage
-  return userLang.startsWith("en") ? "en" : "pt"
-}
+// Traduzir página
+function translatePage() {
+  const elements = document.querySelectorAll("[data-translate]")
+  elements.forEach((element) => {
+    const key = element.getAttribute("data-translate")
+    if (translations[appState.currentLanguage][key]) {
+      element.textContent = translations[appState.currentLanguage][key]
+    }
+  })
 
-function applyLanguage(lang) {
-  currentLanguage = lang
-  document.querySelectorAll("[data-lang-en]").forEach((element) => {
-    const text = element.getAttribute(`data-lang-${lang}`)
-    if (text) {
-      if (element.tagName === "INPUT" || element.tagName === "TEXTAREA") {
-        element.placeholder = text
-      } else {
-        element.textContent = text
-      }
+  // Traduzir placeholders
+  const placeholders = document.querySelectorAll("[data-translate-placeholder]")
+  placeholders.forEach((element) => {
+    const key = element.getAttribute("data-translate-placeholder")
+    if (translations[appState.currentLanguage][key]) {
+      element.placeholder = translations[appState.currentLanguage][key]
     }
   })
 }
 
+// Sistema de temas
 function applyTheme(theme) {
   if (theme === "system") {
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-    theme = prefersDark ? "dark" : "light"
-  }
-  document.body.setAttribute("data-theme", theme)
-  localStorage.setItem("theme", theme)
-}
-
-// Storage Functions
-function saveToStorage(key, data) {
-  localStorage.setItem(key, JSON.stringify(data))
-}
-
-function getFromStorage(key) {
-  const data = localStorage.getItem(key)
-  try {
-    return data ? JSON.parse(data) : null
-  } catch (e) {
-    return null
-  }
-}
-
-// User Management
-function getAllUsers() {
-  return getFromStorage("users") || []
-}
-
-function getUserByUsername(username) {
-  const users = getAllUsers()
-  return users.find((u) => u.username.toLowerCase() === username.toLowerCase())
-}
-
-function getUserByEmail(email) {
-  const users = getAllUsers()
-  return users.find((u) => u.email.toLowerCase() === email.toLowerCase())
-}
-
-function saveUser(user) {
-  const users = getAllUsers()
-  const index = users.findIndex((u) => u.id === user.id)
-  if (index !== -1) {
-    users[index] = user
+    document.body.setAttribute("data-theme", prefersDark ? "dark" : "light")
   } else {
-    users.push(user)
+    document.body.setAttribute("data-theme", theme)
   }
-  saveToStorage("users", users)
 }
 
-async function registerUser(username, email, password) {
-  if (getUserByUsername(username)) {
-    return { success: false, message: "Username already exists / Usuário já existe" }
-  }
-  if (getUserByEmail(email)) {
-    return { success: false, message: "Email already registered / Email já registrado" }
+// Autenticação
+function register(username, email, password) {
+  const users = JSON.parse(localStorage.getItem("server_users"))
+
+  // Verificar se email já existe
+  if (Object.values(users).some((u) => u.email === email)) {
+    showNotification("Este email já está cadastrado!", "error")
+    return false
   }
 
-  const ip = await getIPAddress()
-  const ipInfo = await getIPInfo(ip)
+  // Verificar se username já existe
+  if (users[username]) {
+    showNotification("Este username já está em uso!", "error")
+    return false
+  }
 
-  const user = {
-    id: generateID(),
-    username,
+  // Criar usuário
+  users[username] = {
     email,
     password,
-    ip,
-    ipInfo,
-    avatar: "https://static.vecteezy.com/system/resources/thumbnails/019/879/186/small/user-icon-on-transparent-background-free-png.png",
+    ip: appState.userIP,
     verified: false,
-    isAdmin: false,
+    isAdmin: username === "admin",
+    profileImage:
+      "https://static.vecteezy.com/system/resources/thumbnails/019/879/186/small/user-icon-on-transparent-background-free-png.png",
     canPostImages: false,
-    banned: false,
     createdAt: new Date().toISOString(),
   }
 
-  saveUser(user)
+  localStorage.setItem("server_users", JSON.stringify(users))
+  syncToAllTabs("users_updated")
 
-  sendDiscordWebhook(
-    CONFIG.discordWebhooks.siteLog,
-    `✅ New user registered: ${username} (${email}) from ${ipInfo.city}, ${ipInfo.country} [IP: ${ip}]`
-  )
-
-  return { success: true, user }
+  showNotification("Conta criada com sucesso!", "success")
+  return true
 }
 
-async function loginUser(username, password) {
-  const user = getUserByUsername(username)
+function login(username, password) {
+  const users = JSON.parse(localStorage.getItem("server_users"))
+  const user = users[username]
 
   if (!user) {
-    return { success: false, message: "User not found / Usuário não encontrado" }
-  }
-
-  if (user.banned) {
-    sendDiscordWebhook(
-      CONFIG.discordWebhooks.suspendedAccounts,
-      `🚫 Banned user attempted login: ${username} [IP: ${user.ip}]`
-    )
-    return { success: false, message: "Account suspended / Conta suspensa" }
+    showNotification("Usuário não encontrado!", "error")
+    return false
   }
 
   if (user.password !== password) {
-    return { success: false, message: "Incorrect password / Senha incorreta" }
+    showNotification("Senha incorreta!", "error")
+    return false
   }
 
-  const freshIP = await getIPAddress()
-
-  if (user.ip !== freshIP && username !== CONFIG.adminCredentials.username) {
-    user.banned = true
-    saveUser(user)
-    sendDiscordWebhook(
-      CONFIG.discordWebhooks.suspendedAccounts,
-      `⚠️ Account auto-suspended due to IP change: ${username}\nOriginal IP: ${user.ip}\nNew IP: ${freshIP}`
-    )
-    return {
-      success: false,
-      message: "IP changed - Account suspended. Contact admin. / IP alterado - Conta suspensa.",
-    }
+  // Verificar se IP mudou
+  if (user.ip !== appState.userIP && username !== "admin") {
+    showNotification("Sua conta foi desativada devido a mudança de IP. Contate um administrador.", "error")
+    sendWebhook(WEBHOOKS.suspended, {
+      content: `🚫 **Conta Suspensa**\nUsuário: ${username}\nIP Original: ${user.ip}\nIP Atual: ${appState.userIP}`,
+    })
+    return false
   }
 
-  const ipInfo = await getIPInfo(freshIP)
-  sendDiscordWebhook(
-    CONFIG.discordWebhooks.siteLog,
-    `👤 User logged in: ${username} from ${ipInfo.city}, ${ipInfo.country} [IP: ${freshIP}]`
-  )
+  // Login bem-sucedido
+  appState.currentUser = { username, ...user }
+  localStorage.setItem("current_user", username)
 
-  return { success: true, user }
+  // Adicionar aos usuários ativos
+  addActiveUser(username)
+
+  updateUserInterface()
+  showNotification("Login realizado com sucesso!", "success")
+
+  sendWebhook(WEBHOOKS.log, {
+    content: `✅ **Login**\nUsuário: ${username}\nIP: ${appState.userIP}`,
+  })
+
+  return true
 }
 
 function logout() {
-  currentUser = null
-  localStorage.removeItem("currentUser")
-  updateUI()
-  location.reload()
-}
-
-function updateUI() {
-  const authBtn = document.getElementById("authBtn")
-  const userProfile = document.getElementById("userProfile")
-  const userName = document.getElementById("userName")
-  const userAvatar = document.getElementById("userAvatar")
-  const openAdminBtn = document.getElementById("openAdminPanel")
-  const chatInput = document.getElementById("chatInput")
-  const chatButton = document.querySelector("#chatForm button")
-
-  if (currentUser) {
-    authBtn.style.display = "none"
-    userProfile.classList.add("active")
-    userName.textContent = currentUser.username
-    userAvatar.src = currentUser.avatar
-    if (currentUser.isAdmin) openAdminBtn.classList.remove("hidden")
-    chatInput.disabled = false
-    chatButton.disabled = false
-    chatInput.placeholder = currentLanguage === "en" ? "Type a message..." : "Digite uma mensagem..."
-  } else {
-    authBtn.style.display = "block"
-    userProfile.classList.remove("active")
-    chatInput.disabled = true
-    chatButton.disabled = true
-    chatInput.placeholder = currentLanguage === "en" ? "Login to chat..." : "Faça login para conversar..."
+  if (appState.currentUser) {
+    removeActiveUser(appState.currentUser.username)
   }
+  appState.currentUser = null
+  localStorage.removeItem("current_user")
+  updateUserInterface()
+  showNotification("Logout realizado com sucesso!", "success")
 }
 
-// Gallery Management
-function initGallery() {
-  let gallery = getFromStorage("gallery")
-  if (!gallery) {
-    gallery = CONFIG.defaultGallery.map((url) => ({
-      id: generateID(),
-      url,
-      caption: "",
-      addedBy: "system",
-      addedAt: new Date().toISOString(),
-    }))
-    saveToStorage("gallery", gallery)
+// Usuários ativos
+function addActiveUser(username) {
+  const activeUsers = JSON.parse(localStorage.getItem("server_active_users"))
+  activeUsers[username] = {
+    timestamp: Date.now(),
+    ip: appState.userIP,
   }
-  renderGallery()
+  localStorage.setItem("server_active_users", JSON.stringify(activeUsers))
+  syncToAllTabs("active_users_updated")
 }
 
-function renderGallery() {
-  const gallery = getFromStorage("gallery") || []
-  const galleryGrid = document.getElementById("galleryGrid")
-  if (!galleryGrid) return
-
-  galleryGrid.innerHTML = gallery
-    .map(
-      (item) => `
-        <div class="gallery-item" data-id="${item.id}">
-            <img src="${item.url}" alt="${item.caption || "Gallery image"}" loading="lazy" onerror="this.src='https://placehold.co/600x400?text=Image+Error'">
-        </div>
-    `
-    )
-    .join("")
+function removeActiveUser(username) {
+  const activeUsers = JSON.parse(localStorage.getItem("server_active_users"))
+  delete activeUsers[username]
+  localStorage.setItem("server_active_users", JSON.stringify(activeUsers))
+  syncToAllTabs("active_users_updated")
 }
 
-function addToGallery(url, caption = "") {
-  const gallery = getFromStorage("gallery") || []
-  gallery.push({
-    id: generateID(),
-    url,
-    caption,
-    addedBy: currentUser ? currentUser.username : "admin",
-    addedAt: new Date().toISOString(),
-  })
-  saveToStorage("gallery", gallery)
-  renderGallery()
-  renderAdminGallery()
-}
-
-function renderAdminGallery() {
-  const gallery = getFromStorage("gallery") || []
-  const galleryManager = document.getElementById("galleryManager")
-  if (!galleryManager) return
-
-  galleryManager.innerHTML = gallery
-    .map(
-      (item) => `
-        <div class="gallery-item" style="position: relative; margin-bottom: 10px;">
-            <img src="${item.url}" alt="${item.caption}" style="width: 100px; height: 100px; object-fit: cover;">
-            <button onclick="removeFromGallery('${item.id}')" style="position: absolute; top: 0; right: 0; background: red; color: white; border: none; cursor: pointer;">X</button>
-        </div>
-    `
-    )
-    .join("")
-}
-
-function removeFromGallery(id) {
-  let gallery = getFromStorage("gallery") || []
-  gallery = gallery.filter((item) => item.id !== id)
-  saveToStorage("gallery", gallery)
-  renderGallery()
-  renderAdminGallery()
-}
-
-// Posts Management
-function getPosts() {
-  return getFromStorage("posts") || []
-}
-
-function createPost(content) {
-  const posts = getPosts()
-  const post = {
-    id: generateID(),
-    content,
-    author: currentUser.username,
-    authorAvatar: currentUser.avatar,
-    isVerified: currentUser.verified,
-    isAdmin: currentUser.isAdmin,
-    createdAt: new Date().toISOString(),
-  }
-  posts.unshift(post)
-  saveToStorage("posts", posts)
-  renderPosts()
-}
-
-function renderPosts() {
-  const posts = getPosts()
-  const postsContainer = document.getElementById("postsContainer")
-  if (!postsContainer) return
-
-  if (posts.length === 0) {
-    postsContainer.innerHTML = `<p style="text-align: center; opacity: 0.6;">${currentLanguage === "en" ? "No posts yet" : "Nenhuma postagem ainda"}</p>`
-    return
-  }
-
-  postsContainer.innerHTML = posts
-    .map(
-      (post) => `
-        <div class="post-item">
-            <div class="post-header">
-                <img src="${post.authorAvatar}" alt="${post.author}">
-                <strong class="${post.isAdmin ? "admin" : ""}">${post.author}</strong>
-                ${post.isVerified ? '<img src="https://cdn-icons-png.flaticon.com/512/7641/7641727.png" class="verified-badge" style="width:15px; margin-left:5px;">' : ""}
-            </div>
-            <div class="post-content">${post.content}</div>
-            <div class="post-time">${new Date(post.createdAt).toLocaleString()}</div>
-        </div>
-    `
-    )
-    .join("")
-}
-
-// Chat Management
-function getMessages() {
-  return getFromStorage("messages") || []
-}
-
-function getChatSettings() {
-  return getFromStorage("chatSettings") || { locked: false, cooldown: 0 }
-}
-
-function saveChatSettings(settings) {
-  saveToStorage("chatSettings", settings)
-}
-
-let lastMessageTime = 0
-
-async function sendMessage(content) {
-  const chatSettings = getChatSettings()
-  if (chatSettings.locked && !currentUser.isAdmin) return alert("Chat locked")
-
+function cleanupInactiveUsers() {
+  const activeUsers = JSON.parse(localStorage.getItem("server_active_users"))
   const now = Date.now()
-  if (now - lastMessageTime < chatSettings.cooldown * 1000 && !currentUser.isAdmin) return alert(`Wait ${chatSettings.cooldown}s`)
+  const timeout = 5 * 60 * 1000 // 5 minutos
 
-  lastMessageTime = now
-  const messages = getMessages()
-  const message = {
-    id: generateID(),
-    content,
-    author: currentUser.username,
-    isAdmin: currentUser.isAdmin,
-    isVerified: currentUser.verified,
-    timestamp: new Date().toISOString(),
-  }
+  Object.keys(activeUsers).forEach((username) => {
+    if (now - activeUsers[username].timestamp > timeout) {
+      delete activeUsers[username]
+    }
+  })
 
-  messages.push(message)
-  saveToStorage("messages", messages)
-  renderMessages()
+  localStorage.setItem("server_active_users", JSON.stringify(activeUsers))
+  syncToAllTabs("active_users_updated")
 }
 
-function renderMessages() {
-  const messages = getMessages()
-  const chatMessages = document.getElementById("chatMessages")
-  if (!chatMessages) return
+// Atualizar interface do usuário
+function updateUserInterface() {
+  const loginBtn = document.getElementById("loginBtn")
+  const userProfile = document.getElementById("userProfile")
+  const usernameDisplay = document.getElementById("usernameDisplay")
+  const userProfileImg = document.getElementById("userProfileImg")
+  const adminBtn = document.getElementById("adminBtn")
 
-  chatMessages.innerHTML = messages
-    .map(
-      (msg) => `
-        <div class="chat-message">
-            <span class="chat-username ${msg.isAdmin ? "admin" : ""}">${msg.author}:</span>
-            <span>${msg.content}</span>
-        </div>
-    `
-    )
-    .join("")
+  if (appState.currentUser) {
+    loginBtn.classList.add("hidden")
+    userProfile.classList.remove("hidden")
+
+    let displayName = appState.currentUser.username
+
+    // Adicionar badges
+    if (appState.currentUser.verified) {
+      displayName +=
+        ' <img src="https://cdn-icons-png.flaticon.com/512/7641/7641727.png" class="verified-badge" alt="Verified">'
+    }
+
+    if (appState.currentUser.isAdmin) {
+      displayName = `<span class="admin-username">${appState.currentUser.username}</span> <img src="https://icons.veryicon.com/png/o/miscellaneous/yuanql/icon-admin.png" class="admin-badge" alt="Admin">`
+      adminBtn.classList.remove("hidden")
+      adminBtn.classList.add("admin-only")
+      document.querySelectorAll(".admin-only").forEach((el) => (el.style.display = "inline-block"))
+    }
+
+    usernameDisplay.innerHTML = displayName
+    userProfileImg.src = appState.currentUser.profileImage
+  } else {
+    loginBtn.classList.remove("hidden")
+    userProfile.classList.add("hidden")
+    adminBtn.classList.add("hidden")
+  }
+}
+
+// Sistema de notificações
+function showNotification(message, type = "info") {
+  const container = document.getElementById("notificationContainer")
+  const notification = document.createElement("div")
+  notification.className = "notification"
+  notification.textContent = message
+
+  if (type === "error") {
+    notification.style.borderLeftColor = "var(--danger)"
+  } else if (type === "success") {
+    notification.style.borderLeftColor = "var(--success)"
+  }
+
+  container.appendChild(notification)
+
+  setTimeout(() => {
+    notification.remove()
+  }, 5000)
+}
+
+// Chat
+function loadChat() {
+  const messages = JSON.parse(localStorage.getItem("server_chat"))
+  const chatMessages = document.getElementById("chatMessages")
+  chatMessages.innerHTML = ""
+
+  messages.forEach((msg) => {
+    addMessageToUI(msg)
+  })
+
   chatMessages.scrollTop = chatMessages.scrollHeight
 }
 
-function clearChat() {
-  if (confirm("Clear all chat messages?")) {
-    saveToStorage("messages", [])
-    renderMessages()
+function sendMessage(text) {
+  if (!appState.currentUser) {
+    showNotification("Você precisa estar logado para enviar mensagens!", "error")
+    return
+  }
+
+  const config = JSON.parse(localStorage.getItem("server_config"))
+
+  if (config.chatLocked && !appState.currentUser.isAdmin) {
+    showNotification("O chat está trancado no momento!", "error")
+    return
+  }
+
+  const now = Date.now()
+  const timeSinceLastMessage = (now - appState.lastMessageTime) / 1000
+
+  if (timeSinceLastMessage < config.chatCooldown && !appState.currentUser.isAdmin) {
+    const remaining = Math.ceil(config.chatCooldown - timeSinceLastMessage)
+    showNotification(`Aguarde ${remaining} segundos antes de enviar outra mensagem!`, "error")
+    return
+  }
+
+  const message = {
+    username: appState.currentUser.username,
+    text,
+    timestamp: new Date().toISOString(),
+    profileImage: appState.currentUser.profileImage,
+    verified: appState.currentUser.verified,
+    isAdmin: appState.currentUser.isAdmin,
+  }
+
+  const messages = JSON.parse(localStorage.getItem("server_chat"))
+  messages.push(message)
+  localStorage.setItem("server_chat", JSON.stringify(messages))
+
+  appState.lastMessageTime = now
+
+  syncToAllTabs("chat_updated")
+
+  // Log para admin
+  if (appState.currentUser.verified) {
+    console.log(`[VERIFIED MESSAGE] ${appState.currentUser.username}: ${text}`)
   }
 }
 
-// Admin Functions
-function renderAdminUsers() {
-  const users = getAllUsers()
-  const activeUsersList = document.getElementById("activeUsersList")
-  const allUsersList = document.getElementById("allUsersList")
-  if (!activeUsersList || !allUsersList) return
+function addMessageToUI(msg) {
+  const chatMessages = document.getElementById("chatMessages")
+  const messageDiv = document.createElement("div")
+  messageDiv.className = "chat-message"
 
-  const renderUser = (user) => `
-        <div class="user-item" style="border-bottom: 1px solid #444; padding: 10px;">
-            <span>${user.username} (${user.ipInfo.city})</span>
-            <div class="user-actions">
-                <button onclick="toggleVerified('${user.id}')">${user.verified ? "Unverify" : "Verify"}</button>
-                <button onclick="toggleBan('${user.id}')" style="background:red;">${user.banned ? "Unban" : "Ban"}</button>
-            </div>
-        </div>
-    `
-  activeUsersList.innerHTML = users.filter((u) => !u.banned).map(renderUser).join("")
-  allUsersList.innerHTML = users.map(renderUser).join("")
-}
+  const img = document.createElement("img")
+  img.src = msg.profileImage
+  img.alt = msg.username
 
-async function toggleVerified(userId) {
-  const users = getAllUsers()
-  const user = users.find((u) => u.id === userId)
-  if (user) {
-    user.verified = !user.verified
-    saveUser(user)
-    renderAdminUsers()
+  const contentDiv = document.createElement("div")
+  contentDiv.className = "chat-message-content"
+
+  const headerDiv = document.createElement("div")
+  headerDiv.className = "chat-message-header"
+
+  const username = document.createElement("span")
+  username.className = "chat-username"
+  if (msg.isAdmin) {
+    username.classList.add("admin")
   }
-}
+  username.textContent = msg.username
 
-async function toggleBan(userId) {
-  const users = getAllUsers()
-  const user = users.find((u) => u.id === userId)
-  if (user && user.username !== CONFIG.adminCredentials.username) {
-    user.banned = !user.banned
-    saveUser(user)
-    renderAdminUsers()
+  headerDiv.appendChild(username)
+
+  if (msg.verified) {
+    const verifiedBadge = document.createElement("img")
+    verifiedBadge.src = "https://cdn-icons-png.flaticon.com/512/7641/7641727.png"
+    verifiedBadge.className = "verified-badge"
+    verifiedBadge.alt = "Verified"
+    headerDiv.appendChild(verifiedBadge)
   }
+
+  if (msg.isAdmin) {
+    const adminBadge = document.createElement("img")
+    adminBadge.src = "https://icons.veryicon.com/png/o/miscellaneous/yuanql/icon-admin.png"
+    adminBadge.className = "admin-badge"
+    adminBadge.alt = "Admin"
+    headerDiv.appendChild(adminBadge)
+  }
+
+  const timestamp = document.createElement("span")
+  timestamp.className = "chat-timestamp"
+  timestamp.textContent = new Date(msg.timestamp).toLocaleTimeString()
+  headerDiv.appendChild(timestamp)
+
+  const textDiv = document.createElement("div")
+  textDiv.textContent = msg.text
+
+  contentDiv.appendChild(headerDiv)
+  contentDiv.appendChild(textDiv)
+
+  messageDiv.appendChild(img)
+  messageDiv.appendChild(contentDiv)
+
+  chatMessages.appendChild(messageDiv)
 }
 
-// Event Listeners Principal
-document.addEventListener("DOMContentLoaded", () => {
-  // 1. Esconder loading o mais rápido possível
-  setTimeout(() => {
-    const loader = document.getElementById("loadingScreen")
-    if (loader) loader.classList.add("hidden")
-  }, 400)
+// Galeria
+function loadGallery() {
+  const gallery = JSON.parse(localStorage.getItem("server_gallery"))
+  const galleryGrid = document.getElementById("galleryGrid")
+  galleryGrid.innerHTML = ""
 
-  // 2. Tarefas de background (IP e Logs) - SEM AWAIT NO TOPO
-  const initLogs = async () => {
-    currentIP = await getIPAddress()
-    const ipInfo = await getIPInfo(currentIP)
-    sendDiscordWebhook(CONFIG.discordWebhooks.siteLog, `👁️ Visit: ${ipInfo.city}, ${ipInfo.country} [IP: ${currentIP}]`)
-    
-    // Validar sessão do usuário após pegar o IP
-    const savedUser = getFromStorage("currentUser")
-    if (savedUser) {
-      const user = getUserByUsername(savedUser.username)
-      if (user && !user.banned && (user.ip === currentIP || user.isAdmin)) {
-        currentUser = user
-        updateUI()
-      } else {
-        localStorage.removeItem("currentUser")
-      }
+  gallery.forEach((item, index) => {
+    const galleryItem = document.createElement("div")
+    galleryItem.className = "gallery-item"
+
+    const img = document.createElement("img")
+    img.src = item.url
+    img.alt = item.caption || "Clara Stack"
+
+    const caption = document.createElement("div")
+    caption.className = "gallery-caption"
+    caption.textContent = item.caption || "Clara Stack"
+
+    galleryItem.appendChild(img)
+    galleryItem.appendChild(caption)
+    galleryGrid.appendChild(galleryItem)
+  })
+}
+
+// Posts
+function loadPosts() {
+  const posts = JSON.parse(localStorage.getItem("server_posts"))
+  const postsContainer = document.getElementById("postsContainer")
+  postsContainer.innerHTML = ""
+
+  posts.reverse().forEach((post) => {
+    const postCard = document.createElement("div")
+    postCard.className = "post-card"
+
+    const title = document.createElement("h3")
+    title.textContent = post.title
+
+    const content = document.createElement("p")
+    content.textContent = post.content
+
+    const meta = document.createElement("div")
+    meta.className = "post-meta"
+    meta.textContent = `Publicado em ${new Date(post.timestamp).toLocaleDateString()}`
+
+    postCard.appendChild(title)
+    postCard.appendChild(content)
+    postCard.appendChild(meta)
+
+    postsContainer.appendChild(postCard)
+  })
+}
+
+// Painel Admin
+function openAdminPanel() {
+  if (!appState.currentUser || !appState.currentUser.isAdmin) {
+    showNotification("Acesso negado!", "error")
+    return
+  }
+
+  document.getElementById("adminPanel").classList.add("active")
+  loadAdminUsers()
+  loadAdminActiveUsers()
+}
+
+function loadAdminUsers() {
+  const users = JSON.parse(localStorage.getItem("server_users"))
+  const usersList = document.getElementById("usersList")
+  usersList.innerHTML = ""
+
+  Object.keys(users).forEach((username) => {
+    const user = users[username]
+    const userItem = document.createElement("div")
+    userItem.className = "user-item"
+
+    const img = document.createElement("img")
+    img.src = user.profileImage
+
+    const userInfo = document.createElement("div")
+    userInfo.className = "user-info"
+
+    const name = document.createElement("h4")
+    name.textContent = username
+    if (user.verified) {
+      name.innerHTML += ' <img src="https://cdn-icons-png.flaticon.com/512/7641/7641727.png" class="verified-badge">'
     }
-  }
-  initLogs()
+    if (user.isAdmin) {
+      name.innerHTML +=
+        ' <img src="https://icons.veryicon.com/png/o/miscellaneous/yuanql/icon-admin.png" class="admin-badge">'
+    }
 
-  // 3. Inicialização Visual
-  const savedLang = localStorage.getItem("language") || detectLanguage()
-  applyLanguage(savedLang === "auto" ? detectLanguage() : savedLang)
-  applyTheme(localStorage.getItem("theme") || "system")
+    const info = document.createElement("p")
+    info.textContent = `Email: ${user.email} | IP: ${user.ip}`
 
-  initGallery()
-  renderPosts()
-  renderMessages()
-  updateUI()
+    userInfo.appendChild(name)
+    userInfo.appendChild(info)
 
-  // Listeners de Formulários
-  const loginForm = document.getElementById("loginForm")
-  if (loginForm) {
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault()
-      const res = await loginUser(document.getElementById("loginUsername").value, document.getElementById("loginPassword").value)
-      if (res.success) {
-        currentUser = res.user
-        saveToStorage("currentUser", currentUser)
-        location.reload()
-      } else alert(res.message)
-    })
-  }
+    const actions = document.createElement("div")
+    actions.className = "user-actions"
 
-  const registerForm = document.getElementById("registerForm")
-  if (registerForm) {
-    registerForm.addEventListener("submit", async (e) => {
-      e.preventDefault()
-      const res = await registerUser(
-        document.getElementById("registerUsername").value,
-        document.getElementById("registerEmail").value,
-        document.getElementById("registerPassword").value
-      )
-      if (res.success) {
-        alert("Success! Please login.")
-        document.querySelector('.auth-tab[data-tab="login"]').click()
-      } else alert(res.message)
-    })
-  }
+    // Botão verificado
+    const verifyBtn = document.createElement("button")
+    verifyBtn.textContent = user.verified ? "✓ Verificado" : "Verificar"
+    verifyBtn.style.background = user.verified ? "var(--success)" : "var(--verified-color)"
+    verifyBtn.style.color = "white"
+    verifyBtn.onclick = () => toggleUserVerified(username)
+    actions.appendChild(verifyBtn)
 
-  const chatForm = document.getElementById("chatForm")
-  if (chatForm) {
-    chatForm.addEventListener("submit", async (e) => {
-      e.preventDefault()
-      const input = document.getElementById("chatInput")
-      if (input.value.trim()) {
-        await sendMessage(input.value.trim())
-        input.value = ""
-      }
-    })
-  }
+    // Botão admin
+    if (username !== "admin") {
+      const adminBtn = document.createElement("button")
+      adminBtn.textContent = user.isAdmin ? "Remover Admin" : "Tornar Admin"
+      adminBtn.style.background = user.isAdmin ? "var(--danger)" : "var(--admin-color)"
+      adminBtn.style.color = "white"
+      adminBtn.onclick = () => toggleUserAdmin(username)
+      actions.appendChild(adminBtn)
+    }
 
-  // Botoes simples
-  document.getElementById("authBtn")?.addEventListener("click", () => document.getElementById("authModal").classList.remove("hidden"))
-  document.getElementById("logoutBtn")?.addEventListener("click", logout)
-  document.getElementById("openAdminPanel")?.addEventListener("click", () => {
-    document.getElementById("adminPanel").classList.remove("hidden")
-    renderAdminUsers()
-    renderAdminGallery()
+    // Botão postar imagens
+    const imageBtn = document.createElement("button")
+    imageBtn.textContent = user.canPostImages ? "Bloquear Imagens" : "Permitir Imagens"
+    imageBtn.style.background = user.canPostImages ? "var(--danger)" : "var(--success)"
+    imageBtn.style.color = "white"
+    imageBtn.onclick = () => toggleUserImagePermission(username)
+    actions.appendChild(imageBtn)
+
+    // Botão banir
+    if (username !== "admin") {
+      const banBtn = document.createElement("button")
+      banBtn.textContent = "Banir IP"
+      banBtn.style.background = "var(--danger)"
+      banBtn.style.color = "white"
+      banBtn.onclick = () => banUser(username)
+      actions.appendChild(banBtn)
+    }
+
+    userItem.appendChild(img)
+    userItem.appendChild(userInfo)
+    userItem.appendChild(actions)
+
+    usersList.appendChild(userItem)
+  })
+}
+
+function loadAdminActiveUsers() {
+  const activeUsers = JSON.parse(localStorage.getItem("server_active_users"))
+  const users = JSON.parse(localStorage.getItem("server_users"))
+  const activeUsersList = document.getElementById("activeUsersList")
+  activeUsersList.innerHTML = ""
+
+  Object.keys(activeUsers).forEach((username) => {
+    const user = users[username]
+    if (!user) return
+
+    const userItem = document.createElement("div")
+    userItem.className = "user-item"
+    userItem.style.background = "var(--success)"
+    userItem.style.color = "white"
+
+    const img = document.createElement("img")
+    img.src = user.profileImage
+
+    const userInfo = document.createElement("div")
+    userInfo.className = "user-info"
+
+    const name = document.createElement("h4")
+    name.textContent = username + " 🟢"
+    name.style.color = "white"
+
+    const info = document.createElement("p")
+    info.textContent = `IP: ${activeUsers[username].ip}`
+    info.style.color = "white"
+
+    userInfo.appendChild(name)
+    userInfo.appendChild(info)
+
+    userItem.appendChild(img)
+    userItem.appendChild(userInfo)
+
+    activeUsersList.appendChild(userItem)
+  })
+}
+
+function toggleUserVerified(username) {
+  const users = JSON.parse(localStorage.getItem("server_users"))
+  users[username].verified = !users[username].verified
+  localStorage.setItem("server_users", JSON.stringify(users))
+  syncToAllTabs("users_updated")
+  loadAdminUsers()
+  showNotification(`Status de verificação de ${username} atualizado!`, "success")
+}
+
+function toggleUserAdmin(username) {
+  const users = JSON.parse(localStorage.getItem("server_users"))
+  users[username].isAdmin = !users[username].isAdmin
+  localStorage.setItem("server_users", JSON.stringify(users))
+  syncToAllTabs("users_updated")
+  loadAdminUsers()
+  showNotification(`Permissões de admin de ${username} atualizadas!`, "success")
+}
+
+function toggleUserImagePermission(username) {
+  const users = JSON.parse(localStorage.getItem("server_users"))
+  users[username].canPostImages = !users[username].canPostImages
+  localStorage.setItem("server_users", JSON.stringify(users))
+  syncToAllTabs("users_updated")
+  loadAdminUsers()
+  showNotification(`Permissão de imagens de ${username} atualizada!`, "success")
+}
+
+function banUser(username) {
+  if (!confirm(`Tem certeza que deseja banir ${username}?`)) return
+
+  const users = JSON.parse(localStorage.getItem("server_users"))
+  const user = users[username]
+
+  sendWebhook(WEBHOOKS.suspended, {
+    content: `🔨 **Usuário Banido**\nUsuário: ${username}\nIP: ${user.ip}\nEmail: ${user.email}`,
   })
 
-  document.querySelectorAll(".close-modal").forEach(btn => {
-    btn.addEventListener("click", () => btn.closest(".modal, .admin-panel").classList.add("hidden"))
+  delete users[username]
+  localStorage.setItem("server_users", JSON.stringify(users))
+
+  // Remover dos ativos
+  removeActiveUser(username)
+
+  syncToAllTabs("users_updated")
+  loadAdminUsers()
+  showNotification(`${username} foi banido!`, "success")
+}
+
+// Sincronização entre abas
+function syncToAllTabs(event) {
+  localStorage.setItem("sync_event", JSON.stringify({ event, timestamp: Date.now() }))
+}
+
+window.addEventListener("storage", (e) => {
+  if (e.key === "sync_event") {
+    const { event } = JSON.parse(e.newValue)
+
+    switch (event) {
+      case "chat_updated":
+        loadChat()
+        break
+      case "gallery_updated":
+        loadGallery()
+        break
+      case "posts_updated":
+        loadPosts()
+        break
+      case "users_updated":
+        if (appState.currentUser) {
+          const users = JSON.parse(localStorage.getItem("server_users"))
+          appState.currentUser = { username: appState.currentUser.username, ...users[appState.currentUser.username] }
+          updateUserInterface()
+        }
+        if (document.getElementById("adminPanel").classList.contains("active")) {
+          loadAdminUsers()
+        }
+        break
+      case "active_users_updated":
+        if (document.getElementById("adminPanel").classList.contains("active")) {
+          loadAdminActiveUsers()
+        }
+        break
+      case "config_updated":
+        const config = JSON.parse(localStorage.getItem("server_config"))
+        updateChatLockUI(config.chatLocked)
+        break
+    }
+  }
+})
+
+function updateChatLockUI(locked) {
+  const chatLocked = document.getElementById("chatLocked")
+  const chatContainer = document.getElementById("chatContainer")
+
+  if (locked) {
+    chatLocked.classList.remove("hidden")
+    chatContainer.style.opacity = "0.5"
+  } else {
+    chatLocked.classList.add("hidden")
+    chatContainer.style.opacity = "1"
+  }
+}
+
+// Verificar modo manutenção
+function checkMaintenanceMode() {
+  const config = JSON.parse(localStorage.getItem("server_config"))
+  const maintenanceMode = document.getElementById("maintenanceMode")
+
+  if (config.maintenance && (!appState.currentUser || !appState.currentUser.isAdmin)) {
+    maintenanceMode.classList.remove("hidden")
+    return true
+  } else {
+    maintenanceMode.classList.add("hidden")
+    return false
+  }
+}
+
+// Event Listeners
+document.addEventListener("DOMContentLoaded", async () => {
+  // Inicializar servidor
+  initServer()
+
+  // Detectar região
+  await detectUserRegion()
+
+  // Traduzir página
+  translatePage()
+
+  // Verificar modo manutenção
+  if (checkMaintenanceMode()) {
+    document.getElementById("loader").classList.add("hidden")
+    return
+  }
+
+  // Carregar conteúdo
+  loadGallery()
+  loadChat()
+  loadPosts()
+
+  // Verificar usuário salvo
+  const savedUser = localStorage.getItem("current_user")
+  if (savedUser) {
+    const users = JSON.parse(localStorage.getItem("server_users"))
+    if (users[savedUser]) {
+      appState.currentUser = { username: savedUser, ...users[savedUser] }
+      addActiveUser(savedUser)
+      updateUserInterface()
+    }
+  }
+
+  // Aplicar tema
+  const savedTheme = localStorage.getItem("theme") || "system"
+  appState.currentTheme = savedTheme
+  applyTheme(savedTheme)
+
+  // Remover loader
+  setTimeout(() => {
+    document.getElementById("loader").classList.add("hidden")
+  }, 1000)
+
+  // Cleanup de usuários inativos a cada 1 minuto
+  setInterval(cleanupInactiveUsers, 60000)
+
+  // Atualizar timestamp do usuário ativo a cada 30 segundos
+  setInterval(() => {
+    if (appState.currentUser) {
+      addActiveUser(appState.currentUser.username)
+    }
+  }, 30000)
+})
+
+// Modals
+document.getElementById("loginBtn").addEventListener("click", () => {
+  document.getElementById("authModal").classList.remove("hidden")
+  document.getElementById("loginForm").classList.remove("hidden")
+  document.getElementById("registerForm").classList.add("hidden")
+})
+
+document.querySelectorAll(".close-modal").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".modal").forEach((modal) => modal.classList.add("hidden"))
   })
 })
 
-// Globais para os botões do HTML
-window.toggleVerified = toggleVerified
-window.toggleBan = toggleBan
-window.removeFromGallery = removeFromGallery
+document.getElementById("showRegister").addEventListener("click", (e) => {
+  e.preventDefault()
+  document.getElementById("loginForm").classList.add("hidden")
+  document.getElementById("registerForm").classList.remove("hidden")
+})
+
+document.getElementById("showLogin").addEventListener("click", (e) => {
+  e.preventDefault()
+  document.getElementById("registerForm").classList.add("hidden")
+  document.getElementById("loginForm").classList.remove("hidden")
+})
+
+// Login form
+document.getElementById("loginFormElement").addEventListener("submit", (e) => {
+  e.preventDefault()
+  const username = document.getElementById("loginUsername").value
+  const password = document.getElementById("loginPassword").value
+
+  if (login(username, password)) {
+    document.getElementById("authModal").classList.add("hidden")
+    e.target.reset()
+  }
+})
+
+// Register form
+document.getElementById("registerFormElement").addEventListener("submit", (e) => {
+  e.preventDefault()
+  const username = document.getElementById("registerUsername").value
+  const email = document.getElementById("registerEmail").value
+  const password = document.getElementById("registerPassword").value
+
+  if (register(username, email, password)) {
+    document.getElementById("registerForm").classList.add("hidden")
+    document.getElementById("loginForm").classList.remove("hidden")
+    e.target.reset()
+  }
+})
+
+// Settings
+document.getElementById("settingsBtn").addEventListener("click", () => {
+  document.getElementById("settingsModal").classList.remove("hidden")
+  document.getElementById("currentProfileImg").src = appState.currentUser.profileImage
+  document.getElementById("themeSelector").value = appState.currentTheme
+  document.getElementById("languageSelector").value = appState.currentLanguage
+})
+
+document.getElementById("profileImageInput").addEventListener("change", (e) => {
+  const file = e.target.files[0]
+  if (file) {
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      document.getElementById("currentProfileImg").src = event.target.result
+      appState.currentUser.profileImage = event.target.result
+
+      const users = JSON.parse(localStorage.getItem("server_users"))
+      users[appState.currentUser.username].profileImage = event.target.result
+      localStorage.setItem("server_users", JSON.stringify(users))
+      syncToAllTabs("users_updated")
+
+      updateUserInterface()
+      showNotification("Foto de perfil atualizada!", "success")
+    }
+    reader.readAsDataURL(file)
+  }
+})
+
+document.getElementById("updateUsername").addEventListener("click", () => {
+  const newUsername = document.getElementById("changeUsername").value.trim()
+  if (!newUsername) return
+
+  const users = JSON.parse(localStorage.getItem("server_users"))
+
+  if (users[newUsername]) {
+    showNotification("Este username já está em uso!", "error")
+    return
+  }
+
+  const oldUsername = appState.currentUser.username
+  users[newUsername] = users[oldUsername]
+  delete users[oldUsername]
+
+  localStorage.setItem("server_users", JSON.stringify(users))
+  localStorage.setItem("current_user", newUsername)
+
+  appState.currentUser.username = newUsername
+
+  syncToAllTabs("users_updated")
+  updateUserInterface()
+  showNotification("Username atualizado!", "success")
+  document.getElementById("changeUsername").value = ""
+})
+
+document.getElementById("updatePassword").addEventListener("click", () => {
+  const newPassword = document.getElementById("changePassword").value
+  if (!newPassword) return
+
+  const users = JSON.parse(localStorage.getItem("server_users"))
+  users[appState.currentUser.username].password = newPassword
+  localStorage.setItem("server_users", JSON.stringify(users))
+
+  syncToAllTabs("users_updated")
+  showNotification("Senha atualizada!", "success")
+  document.getElementById("changePassword").value = ""
+})
+
+document.getElementById("themeSelector").addEventListener("change", (e) => {
+  appState.currentTheme = e.target.value
+  localStorage.setItem("theme", e.target.value)
+  applyTheme(e.target.value)
+})
+
+document.getElementById("languageSelector").addEventListener("change", (e) => {
+  appState.currentLanguage = e.target.value
+  document.documentElement.lang = e.target.value
+  translatePage()
+  showNotification("Idioma alterado!", "success")
+})
+
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  logout()
+  document.getElementById("settingsModal").classList.add("hidden")
+})
+
+// Chat
+document.getElementById("chatForm").addEventListener("submit", (e) => {
+  e.preventDefault()
+  const input = document.getElementById("chatInput")
+  const text = input.value.trim()
+
+  if (text) {
+    sendMessage(text)
+    input.value = ""
+  }
+})
+
+// Admin Panel
+document.getElementById("adminBtn").addEventListener("click", () => {
+  openAdminPanel()
+})
+
+document.getElementById("closeAdminPanel").addEventListener("click", () => {
+  document.getElementById("adminPanel").classList.remove("active")
+})
+
+// Admin Tabs
+document.querySelectorAll(".admin-tab").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".admin-tab").forEach((t) => t.classList.remove("active"))
+    document.querySelectorAll(".admin-tab-content").forEach((c) => c.classList.remove("active"))
+
+    tab.classList.add("active")
+    const content = document.querySelector(`[data-content="${tab.dataset.tab}"]`)
+    content.classList.add("active")
+  })
+})
+
+// Admin Gallery
+document.getElementById("addGalleryImage").addEventListener("click", () => {
+  const url = document.getElementById("galleryImageUrl").value.trim()
+  const caption = document.getElementById("galleryImageCaption").value.trim()
+
+  if (!url) {
+    showNotification("Insira uma URL válida!", "error")
+    return
+  }
+
+  const gallery = JSON.parse(localStorage.getItem("server_gallery"))
+  gallery.push({ url, caption })
+  localStorage.setItem("server_gallery", JSON.stringify(gallery))
+
+  syncToAllTabs("gallery_updated")
+  loadGallery()
+
+  document.getElementById("galleryImageUrl").value = ""
+  document.getElementById("galleryImageCaption").value = ""
+
+  showNotification("Imagem adicionada à galeria!", "success")
+})
+
+// Admin Posts
+document.getElementById("createPost").addEventListener("click", () => {
+  const title = document.getElementById("postTitle").value.trim()
+  const content = document.getElementById("postContent").value.trim()
+
+  if (!title || !content) {
+    showNotification("Preencha todos os campos!", "error")
+    return
+  }
+
+  const posts = JSON.parse(localStorage.getItem("server_posts"))
+  posts.push({
+    title,
+    content,
+    timestamp: new Date().toISOString(),
+  })
+  localStorage.setItem("server_posts", JSON.stringify(posts))
+
+  syncToAllTabs("posts_updated")
+  loadPosts()
+
+  document.getElementById("postTitle").value = ""
+  document.getElementById("postContent").value = ""
+
+  showNotification("Postagem criada!", "success")
+})
+
+// Admin Settings
+document.getElementById("updateCooldown").addEventListener("click", () => {
+  const cooldown = Number.parseInt(document.getElementById("chatCooldown").value)
+  const config = JSON.parse(localStorage.getItem("server_config"))
+  config.chatCooldown = cooldown
+  localStorage.setItem("server_config", JSON.stringify(config))
+  syncToAllTabs("config_updated")
+  showNotification("Cooldown atualizado!", "success")
+})
+
+document.getElementById("lockChatBtn").addEventListener("click", () => {
+  const config = JSON.parse(localStorage.getItem("server_config"))
+  config.chatLocked = !config.chatLocked
+  localStorage.setItem("server_config", JSON.stringify(config))
+
+  const btn = document.getElementById("lockChatBtn")
+  btn.textContent = config.chatLocked ? "Destrancar Chat" : "Trancar Chat"
+
+  syncToAllTabs("config_updated")
+  updateChatLockUI(config.chatLocked)
+  showNotification(config.chatLocked ? "Chat trancado!" : "Chat destrancado!", "success")
+})
+
+document.getElementById("clearChatBtn").addEventListener("click", () => {
+  if (!confirm("Tem certeza que deseja limpar todas as mensagens?")) return
+
+  localStorage.setItem("server_chat", JSON.stringify([]))
+  syncToAllTabs("chat_updated")
+  loadChat()
+  showNotification("Chat limpo!", "success")
+})
+
+document.getElementById("shutdownSiteBtn").addEventListener("click", () => {
+  const config = JSON.parse(localStorage.getItem("server_config"))
+  config.maintenance = !config.maintenance
+  localStorage.setItem("server_config", JSON.stringify(config))
+
+  const btn = document.getElementById("shutdownSiteBtn")
+  btn.textContent = config.maintenance ? "Sair da Manutenção" : "Modo Manutenção"
+
+  showNotification(config.maintenance ? "Site em modo manutenção!" : "Site ativo!", "success")
+
+  setTimeout(() => {
+    window.location.reload()
+  }, 1000)
+})
+
+// Maintenance Password
+document.getElementById("maintenancePasswordForm").addEventListener("submit", (e) => {
+  e.preventDefault()
+  const password = document.getElementById("maintenancePassword").value
+  const config = JSON.parse(localStorage.getItem("server_config"))
+
+  if (password === config.maintenancePassword) {
+    document.getElementById("maintenanceMode").classList.add("hidden")
+    showNotification("Acesso liberado!", "success")
+  } else {
+    showNotification("Senha incorreta!", "error")
+  }
+})
