@@ -3,345 +3,301 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clara Stack - Official Actress Website</title>
+    <title>Clara Stack - Official Website</title>
     <link rel="stylesheet" href="styles.css">
-    <meta name="description" content="Official website of actress Clara Stack - It: Welcome to Derry, The Naughty Nine, Hawkeye">
-    <meta property="og:title" content="Clara Stack - Actress">
+    <meta name="description" content="Official website of Clara Stack - Actress known for IT: Welcome to Derry, Hawkeye, The Naughty Nine">
+    <meta property="og:title" content="Clara Stack - Official Website">
+    <meta property="og:description" content="Actress known for IT: Welcome to Derry, Hawkeye, The Naughty Nine">
     <meta property="og:image" content="https://image.tmdb.org/t/p/w500/yMK3IADqV2oReJMKdkrcEIBxdtu.jpg">
 </head>
-<body>
-    <!-- Maintenance Mode -->
-    <div id="maintenanceMode" class="maintenance-mode hidden">
+<body class="dark-mode">
+    <!-- Site Maintenance Screen -->
+    <div id="maintenanceScreen" class="maintenance-screen hidden">
         <div class="maintenance-content">
-            <h1 data-translate="maintenance_title">🔧 Site em Manutenção</h1>
-            <p data-translate="maintenance_text">Voltaremos em breve!</p>
-            <form id="maintenancePasswordForm" class="maintenance-form">
-                <input type="password" id="maintenancePassword" placeholder="Senha de Acesso" required>
-                <button type="submit" data-translate="access_button">Acessar</button>
-            </form>
+            <h1>🔧 <span data-lang="maintenanceTitle">Site Under Maintenance</span></h1>
+            <p data-lang="maintenanceMsg">We'll be back soon!</p>
+            <div class="maintenance-login">
+                <input type="password" id="maintenancePassword" placeholder="Admin Password">
+                <button onclick="checkMaintenanceAccess()">Access</button>
+            </div>
         </div>
     </div>
 
     <!-- Auth Modal -->
-    <div id="authModal" class="modal hidden">
+    <div id="authModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
+            <span class="close" onclick="closeAuthModal()">&times;</span>
+            <h2 id="authTitle" data-lang="login">Login</h2>
             
-            <!-- Login Form -->
-            <div id="loginForm" class="auth-form">
-                <h2 data-translate="login_title">Login</h2>
-                <form id="loginFormElement">
-                    <input type="text" id="loginUsername" placeholder="Username" required>
-                    <input type="password" id="loginPassword" placeholder="Password" required>
-                    <button type="submit" data-translate="login_button">Entrar</button>
-                </form>
-                <p data-translate="no_account">Não tem conta? <a href="#" id="showRegister">Registre-se</a></p>
+            <div id="loginForm">
+                <input type="text" id="loginUsername" placeholder="Username" data-lang-placeholder="username">
+                <input type="password" id="loginPassword" placeholder="Password" data-lang-placeholder="password">
+                <button onclick="login()" data-lang="loginBtn">Login</button>
+                <p><span data-lang="noAccount">Don't have an account?</span> <a href="#" onclick="switchToRegister()">Register</a></p>
             </div>
 
-            <!-- Register Form -->
-            <div id="registerForm" class="auth-form hidden">
-                <h2 data-translate="register_title">Registrar</h2>
-                <form id="registerFormElement">
-                    <input type="text" id="registerUsername" placeholder="Username" required>
-                    <input type="email" id="registerEmail" placeholder="Email" required>
-                    <input type="password" id="registerPassword" placeholder="Password" required>
-                    <button type="submit" data-translate="register_button">Criar Conta</button>
-                </form>
-                <p data-translate="have_account">Já tem conta? <a href="#" id="showLogin">Faça login</a></p>
+            <div id="registerForm" class="hidden">
+                <input type="text" id="regUsername" placeholder="Username" data-lang-placeholder="username">
+                <input type="email" id="regEmail" placeholder="Email" data-lang-placeholder="email">
+                <input type="password" id="regPassword" placeholder="Password" data-lang-placeholder="password">
+                <input type="password" id="regConfirmPassword" placeholder="Confirm Password" data-lang-placeholder="confirmPassword">
+                <button onclick="register()" data-lang="registerBtn">Register</button>
+                <p><span data-lang="haveAccount">Already have an account?</span> <a href="#" onclick="switchToLogin()">Login</a></p>
             </div>
         </div>
     </div>
 
     <!-- Settings Modal -->
-    <div id="settingsModal" class="modal hidden">
+    <div id="settingsModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2 data-translate="settings_title">Configurações</h2>
+            <span class="close" onclick="closeSettingsModal()">&times;</span>
+            <h2 data-lang="settings">Settings</h2>
             
             <div class="settings-section">
-                <h3 data-translate="profile_section">Perfil</h3>
-                <div class="profile-image-selector">
-                    <img id="currentProfileImg" src="https://static.vecteezy.com/system/resources/thumbnails/019/879/186/small/user-icon-on-transparent-background-free-png.png" alt="Profile">
-                    <input type="file" id="profileImageInput" accept="image/*">
-                    <label for="profileImageInput" class="btn-secondary" data-translate="change_photo">Mudar Foto</label>
+                <h3 data-lang="profileSettings">Profile Settings</h3>
+                <div class="profile-pic-upload">
+                    <img id="currentProfilePic" src="https://static.vecteezy.com/system/resources/thumbnails/019/879/186/small/user-icon-on-transparent-background-free-png.png" alt="Profile">
+                    <input type="file" id="profilePicInput" accept="image/*" onchange="updateProfilePic()">
+                    <button onclick="document.getElementById('profilePicInput').click()" data-lang="changePhoto">Change Photo</button>
                 </div>
-                <input type="text" id="changeUsername" placeholder="Novo Username">
-                <button id="updateUsername" class="btn-primary" data-translate="update_username">Atualizar Username</button>
-                
-                <input type="password" id="changePassword" placeholder="Nova Senha">
-                <button id="updatePassword" class="btn-primary" data-translate="update_password">Atualizar Senha</button>
+                <input type="text" id="settingsUsername" placeholder="New Username" data-lang-placeholder="newUsername">
+                <input type="password" id="settingsNewPassword" placeholder="New Password" data-lang-placeholder="newPassword">
+                <button onclick="updateProfile()" data-lang="saveChanges">Save Changes</button>
             </div>
 
-            <!-- Removida seção de seletor de tema -->
             <div class="settings-section">
-                <h3 data-translate="language_section">Idioma</h3>
-                <select id="languageSelector">
+                <h3 data-lang="appearance">Appearance</h3>
+                <label>
+                    <input type="radio" name="theme" value="light" onchange="changeTheme('light')">
+                    <span data-lang="lightMode">Light Mode</span>
+                </label>
+                <label>
+                    <input type="radio" name="theme" value="dark" onchange="changeTheme('dark')" checked>
+                    <span data-lang="darkMode">Dark Mode</span>
+                </label>
+                <label>
+                    <input type="radio" name="theme" value="system" onchange="changeTheme('system')">
+                    <span data-lang="systemMode">System</span>
+                </label>
+            </div>
+
+            <div class="settings-section">
+                <h3 data-lang="language">Language</h3>
+                <select id="languageSelect" onchange="changeLanguage()">
                     <option value="en">English</option>
                     <option value="pt">Português</option>
                 </select>
             </div>
-
-            <button id="logoutBtn" class="btn-danger" data-translate="logout_button">Sair</button>
         </div>
     </div>
 
     <!-- Admin Panel -->
     <div id="adminPanel" class="admin-panel hidden">
-        <div class="admin-header">
-            <h2 data-translate="admin_panel_title">Painel Administrativo</h2>
-            <button id="closeAdminPanel" class="close-admin">&times;</button>
-        </div>
-        
-        <div class="admin-tabs">
-            <button class="admin-tab active" data-tab="users" data-translate="users_tab">Usuários</button>
-            <button class="admin-tab" data-tab="gallery" data-translate="gallery_tab">Galeria</button>
-            <button class="admin-tab" data-tab="posts" data-translate="posts_tab">Postagens</button>
-            <button class="admin-tab" data-tab="settings" data-translate="settings_tab">Configurações</button>
-        </div>
-
         <div class="admin-content">
+            <span class="close" onclick="closeAdminPanel()">&times;</span>
+            <h1>🛡️ <span data-lang="adminPanel">Admin Panel</span></h1>
+            
+            <div class="admin-tabs">
+                <button class="admin-tab active" onclick="switchAdminTab('users')" data-lang="users">Users</button>
+                <button class="admin-tab" onclick="switchAdminTab('gallery')" data-lang="gallery">Gallery</button>
+                <button class="admin-tab" onclick="switchAdminTab('posts')" data-lang="posts">Posts</button>
+                <button class="admin-tab" onclick="switchAdminTab('chat')" data-lang="chatControl">Chat Control</button>
+                <button class="admin-tab" onclick="switchAdminTab('site')" data-lang="siteControl">Site Control</button>
+            </div>
+
             <!-- Users Tab -->
-            <div class="admin-tab-content active" data-content="users">
-                <h3 data-translate="registered_users">Usuários Registrados</h3>
-                <div id="usersList" class="users-list"></div>
+            <div id="adminUsersTab" class="admin-tab-content">
+                <h3 data-lang="activeUsers">Active Users</h3>
+                <div id="activeUsersList"></div>
                 
-                <h3 data-translate="active_users">Usuários Ativos</h3>
-                <div id="activeUsersList" class="users-list"></div>
+                <h3 data-lang="allUsers">All Registered Users</h3>
+                <div id="allUsersList"></div>
             </div>
 
             <!-- Gallery Tab -->
-            <div class="admin-tab-content" data-content="gallery">
-                <h3 data-translate="add_gallery_image">Adicionar Imagem à Galeria</h3>
-                <input type="url" id="galleryImageUrl" placeholder="URL da Imagem">
-                <input type="text" id="galleryImageCaption" placeholder="Legenda">
-                <button id="addGalleryImage" class="btn-primary" data-translate="add_button">Adicionar</button>
+            <div id="adminGalleryTab" class="admin-tab-content hidden">
+                <h3 data-lang="addImage">Add Image to Gallery</h3>
+                <input type="text" id="adminGalleryUrl" placeholder="Image URL">
+                <button onclick="addGalleryImage()" data-lang="addBtn">Add</button>
+                
+                <h3 data-lang="currentGallery">Current Gallery</h3>
+                <div id="adminGalleryList" class="admin-gallery-list"></div>
             </div>
 
             <!-- Posts Tab -->
-            <div class="admin-tab-content" data-content="posts">
-                <h3 data-translate="create_post">Criar Postagem</h3>
-                <input type="text" id="postTitle" placeholder="Título">
-                <textarea id="postContent" placeholder="Conteúdo" rows="4"></textarea>
-                <button id="createPost" class="btn-primary" data-translate="publish_button">Publicar</button>
+            <div id="adminPostsTab" class="admin-tab-content hidden">
+                <h3 data-lang="createPost">Create Post</h3>
+                <input type="text" id="postTitle" placeholder="Title" data-lang-placeholder="title">
+                <textarea id="postContent" placeholder="Content" data-lang-placeholder="content"></textarea>
+                <button onclick="createPost()" data-lang="publish">Publish</button>
                 
-                <div id="postsList" class="posts-list"></div>
+                <div id="postsList"></div>
             </div>
 
-            <!-- Settings Tab -->
-            <div class="admin-tab-content" data-content="settings">
-                <h3 data-translate="site_settings">Configurações do Site</h3>
-                
-                <div class="admin-setting">
-                    <label data-translate="chat_cooldown">Cooldown do Chat (segundos):</label>
+            <!-- Chat Control Tab -->
+            <div id="adminChatTab" class="admin-tab-content hidden">
+                <label>
+                    <span data-lang="chatCooldown">Chat Cooldown (seconds):</span>
                     <input type="number" id="chatCooldown" value="3" min="0">
-                    <button id="updateCooldown" class="btn-primary" data-translate="update_button">Atualizar</button>
-                </div>
+                    <button onclick="updateChatCooldown()" data-lang="update">Update</button>
+                </label>
+                
+                <button onclick="toggleChatLock()" id="chatLockBtn" data-lang="lockChat">Lock Chat</button>
+                <button onclick="clearAllMessages()" data-lang="clearMessages">Clear All Messages</button>
+            </div>
 
-                <div class="admin-setting">
-                    <button id="lockChatBtn" class="btn-warning" data-translate="lock_chat">Trancar Chat</button>
-                    <button id="clearChatBtn" class="btn-danger" data-translate="clear_chat">Limpar Chat</button>
-                </div>
-
-                <div class="admin-setting">
-                    <button id="shutdownSiteBtn" class="btn-danger" data-translate="shutdown_site">Modo Manutenção</button>
-                </div>
+            <!-- Site Control Tab -->
+            <div id="adminSiteTab" class="admin-tab-content hidden">
+                <button onclick="toggleMaintenanceMode()" id="maintenanceBtn" data-lang="enableMaintenance">Enable Maintenance Mode</button>
+                <p class="warning-text" data-lang="maintenanceWarning">This will lock the site for all users except admins</p>
             </div>
         </div>
     </div>
 
     <!-- Header -->
     <header>
-        <nav class="navbar">
-            <div class="nav-brand">
-                <!-- Nome com destaque maior -->
-                <h1 class="brand-highlight">CLARA STACK</h1>
-            </div>
+        <nav>
+            <div class="logo">Clara Stack</div>
             <div class="nav-links">
-                <a href="#home" data-translate="nav_home">Home</a>
-                <a href="#about" data-translate="nav_about">About</a>
-                <a href="#projects" data-translate="nav_projects">Works</a>
-                <a href="#gallery" data-translate="nav_gallery">Gallery</a>
-                <a href="#chat" data-translate="nav_chat">Chat</a>
+                <a href="#home" data-lang="home">Home</a>
+                <a href="#about" data-lang="about">About</a>
+                <a href="#works" data-lang="works">Works</a>
+                <a href="#gallery" data-lang="gallery">Gallery</a>
+                <a href="#chat" data-lang="chat">Chat</a>
             </div>
-            <div class="nav-user">
+            <div class="user-section">
                 <div id="userProfile" class="user-profile hidden">
-                    <img id="userProfileImg" src="https://static.vecteezy.com/system/resources/thumbnails/019/879/186/small/user-icon-on-transparent-background-free-png.png" alt="Profile">
-                    <span id="usernameDisplay"></span>
-                    <button id="settingsBtn" class="btn-icon" title="Settings">⚙️</button>
-                    <button id="adminBtn" class="btn-icon admin-only hidden" title="Admin">👑</button>
+                    <img id="headerProfilePic" src="https://static.vecteezy.com/system/resources/thumbnails/019/879/186/small/user-icon-on-transparent-background-free-png.png" alt="Profile">
+                    <span id="headerUsername"></span>
+                    <button onclick="logout()" data-lang="logout">Logout</button>
+                    <button onclick="openSettings()">⚙️</button>
                 </div>
-                <!-- Adicionados botões separados de Login e Registrar -->
-                <div id="authButtons" class="auth-buttons">
-                    <button id="loginBtn" class="btn-primary" data-translate="login_button">Login</button>
-                    <button id="registerBtn" class="btn-secondary" data-translate="register_button">Register</button>
-                </div>
+                <button id="loginBtn" onclick="openAuthModal()" data-lang="login">Login</button>
             </div>
         </nav>
     </header>
 
-    <!-- Main Content -->
-    <main>
-        <!-- Adicionando disclaimer no início -->
-        <section class="disclaimer">
-            <p data-translate="disclaimer_text">ℹ️ All information and photos are sourced from the internet. This site is not affiliated with HBO Max or any other platform.</p>
-        </section>
-
-        <!-- Hero Section -->
-        <section id="home" class="hero">
-            <div class="hero-content">
-                <img src="https://image.tmdb.org/t/p/w500/yMK3IADqV2oReJMKdkrcEIBxdtu.jpg" alt="Clara Stack" class="hero-image">
-                <div class="hero-text">
-                    <h2 data-translate="hero_title">Clara Stack</h2>
-                    <p data-translate="hero_subtitle">Actress | Lilly Bainbridge in IT: Welcome to Derry</p>
-                    <!-- Redes sociais apenas com logos -->
-                    <div class="social-links">
-                        <a href="https://instagram.com/clarastacknyc" target="_blank" class="social-btn instagram">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                            <span>@clarastacknyc</span>
-                        </a>
-                        <a href="https://tiktok.com/@clara.stack" target="_blank" class="social-btn tiktok">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.04-.1z"/></svg>
-                            <span>@clara.stack</span>
-                        </a>
-                    </div>
-                </div>
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <img src="https://image.tmdb.org/t/p/w500/yMK3IADqV2oReJMKdkrcEIBxdtu.jpg" alt="Clara Stack" class="hero-image">
+            <h1>Clara Stack</h1>
+            <p class="hero-subtitle" data-lang="actress">Actress</p>
+            <div class="social-links">
+                <a href="https://instagram.com/clarastacknyc" target="_blank" class="social-link">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" class="social-icon">
+                    <span>clarastacknyc</span>
+                </a>
+                <a href="https://tiktok.com/@clara.stack" target="_blank" class="social-link">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Ionicons_logo-tiktok.svg/512px-Ionicons_logo-tiktok.svg.png" alt="TikTok" class="social-icon">
+                    <span>clara.stack</span>
+                </a>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Notifications -->
-        <div id="notificationContainer" class="notification-container"></div>
-
-        <!-- Posts Section -->
-        <section id="posts" class="posts-section">
-            <h2 data-translate="news_title">Notícias</h2>
-            <div id="postsContainer" class="posts-container"></div>
-        </section>
-
-        <!-- About Section -->
-        <section id="about" class="about">
-            <h2 data-translate="about_title">Sobre Clara Stack</h2>
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2 data-lang="about">About Clara</h2>
             <div class="about-content">
-                <img src="https://ntvb.tmsimg.com/assets/assets/GNLZZGG002G2JKZ.jpg" alt="Clara Stack">
+                <img src="https://ntvb.tmsimg.com/assets/assets/GNLZZGG002G2JKZ.jpg" alt="Clara Stack" class="about-image">
                 <div class="about-text">
-                    <p data-translate="about_text">Clara Stack é uma talentosa atriz americana conhecida por seu papel marcante como Lilly Bainbridge na série "IT: Welcome to Derry" da HBO Max. Ela começou sua carreira no teatro, interpretando Matilda no musical "Matilda the Musical" em Nova York.</p>
+                    <h3 data-lang="mostIconicRole">Most Iconic Role</h3>
+                    <div class="iconic-role">
+                        <img src="https://static.tvtropes.org/pmwiki/pub/images/img_4865_8.jpeg" alt="Lilly Bainbridge" class="role-image">
+                        <div>
+                            <h4>Lilly Bainbridge</h4>
+                            <p>IT: Welcome to Derry</p>
+                        </div>
+                    </div>
                     
-                    <h3 data-translate="curiosities_title">Curiosidades</h3>
-                    <ul>
-                        <li data-translate="curiosity_1">Começou no teatro interpretando Matilda no musical Matilda the Musical em Nova York</li>
-                        <li data-translate="curiosity_2">Seus pais são Eoin e Amanda Stack</li>
-                        <li data-translate="curiosity_3">Tem uma irmã gêmea chamada Maggie Stack</li>
+                    <h3 data-lang="funFacts">Fun Facts</h3>
+                    <ul class="fun-facts">
+                        <li data-lang="fact1">She started in theater, playing Matilda in Matilda the Musical in New York.</li>
+                        <li data-lang="fact2">Her parents are Eoin and Amanda Stack, and she has a twin sister named Maggie Stack.</li>
                     </ul>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Projects Section -->
-        <section id="projects" class="projects">
-            <h2 data-translate="projects_title">Trabalhos</h2>
-            <div class="projects-grid">
-                <div class="project-card featured">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/It_welcome_to_derry_logo.svg/2560px-It_welcome_to_derry_logo.svg.png" alt="IT: Welcome to Derry">
-                    <div class="project-info">
-                        <h3>IT: Welcome to Derry</h3>
-                        <p data-translate="project_it_desc">Série HBO Max - Lilly Bainbridge</p>
-                        <span class="badge" data-translate="featured_badge">Destaque</span>
-                    </div>
-                </div>
-
-                <div class="project-card">
+    <!-- Works Section -->
+    <section id="works" class="works">
+        <div class="container">
+            <h2 data-lang="knownFor">Known For</h2>
+            <div class="works-featured">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/It_welcome_to_derry_logo.svg/2560px-It_welcome_to_derry_logo.svg.png" alt="IT: Welcome to Derry" class="featured-logo">
+            </div>
+            <div class="works-grid">
+                <div class="work-card">
                     <img src="https://static.wikia.nocookie.net/disney/images/0/09/The_Naughty_Nine_Alternative_Poster.jpg" alt="The Naughty Nine">
-                    <div class="project-info">
-                        <h3>The Naughty Nine</h3>
-                        <p data-translate="project_naughty_desc">Filme Disney</p>
-                    </div>
+                    <h3>The Naughty Nine</h3>
+                    <p class="work-network">Disney</p>
+                    <p class="work-type" data-lang="movie">Movie</p>
                 </div>
-
-                <div class="project-card">
+                <div class="work-card">
                     <img src="https://m.media-amazon.com/images/M/MV5BOGU5ZDBlOTAtOTZmYS00MWE0LTg0NzktNDcxZGJhN2FhZmM2XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Hawkeye">
-                    <div class="project-info">
-                        <h3>Hawkeye</h3>
-                        <p data-translate="project_hawkeye_desc">Minissérie Marvel</p>
-                    </div>
+                    <h3>Hawkeye</h3>
+                    <p class="work-network">Marvel/Disney+</p>
+                    <p class="work-type" data-lang="miniseries">Miniseries</p>
                 </div>
-
-                <div class="project-card">
+                <div class="work-card">
                     <img src="https://m.media-amazon.com/images/M/MV5BYTVhZDkzNjUtMmQ2ZS00Y2MwLWI2YjEtYjFhOTE2NmRiNTU2XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Madam Secretary">
-                    <div class="project-info">
-                        <h3>Madam Secretary</h3>
-                        <p data-translate="project_madam_desc">Série de TV</p>
-                    </div>
+                    <h3>Madam Secretary</h3>
+                    <p class="work-network">CBS</p>
+                    <p class="work-type" data-lang="tvSeries">TV Series</p>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <div class="character-spotlight">
-                <h3 data-translate="character_title">Personagem Mais Marcante</h3>
-                <div class="character-card">
-                    <img src="https://static.tvtropes.org/pmwiki/pub/images/img_4865_8.jpeg" alt="Lilly Bainbridge">
-                    <div class="character-info">
-                        <h4>Lilly Bainbridge</h4>
-                        <p>IT: Welcome to Derry</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Gallery Section -->
-        <section id="gallery" class="gallery">
-            <h2 data-translate="gallery_title">Galeria</h2>
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery">
+        <div class="container">
+            <h2 data-lang="gallery">Gallery</h2>
             <div id="galleryGrid" class="gallery-grid"></div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Chat Section -->
-        <section id="chat" class="chat-section">
-            <h2 data-translate="chat_title">Chat Global</h2>
-            <div id="chatLocked" class="chat-locked hidden">
-                <p data-translate="chat_locked_message">🔒 O chat está trancado no momento</p>
-            </div>
-            <div id="chatContainer" class="chat-container">
+    <!-- Chat Section -->
+    <section id="chat" class="chat-section">
+        <div class="container">
+            <h2 data-lang="chat">Community Chat</h2>
+            <div class="chat-container">
                 <div id="chatMessages" class="chat-messages"></div>
-                <form id="chatForm" class="chat-form">
-                    <input type="text" id="chatInput" placeholder="Digite sua mensagem..." data-translate-placeholder="chat_placeholder" required>
-                    <button type="submit" data-translate="send_button">Enviar</button>
-                </form>
-                <div id="chatCooldownIndicator" class="cooldown-indicator hidden"></div>
+                <div class="chat-input-container">
+                    <input type="text" id="chatInput" placeholder="Type a message..." data-lang-placeholder="typeMessage" disabled>
+                    <button onclick="sendMessage()" id="sendBtn" disabled data-lang="send">Send</button>
+                </div>
+                <p class="chat-notice" data-lang="loginToChat">Please login to use the chat</p>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
 
     <!-- Footer -->
     <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3 data-translate="follow_title">Follow Clara Stack</h3>
-                <div class="social-links-footer">
-                    <a href="https://instagram.com/clarastacknyc" target="_blank" class="social-link-footer">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                        @clarastacknyc
-                    </a>
-                    <a href="https://tiktok.com/@clara.stack" target="_blank" class="social-link-footer">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.04-.1z"/></svg>
-                        @clara.stack
-                    </a>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4 data-lang="credits">Credits</h4>
+                    <p data-lang="siteCreator">Website created by silva777only at no cost to the actress</p>
+                    <a href="https://linktr.ee/silva777only" target="_blank">Linktree</a> | 
+                    <a href="https://portfoliosilva.github.io/portfoliosilva/" target="_blank">Portfolio</a>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 data-lang="legal">Legal</h4>
+                    <div class="hbo-credit">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/HBO_Max_Logo.svg/2560px-HBO_Max_Logo.svg.png" alt="HBO Max" class="hbo-logo">
+                        <p data-lang="hboDisclaimer">All images related to IT: Welcome to Derry are property of HBO Max. For removal requests, please contact the site owner via the portfolio contact page.</p>
+                    </div>
                 </div>
             </div>
-
-            <div class="footer-section">
-                <h3 data-translate="credits_title">Credits</h3>
-                <!-- Créditos do desenvolvedor -->
-                <p data-translate="credits_text">Website developed by silva777only <strong><a href="https://portfoliosilva.github.io/portfoliosilva/" target="_blank">silva777only</a></strong> at no cost to the actress.</p>
-                <p><a href="https://linktr.ee/silva777only" target="_blank">Linktree</a> | <a href="https://portfoliosilva.github.io/portfoliosilva/" target="_blank" data-translate="portfolio_link">Portfolio</a></p>
-                <p class="made-with-love" data-translate="made_with_love">Made with lots of love and care ❤️</p>
-                <p class="actor-offer" data-translate="actor_offer">Actors/actresses from IT: Welcome to Derry can have a website like this completely free! Just visit my portfolio and contact me via the "Contact" tab.</p>
-            </div>
-
-            <div class="footer-section">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg" alt="HBO Max" class="hbo-logo">
-                <p data-translate="copyright_hbo">Images involving the IT: Welcome to Derry series are property of HBO Max. This site is not affiliated with HBO Max or any other platform. For removal requests, contact via portfolio.</p>
-            </div>
-
+            
             <div class="footer-bottom">
-                <p>&copy; 2025 Clara Stack Official Website. <span data-translate="rights_reserved">All rights reserved.</span></p>
-                <p data-translate="unauthorized_warning">⚠️ Unauthorized reproduction is prohibited.</p>
+                <p>&copy; 2025 Clara Stack Official Website. All rights reserved.</p>
+                <p data-lang="copyright">This website and its content are protected by copyright law. Unauthorized use is prohibited.</p>
             </div>
         </div>
     </footer>
