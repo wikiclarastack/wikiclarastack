@@ -290,6 +290,7 @@ function translatePage() {
 // Sistema de temas
 function applyTheme() {
   document.body.setAttribute("data-theme", "dark")
+  appState.currentTheme = "dark"
 }
 
 // Autenticação
@@ -583,21 +584,21 @@ function addMessageToUI(msg) {
 
 // Galeria
 function loadGallery() {
-  const gallery = JSON.parse(localStorage.getItem("server_gallery"))
+  const gallery = JSON.parse(localStorage.getItem("server_gallery")) || []
   const galleryGrid = document.getElementById("galleryGrid")
   galleryGrid.innerHTML = ""
 
-  gallery.forEach((item, index) => {
+  gallery.forEach((item) => {
     const galleryItem = document.createElement("div")
     galleryItem.className = "gallery-item"
 
     const img = document.createElement("img")
     img.src = item.url
-    img.alt = item.caption || "Clara Stack"
+    img.alt = item.caption
 
     const caption = document.createElement("div")
     caption.className = "gallery-caption"
-    caption.textContent = item.caption || "Clara Stack"
+    caption.textContent = item.caption
 
     galleryItem.appendChild(img)
     galleryItem.appendChild(caption)
@@ -816,7 +817,7 @@ function syncToAllTabs(event) {
   localStorage.setItem("sync_event", JSON.stringify({ event, timestamp: Date.now() }))
 }
 
-window.addEventListener("storage", (e) => {
+function handleStorageChange(e) {
   if (e.key === "sync_event") {
     const { event } = JSON.parse(e.newValue)
 
@@ -851,7 +852,7 @@ window.addEventListener("storage", (e) => {
         break
     }
   }
-})
+}
 
 function updateChatLockUI(locked) {
   const chatLocked = document.getElementById("chatLocked")
@@ -929,23 +930,18 @@ function updateActiveUsersList() {
   }
 }
 
-// Inicialização
-document.addEventListener("DOMContentLoaded", async () => {
-  console.log("[v0] Inicializando aplicação...")
-
+// Inicializar aplicação
+async function initApp() {
   initializeServer()
-
   await detectUserRegion()
 
-  // Idioma inglês por padrão
-  if (!localStorage.getItem("language")) {
-    appState.currentLanguage = "en"
-    document.documentElement.lang = "en"
-  }
+  appState.currentLanguage = "en"
+  document.documentElement.lang = "en"
 
+  applyTheme()
   translatePage()
 
-  // Verificar se há usuário logado
+  // Verificar se usuário já está logado
   const savedUser = localStorage.getItem("current_user")
   if (savedUser) {
     const users = JSON.parse(localStorage.getItem("server_users"))
@@ -953,19 +949,25 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (user) {
       appState.currentUser = { username: savedUser, ...user }
       addActiveUser(savedUser)
-      updateUserInterface()
     }
   }
 
+  updateUserInterface()
   loadGallery()
   loadChat()
   loadPosts()
 
-  setInterval(cleanupInactiveUsers, 60000)
-  setInterval(updateActiveUsersList, 5000)
+  // Atualizar usuários ativos a cada 30 segundos
+  setInterval(() => {
+    if (appState.currentUser) {
+      addActiveUser(appState.currentUser.username)
+    }
+    cleanupInactiveUsers()
+  }, 30000)
 
-  console.log("[v0] Aplicação inicializada")
-})
+  // Sincronizar entre abas
+  window.addEventListener("storage", handleStorageChange)
+}
 
 // Event Listeners
 const authModal = document.getElementById("authModal")
@@ -1253,3 +1255,5 @@ document.getElementById("maintenancePasswordForm").addEventListener("submit", (e
     showNotification("Senha incorreta!", "error")
   }
 })
+
+document.addEventListener("DOMContentLoaded", initApp)
