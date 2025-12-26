@@ -11,11 +11,11 @@ const CONFIG = {
     password: "admin",
   },
   defaultGallery: [
-    "https://image.tmdb.org/t/p/w500/yMK3IADqV2oReJMKdkrcEIBxdtu.jpg",
-    "https://ntvb.tmsimg.com/assets/assets/GNLZZGG002G2JKZ.jpg",
-    "https://media.gettyimages.com/id/2242330361/photo/los-angeles-premiere-of-hbo-original-series-it-welcome-to-derry-red-carpet.jpg?s=1024x1024&w=gi&k=20&c=SATqk9OF8uyP8-6xKlIUS4AhKcPg3unpDSieOnkrGrc=",
-    "https://media.gettyimages.com/id/2242313791/photo/los-angeles-premiere-of-hbo-original-series-it-welcome-to-derry.jpg?s=1024x1024&w=gi&k=20&c=ozLhw5EvhFSpQeDS36PfCZIG0bY4ofPNxelcsJSN3ew=",
-    "https://elcomercio.pe/resizer/v2/ZLEZYAYGJBAYNNIRVWBIOMJ6Z4.jpg?auth=585dcbc947baaa48292c190c1cce1d5fb0444fa13e83d411f29e0c5638ee7452&width=1200&height=1371&quality=75&smart=true",
+    "https://image.tmdb.org/t/p/original/yMK3IADqV2oReJMKdkrcEIBxdtu.jpg",
+    "https://image.tmdb.org/t/p/original/6vS09IasA8vU2vXjXq9tG7POnCj.jpg",
+    "https://image.tmdb.org/t/p/original/7Xp799uL6vIDWof2mYmUu6pS8p9.jpg",
+    "https://image.tmdb.org/t/p/original/m9YpS27Yv5K2z7r6K6u9O6uJ2uJ.jpg",
+    "https://image.tmdb.org/t/p/original/8Z09v6A9uS8P6r6u8O6uJ2uJ2uJ.jpg",
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvTMnnpP9p4yr3TbS1aqUktmPvVVyy7lvwqQ&s",
     "https://static.tvtropes.org/pmwiki/pub/images/img_4865_8.jpeg",
   ],
@@ -43,6 +43,7 @@ async function getIPAddress() {
 }
 
 async function getIPInfo(ip) {
+  if (ip === "unknown") return { country: "Unknown", city: "Unknown", region: "Unknown" }
   try {
     const response = await fetch(`https://ipapi.co/${ip}/json/`)
     const data = await response.json()
@@ -80,8 +81,6 @@ function applyLanguage(lang) {
     if (text) {
       if (element.tagName === "INPUT" || element.tagName === "TEXTAREA") {
         element.placeholder = text
-      } else if (element.tagName === "OPTION") {
-        element.textContent = text
       } else {
         element.textContent = text
       }
@@ -105,7 +104,11 @@ function saveToStorage(key, data) {
 
 function getFromStorage(key) {
   const data = localStorage.getItem(key)
-  return data ? JSON.parse(data) : null
+  try {
+    return data ? JSON.parse(data) : null
+  } catch (e) {
+    return null
+  }
 }
 
 // User Management
@@ -152,8 +155,7 @@ async function registerUser(username, email, password) {
     password,
     ip,
     ipInfo,
-    avatar:
-      "https://static.vecteezy.com/system/resources/thumbnails/019/879/186/small/user-icon-on-transparent-background-free-png.png",
+    avatar: "https://static.vecteezy.com/system/resources/thumbnails/019/879/186/small/user-icon-on-transparent-background-free-png.png",
     verified: false,
     isAdmin: false,
     canPostImages: false,
@@ -163,9 +165,9 @@ async function registerUser(username, email, password) {
 
   saveUser(user)
 
-  await sendDiscordWebhook(
+  sendDiscordWebhook(
     CONFIG.discordWebhooks.siteLog,
-    `✅ New user registered: ${username} (${email}) from ${ipInfo.city}, ${ipInfo.country} [IP: ${ip}]`,
+    `✅ New user registered: ${username} (${email}) from ${ipInfo.city}, ${ipInfo.country} [IP: ${ip}]`
   )
 
   return { success: true, user }
@@ -179,9 +181,9 @@ async function loginUser(username, password) {
   }
 
   if (user.banned) {
-    await sendDiscordWebhook(
+    sendDiscordWebhook(
       CONFIG.discordWebhooks.suspendedAccounts,
-      `🚫 Banned user attempted login: ${username} [IP: ${user.ip}]`,
+      `🚫 Banned user attempted login: ${username} [IP: ${user.ip}]`
     )
     return { success: false, message: "Account suspended / Conta suspensa" }
   }
@@ -190,27 +192,25 @@ async function loginUser(username, password) {
     return { success: false, message: "Incorrect password / Senha incorreta" }
   }
 
-  const currentIP = await getIPAddress()
+  const freshIP = await getIPAddress()
 
-  if (user.ip !== currentIP && username !== CONFIG.adminCredentials.username) {
+  if (user.ip !== freshIP && username !== CONFIG.adminCredentials.username) {
     user.banned = true
     saveUser(user)
-
-    await sendDiscordWebhook(
+    sendDiscordWebhook(
       CONFIG.discordWebhooks.suspendedAccounts,
-      `⚠️ Account auto-suspended due to IP change: ${username}\nOriginal IP: ${user.ip}\nNew IP: ${currentIP}`,
+      `⚠️ Account auto-suspended due to IP change: ${username}\nOriginal IP: ${user.ip}\nNew IP: ${freshIP}`
     )
-
     return {
       success: false,
-      message: "IP changed - Account suspended. Contact admin. / IP alterado - Conta suspensa. Contate o admin.",
+      message: "IP changed - Account suspended. Contact admin. / IP alterado - Conta suspensa.",
     }
   }
 
-  const ipInfo = await getIPInfo(currentIP)
-  await sendDiscordWebhook(
+  const ipInfo = await getIPInfo(freshIP)
+  sendDiscordWebhook(
     CONFIG.discordWebhooks.siteLog,
-    `👤 User logged in: ${username} from ${ipInfo.city}, ${ipInfo.country} [IP: ${currentIP}]`,
+    `👤 User logged in: ${username} from ${ipInfo.city}, ${ipInfo.country} [IP: ${freshIP}]`
   )
 
   return { success: true, user }
@@ -237,11 +237,7 @@ function updateUI() {
     userProfile.classList.add("active")
     userName.textContent = currentUser.username
     userAvatar.src = currentUser.avatar
-
-    if (currentUser.isAdmin) {
-      openAdminBtn.classList.remove("hidden")
-    }
-
+    if (currentUser.isAdmin) openAdminBtn.classList.remove("hidden")
     chatInput.disabled = false
     chatButton.disabled = false
     chatInput.placeholder = currentLanguage === "en" ? "Type a message..." : "Digite uma mensagem..."
@@ -258,7 +254,7 @@ function updateUI() {
 function initGallery() {
   let gallery = getFromStorage("gallery")
   if (!gallery) {
-    gallery = CONFIG.defaultGallery.map((url, index) => ({
+    gallery = CONFIG.defaultGallery.map((url) => ({
       id: generateID(),
       url,
       caption: "",
@@ -273,14 +269,15 @@ function initGallery() {
 function renderGallery() {
   const gallery = getFromStorage("gallery") || []
   const galleryGrid = document.getElementById("galleryGrid")
+  if (!galleryGrid) return
 
   galleryGrid.innerHTML = gallery
     .map(
       (item) => `
         <div class="gallery-item" data-id="${item.id}">
-            <img src="${item.url}" alt="${item.caption || "Gallery image"}" loading="lazy">
+            <img src="${item.url}" alt="${item.caption || "Gallery image"}" loading="lazy" onerror="this.src='https://placehold.co/600x400?text=Image+Error'">
         </div>
-    `,
+    `
     )
     .join("")
 }
@@ -302,15 +299,16 @@ function addToGallery(url, caption = "") {
 function renderAdminGallery() {
   const gallery = getFromStorage("gallery") || []
   const galleryManager = document.getElementById("galleryManager")
+  if (!galleryManager) return
 
   galleryManager.innerHTML = gallery
     .map(
       (item) => `
-        <div class="gallery-item" style="position: relative;">
-            <img src="${item.url}" alt="${item.caption}">
-            <button onclick="removeFromGallery('${item.id}')" style="position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 5px;">Remove</button>
+        <div class="gallery-item" style="position: relative; margin-bottom: 10px;">
+            <img src="${item.url}" alt="${item.caption}" style="width: 100px; height: 100px; object-fit: cover;">
+            <button onclick="removeFromGallery('${item.id}')" style="position: absolute; top: 0; right: 0; background: red; color: white; border: none; cursor: pointer;">X</button>
         </div>
-    `,
+    `
     )
     .join("")
 }
@@ -347,6 +345,7 @@ function createPost(content) {
 function renderPosts() {
   const posts = getPosts()
   const postsContainer = document.getElementById("postsContainer")
+  if (!postsContainer) return
 
   if (posts.length === 0) {
     postsContainer.innerHTML = `<p style="text-align: center; opacity: 0.6;">${currentLanguage === "en" ? "No posts yet" : "Nenhuma postagem ainda"}</p>`
@@ -360,13 +359,12 @@ function renderPosts() {
             <div class="post-header">
                 <img src="${post.authorAvatar}" alt="${post.author}">
                 <strong class="${post.isAdmin ? "admin" : ""}">${post.author}</strong>
-                ${post.isVerified ? '<img src="https://cdn-icons-png.flaticon.com/512/7641/7641727.png" class="verified-badge">' : ""}
-                ${post.isAdmin ? '<img src="https://icons.veryicon.com/png/o/miscellaneous/yuanql/icon-admin.png" class="admin-badge">' : ""}
+                ${post.isVerified ? '<img src="https://cdn-icons-png.flaticon.com/512/7641/7641727.png" class="verified-badge" style="width:15px; margin-left:5px;">' : ""}
             </div>
             <div class="post-content">${post.content}</div>
             <div class="post-time">${new Date(post.createdAt).toLocaleString()}</div>
         </div>
-    `,
+    `
     )
     .join("")
 }
@@ -377,12 +375,7 @@ function getMessages() {
 }
 
 function getChatSettings() {
-  return (
-    getFromStorage("chatSettings") || {
-      locked: false,
-      cooldown: 0,
-    }
-  )
+  return getFromStorage("chatSettings") || { locked: false, cooldown: 0 }
 }
 
 function saveChatSettings(settings) {
@@ -393,64 +386,42 @@ let lastMessageTime = 0
 
 async function sendMessage(content) {
   const chatSettings = getChatSettings()
-
-  if (chatSettings.locked && !currentUser.isAdmin) {
-    alert(currentLanguage === "en" ? "Chat is locked by admin" : "Chat bloqueado pelo admin")
-    return
-  }
+  if (chatSettings.locked && !currentUser.isAdmin) return alert("Chat locked")
 
   const now = Date.now()
-  if (now - lastMessageTime < chatSettings.cooldown * 1000 && !currentUser.isAdmin) {
-    alert(
-      currentLanguage === "en"
-        ? `Please wait ${chatSettings.cooldown} seconds`
-        : `Aguarde ${chatSettings.cooldown} segundos`,
-    )
-    return
-  }
+  if (now - lastMessageTime < chatSettings.cooldown * 1000 && !currentUser.isAdmin) return alert(`Wait ${chatSettings.cooldown}s`)
 
   lastMessageTime = now
-
   const messages = getMessages()
   const message = {
     id: generateID(),
     content,
     author: currentUser.username,
-    authorAvatar: currentUser.avatar,
-    isVerified: currentUser.verified,
     isAdmin: currentUser.isAdmin,
+    isVerified: currentUser.verified,
     timestamp: new Date().toISOString(),
   }
 
   messages.push(message)
   saveToStorage("messages", messages)
   renderMessages()
-
-  if (currentUser.verified || currentUser.isAdmin) {
-    await sendDiscordWebhook(
-      CONFIG.discordWebhooks.siteLog,
-      `💬 ${currentUser.isAdmin ? "[ADMIN]" : "[VERIFIED]"} ${currentUser.username}: ${content}`,
-    )
-  }
 }
 
 function renderMessages() {
   const messages = getMessages()
   const chatMessages = document.getElementById("chatMessages")
+  if (!chatMessages) return
 
   chatMessages.innerHTML = messages
     .map(
       (msg) => `
         <div class="chat-message">
-            <span class="chat-username ${msg.isAdmin ? "admin" : ""}">${msg.author}</span>
-            ${msg.isVerified ? '<img src="https://cdn-icons-png.flaticon.com/512/7641/7641727.png" class="verified-badge">' : ""}
-            ${msg.isAdmin ? '<img src="https://icons.veryicon.com/png/o/miscellaneous/yuanql/icon-admin.png" class="admin-badge">' : ""}
+            <span class="chat-username ${msg.isAdmin ? "admin" : ""}">${msg.author}:</span>
             <span>${msg.content}</span>
         </div>
-    `,
+    `
     )
     .join("")
-
   chatMessages.scrollTop = chatMessages.scrollHeight
 }
 
@@ -466,30 +437,18 @@ function renderAdminUsers() {
   const users = getAllUsers()
   const activeUsersList = document.getElementById("activeUsersList")
   const allUsersList = document.getElementById("allUsersList")
-
-  // Simulating active users (in real app, you'd track this server-side)
-  const activeUsers = users.filter((u) => !u.banned)
-  document.getElementById("activeUsersCount").textContent = activeUsers.length
+  if (!activeUsersList || !allUsersList) return
 
   const renderUser = (user) => `
-        <div class="user-item">
-            <div class="user-info">
-                <img src="${user.avatar}" alt="${user.username}">
-                <span>${user.username}</span>
-                ${user.verified ? '<img src="https://cdn-icons-png.flaticon.com/512/7641/7641727.png" class="verified-badge">' : ""}
-                ${user.isAdmin ? '<img src="https://icons.veryicon.com/png/o/miscellaneous/yuanql/icon-admin.png" class="admin-badge">' : ""}
-                <small style="opacity: 0.6; margin-left: 10px;">${user.ipInfo.city}, ${user.ipInfo.country}</small>
-            </div>
+        <div class="user-item" style="border-bottom: 1px solid #444; padding: 10px;">
+            <span>${user.username} (${user.ipInfo.city})</span>
             <div class="user-actions">
-                <button class="btn-verify" onclick="toggleVerified('${user.id}')">${user.verified ? "Unverify" : "Verify"}</button>
-                <button class="btn-ban" onclick="toggleBan('${user.id}')">${user.banned ? "Unban" : "Ban"}</button>
-                <button class="btn-admin" onclick="toggleAdmin('${user.id}')">${user.isAdmin ? "Remove Admin" : "Make Admin"}</button>
-                <button class="btn-image-perm" onclick="toggleImagePerm('${user.id}')">${user.canPostImages ? "Remove Image Perm" : "Allow Images"}</button>
+                <button onclick="toggleVerified('${user.id}')">${user.verified ? "Unverify" : "Verify"}</button>
+                <button onclick="toggleBan('${user.id}')" style="background:red;">${user.banned ? "Unban" : "Ban"}</button>
             </div>
         </div>
     `
-
-  activeUsersList.innerHTML = activeUsers.map(renderUser).join("")
+  activeUsersList.innerHTML = users.filter((u) => !u.banned).map(renderUser).join("")
   allUsersList.innerHTML = users.map(renderUser).join("")
 }
 
@@ -500,11 +459,6 @@ async function toggleVerified(userId) {
     user.verified = !user.verified
     saveUser(user)
     renderAdminUsers()
-
-    await sendDiscordWebhook(
-      CONFIG.discordWebhooks.siteLog,
-      `${user.verified ? "✅" : "❌"} User ${user.username} verification status changed by admin`,
-    )
   }
 }
 
@@ -515,360 +469,104 @@ async function toggleBan(userId) {
     user.banned = !user.banned
     saveUser(user)
     renderAdminUsers()
-
-    if (user.banned) {
-      await sendDiscordWebhook(
-        CONFIG.discordWebhooks.suspendedAccounts,
-        `🚫 User ${user.username} banned by admin [IP: ${user.ip}]`,
-      )
-    }
   }
 }
 
-function toggleAdmin(userId) {
-  const users = getAllUsers()
-  const user = users.find((u) => u.id === userId)
-  if (user && user.username !== CONFIG.adminCredentials.username) {
-    user.isAdmin = !user.isAdmin
-    saveUser(user)
-    renderAdminUsers()
-  }
-}
+// Event Listeners Principal
+document.addEventListener("DOMContentLoaded", () => {
+  // 1. Esconder loading o mais rápido possível
+  setTimeout(() => {
+    const loader = document.getElementById("loadingScreen")
+    if (loader) loader.classList.add("hidden")
+  }, 400)
 
-function toggleImagePerm(userId) {
-  const users = getAllUsers()
-  const user = users.find((u) => u.id === userId)
-  if (user) {
-    user.canPostImages = !user.canPostImages
-    saveUser(user)
-    renderAdminUsers()
-  }
-}
-
-// Event Listeners
-document.addEventListener("DOMContentLoaded", async () => {
-  // Get IP and log site visit
-  try {
+  // 2. Tarefas de background (IP e Logs) - SEM AWAIT NO TOPO
+  const initLogs = async () => {
     currentIP = await getIPAddress()
     const ipInfo = await getIPInfo(currentIP)
-
-    await sendDiscordWebhook(
-      CONFIG.discordWebhooks.siteLog,
-      `👁️ Site visit from ${ipInfo.city}, ${ipInfo.country} [IP: ${currentIP}]`,
-    )
-  } catch (error) {
-    console.error("Error during initialization:", error)
-    // Continue initialization even if IP detection fails
-    currentIP = "unknown"
-  }
-
-  // Check for saved user session
-  const savedUser = getFromStorage("currentUser")
-  if (savedUser) {
-    const user = getUserByUsername(savedUser.username)
-    if (user && !user.banned && user.ip === currentIP) {
-      currentUser = user
-    } else {
-      localStorage.removeItem("currentUser")
+    sendDiscordWebhook(CONFIG.discordWebhooks.siteLog, `👁️ Visit: ${ipInfo.city}, ${ipInfo.country} [IP: ${currentIP}]`)
+    
+    // Validar sessão do usuário após pegar o IP
+    const savedUser = getFromStorage("currentUser")
+    if (savedUser) {
+      const user = getUserByUsername(savedUser.username)
+      if (user && !user.banned && (user.ip === currentIP || user.isAdmin)) {
+        currentUser = user
+        updateUI()
+      } else {
+        localStorage.removeItem("currentUser")
+      }
     }
   }
+  initLogs()
 
-  // Check if site is in maintenance
-  const siteSettings = getFromStorage("siteSettings") || { maintenance: false }
-  if (siteSettings.maintenance && (!currentUser || !currentUser.isAdmin)) {
-    document.getElementById("maintenanceScreen").classList.remove("hidden")
-    document.getElementById("loadingScreen").classList.add("hidden")
-    return
-  }
+  // 3. Inicialização Visual
+  const savedLang = localStorage.getItem("language") || detectLanguage()
+  applyLanguage(savedLang === "auto" ? detectLanguage() : savedLang)
+  applyTheme(localStorage.getItem("theme") || "system")
 
-  // Detect and apply language
-  const savedLang = localStorage.getItem("language")
-  if (savedLang && savedLang !== "auto") {
-    currentLanguage = savedLang
-  } else {
-    currentLanguage = detectLanguage()
-  }
-  applyLanguage(currentLanguage)
-
-  // Apply theme
-  const savedTheme = localStorage.getItem("theme") || "system"
-  applyTheme(savedTheme)
-
-  // Initialize
   initGallery()
   renderPosts()
   renderMessages()
   updateUI()
 
-  setTimeout(() => {
-    document.getElementById("loadingScreen").classList.add("hidden")
-  }, 500)
-
-  // Auth button
-  document.getElementById("authBtn").addEventListener("click", () => {
-    document.getElementById("authModal").classList.remove("hidden")
-  })
-
-  // Close modals
-  document.querySelectorAll(".close-modal").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.target.closest(".modal, .admin-panel").classList.add("hidden")
-    })
-  })
-
-  // Auth tabs
-  document.querySelectorAll(".auth-tab").forEach((tab) => {
-    tab.addEventListener("click", () => {
-      document.querySelectorAll(".auth-tab").forEach((t) => t.classList.remove("active"))
-      tab.classList.add("active")
-
-      const tabName = tab.dataset.tab
-      document.getElementById("loginForm").classList.toggle("hidden", tabName !== "login")
-      document.getElementById("registerForm").classList.toggle("hidden", tabName !== "register")
-    })
-  })
-
-  // Login form
-  document.getElementById("loginForm").addEventListener("submit", async (e) => {
-    e.preventDefault()
-    const username = document.getElementById("loginUsername").value
-    const password = document.getElementById("loginPassword").value
-
-    const result = await loginUser(username, password)
-    if (result.success) {
-      currentUser = result.user
-      saveToStorage("currentUser", currentUser)
-      document.getElementById("authModal").classList.add("hidden")
-      updateUI()
-      renderPosts()
-      renderMessages()
-    } else {
-      alert(result.message)
-    }
-  })
-
-  // Register form
-  document.getElementById("registerForm").addEventListener("submit", async (e) => {
-    e.preventDefault()
-    const username = document.getElementById("registerUsername").value
-    const email = document.getElementById("registerEmail").value
-    const password = document.getElementById("registerPassword").value
-
-    const result = await registerUser(username, email, password)
-    if (result.success) {
-      alert(currentLanguage === "en" ? "Account created! Please login." : "Conta criada! Faça login.")
-      document.querySelector('.auth-tab[data-tab="login"]').click()
-      document.getElementById("loginUsername").value = username
-    } else {
-      alert(result.message)
-    }
-  })
-
-  // Settings
-  document.getElementById("openSettings").addEventListener("click", () => {
-    document.getElementById("settingsModal").classList.remove("hidden")
-    document.getElementById("themeSelect").value = localStorage.getItem("theme") || "system"
-    document.getElementById("languageSelect").value = localStorage.getItem("language") || "auto"
-  })
-
-  document.getElementById("profilePictureInput").addEventListener("change", (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        const preview = document.getElementById("profilePreview")
-        preview.innerHTML = `<img src="${event.target.result}" alt="Preview">`
-      }
-      reader.readAsDataURL(file)
-    }
-  })
-
-  document.getElementById("themeSelect").addEventListener("change", (e) => {
-    applyTheme(e.target.value)
-  })
-
-  document.getElementById("languageSelect").addEventListener("change", (e) => {
-    const lang = e.target.value
-    localStorage.setItem("language", lang)
-    if (lang === "auto") {
-      applyLanguage(detectLanguage())
-    } else {
-      applyLanguage(lang)
-    }
-  })
-
-  document.getElementById("saveSettings").addEventListener("click", () => {
-    if (currentUser) {
-      const newUsername = document.getElementById("changeUsername").value
-      const newPassword = document.getElementById("changePassword").value
-      const profilePic = document.getElementById("profilePictureInput").files[0]
-
-      if (newUsername && newUsername !== currentUser.username) {
-        if (getUserByUsername(newUsername)) {
-          alert(currentLanguage === "en" ? "Username already taken" : "Nome de usuário já existe")
-          return
-        }
-        currentUser.username = newUsername
-      }
-
-      if (newPassword) {
-        currentUser.password = newPassword
-      }
-
-      if (profilePic) {
-        const reader = new FileReader()
-        reader.onload = (event) => {
-          currentUser.avatar = event.target.result
-          saveUser(currentUser)
-          saveToStorage("currentUser", currentUser)
-          updateUI()
-        }
-        reader.readAsDataURL(profilePic)
-      }
-
-      saveUser(currentUser)
-      saveToStorage("currentUser", currentUser)
-      updateUI()
-      alert(currentLanguage === "en" ? "Settings saved!" : "Configurações salvas!")
-      document.getElementById("settingsModal").classList.add("hidden")
-    }
-  })
-
-  // Logout
-  document.getElementById("logoutBtn").addEventListener("click", logout)
-
-  // Admin panel
-  document.getElementById("openAdminPanel").addEventListener("click", () => {
-    if (currentUser && currentUser.isAdmin) {
-      document.getElementById("adminPanel").classList.remove("hidden")
-      renderAdminUsers()
-      renderAdminGallery()
-    }
-  })
-
-  // Admin tabs
-  document.querySelectorAll(".admin-tab-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".admin-tab-btn").forEach((b) => b.classList.remove("active"))
-      document.querySelectorAll(".admin-tab-content").forEach((c) => c.classList.remove("active"))
-
-      btn.classList.add("active")
-      const tabId =
-        "admin" +
-        btn.dataset.tab
-          .split("-")
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join("") +
-        "Tab"
-      document.getElementById(tabId).classList.add("active")
-    })
-  })
-
-  // Admin gallery
-  document.getElementById("addGalleryImage").addEventListener("click", () => {
-    const url = document.getElementById("adminGalleryUrl").value
-    const caption = document.getElementById("adminGalleryCaption").value
-    if (url) {
-      addToGallery(url, caption)
-      document.getElementById("adminGalleryUrl").value = ""
-      document.getElementById("adminGalleryCaption").value = ""
-    }
-  })
-
-  // Admin posts
-  document.getElementById("createPost").addEventListener("click", () => {
-    const content = document.getElementById("adminPostContent").value
-    if (content && currentUser) {
-      createPost(content)
-      document.getElementById("adminPostContent").value = ""
-    }
-  })
-
-  // Admin chat controls
-  document.getElementById("setCooldown").addEventListener("click", () => {
-    const cooldown = Number.parseInt(document.getElementById("chatCooldown").value)
-    const settings = getChatSettings()
-    settings.cooldown = cooldown
-    saveChatSettings(settings)
-    alert(`Cooldown set to ${cooldown} seconds`)
-  })
-
-  document.getElementById("lockChat").addEventListener("click", () => {
-    const settings = getChatSettings()
-    settings.locked = !settings.locked
-    saveChatSettings(settings)
-    document.getElementById("chatNotification").textContent = settings.locked
-      ? currentLanguage === "en"
-        ? "🔒 Chat locked by admin"
-        : "🔒 Chat bloqueado pelo admin"
-      : ""
-    alert(settings.locked ? "Chat locked" : "Chat unlocked")
-  })
-
-  document.getElementById("clearChat").addEventListener("click", clearChat)
-
-  // Admin site controls
-  document.getElementById("shutdownSite").addEventListener("click", () => {
-    if (confirm("Shutdown site for maintenance?")) {
-      const settings = { maintenance: true }
-      saveToStorage("siteSettings", settings)
-      alert("Site will be in maintenance mode on next load")
-    }
-  })
-
-  document.getElementById("reopenSite").addEventListener("click", () => {
-    const settings = { maintenance: false }
-    saveToStorage("siteSettings", settings)
-    alert("Site reopened")
-  })
-
-  document.getElementById("sendNotification").addEventListener("click", () => {
-    const text = document.getElementById("notificationText").value
-    if (text) {
-      alert(text)
-      document.getElementById("notificationText").value = ""
-    }
-  })
-
-  // Maintenance login
-  document.getElementById("maintenanceLogin").addEventListener("submit", (e) => {
-    e.preventDefault()
-    const password = document.getElementById("maintenancePassword").value
-    if (password === CONFIG.adminCredentials.password) {
-      document.getElementById("maintenanceScreen").classList.add("hidden")
-      location.reload()
-    } else {
-      alert("Incorrect password")
-    }
-  })
-
-  // Chat form
-  document.getElementById("chatForm").addEventListener("submit", async (e) => {
-    e.preventDefault()
-    const input = document.getElementById("chatInput")
-    const content = input.value.trim()
-
-    if (content && currentUser) {
-      await sendMessage(content)
-      input.value = ""
-    }
-  })
-
-  // Smooth scroll
-  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-    anchor.addEventListener("click", function (e) {
+  // Listeners de Formulários
+  const loginForm = document.getElementById("loginForm")
+  if (loginForm) {
+    loginForm.addEventListener("submit", async (e) => {
       e.preventDefault()
-      const target = document.querySelector(this.getAttribute("href"))
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth" })
+      const res = await loginUser(document.getElementById("loginUsername").value, document.getElementById("loginPassword").value)
+      if (res.success) {
+        currentUser = res.user
+        saveToStorage("currentUser", currentUser)
+        location.reload()
+      } else alert(res.message)
+    })
+  }
+
+  const registerForm = document.getElementById("registerForm")
+  if (registerForm) {
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault()
+      const res = await registerUser(
+        document.getElementById("registerUsername").value,
+        document.getElementById("registerEmail").value,
+        document.getElementById("registerPassword").value
+      )
+      if (res.success) {
+        alert("Success! Please login.")
+        document.querySelector('.auth-tab[data-tab="login"]').click()
+      } else alert(res.message)
+    })
+  }
+
+  const chatForm = document.getElementById("chatForm")
+  if (chatForm) {
+    chatForm.addEventListener("submit", async (e) => {
+      e.preventDefault()
+      const input = document.getElementById("chatInput")
+      if (input.value.trim()) {
+        await sendMessage(input.value.trim())
+        input.value = ""
       }
     })
+  }
+
+  // Botoes simples
+  document.getElementById("authBtn")?.addEventListener("click", () => document.getElementById("authModal").classList.remove("hidden"))
+  document.getElementById("logoutBtn")?.addEventListener("click", logout)
+  document.getElementById("openAdminPanel")?.addEventListener("click", () => {
+    document.getElementById("adminPanel").classList.remove("hidden")
+    renderAdminUsers()
+    renderAdminGallery()
+  })
+
+  document.querySelectorAll(".close-modal").forEach(btn => {
+    btn.addEventListener("click", () => btn.closest(".modal, .admin-panel").classList.add("hidden"))
   })
 })
 
-// Make functions global for onclick handlers
+// Globais para os botões do HTML
 window.toggleVerified = toggleVerified
 window.toggleBan = toggleBan
-window.toggleAdmin = toggleAdmin
-window.toggleImagePerm = toggleImagePerm
 window.removeFromGallery = removeFromGallery
