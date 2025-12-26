@@ -167,10 +167,16 @@ function initializeEventListeners() {
 
   // Settings Modal
   const settingsBtn = document.getElementById("settingsBtn")
+  const headerSettingsBtn = document.getElementById("headerSettingsBtn")
   const settingsModal = document.getElementById("settingsModal")
   const closeSettings = document.querySelector(".close-settings")
 
   settingsBtn?.addEventListener("click", () => {
+    settingsModal.style.display = "block"
+    loadSettings()
+  })
+
+  headerSettingsBtn?.addEventListener("click", () => {
     settingsModal.style.display = "block"
     loadSettings()
   })
@@ -214,6 +220,16 @@ function initializeEventListeners() {
   document.getElementById("sendMessage")?.addEventListener("click", sendChatMessage)
   document.getElementById("chatInput")?.addEventListener("keypress", (e) => {
     if (e.key === "Enter") sendChatMessage()
+  })
+
+  document.getElementById("redirectYes")?.addEventListener("click", () => {
+    const url = document.getElementById("redirectUrl").textContent
+    window.open(url, "_blank")
+    document.getElementById("redirectModal").style.display = "none"
+  })
+
+  document.getElementById("redirectNo")?.addEventListener("click", () => {
+    document.getElementById("redirectModal").style.display = "none"
   })
 
   // Close modals on outside click
@@ -334,9 +350,26 @@ function updateUserInterface() {
   const signinBtn = document.querySelector(".btn-signin")
   const loginBtn = document.querySelector(".btn-login")
 
+  const userProfileHeader = document.getElementById("userProfileHeader")
+  const headerUserAvatar = document.getElementById("headerUserAvatar")
+  const headerUsername = document.getElementById("headerUsername")
+  const headerVerifiedBadge = document.getElementById("headerVerifiedBadge")
+
   if (signupBtn && signinBtn) {
     signupBtn.style.display = "none"
     signinBtn.style.display = "none"
+  }
+
+  if (userProfileHeader) {
+    userProfileHeader.style.display = "flex"
+    headerUserAvatar.src = currentUser.avatar
+    headerUsername.textContent = currentUser.username
+
+    if (currentUser.verified) {
+      headerVerifiedBadge.style.display = "inline"
+    } else {
+      headerVerifiedBadge.style.display = "none"
+    }
   }
 
   if (loginBtn) {
@@ -366,10 +399,15 @@ function handleLogout() {
   const signupBtn = document.querySelector(".btn-signup")
   const signinBtn = document.querySelector(".btn-signin")
   const loginBtn = document.querySelector(".btn-login")
+  const userProfileHeader = document.getElementById("userProfileHeader")
 
   if (signupBtn && signinBtn) {
     signupBtn.style.display = "block"
     signinBtn.style.display = "block"
+  }
+
+  if (userProfileHeader) {
+    userProfileHeader.style.display = "none"
   }
 
   if (loginBtn) {
@@ -404,8 +442,12 @@ function checkUserSession() {
     updateUserInterface()
   } else {
     const loginBtn = document.querySelector(".btn-login")
+    const userProfileHeader = document.getElementById("userProfileHeader")
     if (loginBtn) {
       loginBtn.style.display = "none"
+    }
+    if (userProfileHeader) {
+      userProfileHeader.style.display = "none"
     }
   }
 }
@@ -443,6 +485,7 @@ function handleSaveSettings() {
     reader.onload = (e) => {
       currentUser.avatar = e.target.result
       document.getElementById("userAvatar").src = e.target.result
+      document.getElementById("headerUserAvatar").src = e.target.result
       updateUserInStorage()
     }
     reader.readAsDataURL(profilePicture)
@@ -778,3 +821,19 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     }
   })
 })
+
+// IT: Welcome to Derry redirect handler
+function handleITRedirect() {
+  const redirectUrl =
+    "https://www.google.com/aclk?sa=L&ai=DChsSEwilu9zG99uRAxUIZ0gAHc3hF5UYACICCAEQABoCY2U&co=1&gclid=Cj0KCQiAgbnKBhDgARIsAGCDdlcbmHt1C0YlZ3xRnFR_6tgKNxa4iwUMRwOKiFF9KeH7iUJ3KmuqIVkaAmYEEALw_wcB&cid=CAAS3QHkaB2OkeqnpS4f7fKMHp84g9gopnJMyhTKMFuOjv77waUgJH_gwpYmnLkHh1jsmSzsPpIKa92dCuHW0bwb8AT2Brk_BlhEJxkyHRTrylsih3PnKl70MD2Zy0l4fDMZqvYb0Ogi6cT7_TRTvtOWQQZwGBrx0xAN2eYlopYeJd6b3JM_6i6r0xmq_WnacWk3mcgoF6eSxpIo25lI3jvhAmYn9tIcZ0xtXVQg9RBw-CpfpBglHsPs_JVINubV1MBq3BBc1qLSUz2L0ArGPfDTYKI9ErL8EZPPfyXusoxN_A&cce=2&sig=AOD64_1nT-8kQKHDi3ziOR9P8q0_66zwVg&q&adurl&ved=2ahUKEwjQpdXG99uRAxVsqpUCHQSlENUQ0Qx6BAgREAE"
+
+  const modal = document.getElementById("redirectModal")
+  const urlDisplay = document.getElementById("redirectUrl")
+
+  // Show beginning of URL
+  const urlPreview = redirectUrl.substring(0, 50) + "..."
+  urlDisplay.textContent = urlPreview
+  urlDisplay.setAttribute("data-full-url", redirectUrl)
+
+  modal.style.display = "block"
+}
