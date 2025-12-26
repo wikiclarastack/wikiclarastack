@@ -3,7 +3,7 @@ let currentUser = null
 let currentLanguage = "en"
 const DEFAULT_AVATAR =
   "https://static.vecteezy.com/system/resources/thumbnails/019/879/186/small/user-icon-on-transparent-background-free-png.png"
-const users = JSON.parse(localStorage.getItem("users")) || []
+let users = JSON.parse(localStorage.getItem("users")) || []
 const chatMessages = JSON.parse(localStorage.getItem("chatMessages")) || []
 const visitors = JSON.parse(localStorage.getItem("visitors")) || []
 const activeUsers = JSON.parse(localStorage.getItem("activeUsers")) || []
@@ -893,14 +893,19 @@ function toggleChatLock() {
 }
 
 async function register() {
+  console.log("[v0] Register function called")
   const username = document.getElementById("registerUsername").value.trim()
   const email = document.getElementById("registerEmail").value.trim()
   const password = document.getElementById("registerPassword").value
+
+  console.log("[v0] Register data:", { username, email, password: password ? "***" : "" })
 
   if (!username || !email || !password) {
     alert(currentLanguage === "en" ? "Please fill all fields" : "Preencha todos os campos")
     return
   }
+
+  users = JSON.parse(localStorage.getItem("users") || "[]")
 
   if (users.find((u) => u.email === email)) {
     alert(currentLanguage === "en" ? "Email already registered" : "Email já cadastrado")
@@ -920,7 +925,7 @@ async function register() {
     password,
     ip: ipInfo.ip,
     ipInfo,
-    avatar: DEFAULT_AVATAR, // Set default avatar
+    avatar: DEFAULT_AVATAR,
     verified: false,
     banned: false,
     isAdmin: false,
@@ -931,17 +936,34 @@ async function register() {
   users.push(user)
   localStorage.setItem("users", JSON.stringify(users))
 
+  window.dispatchEvent(
+    new StorageEvent("storage", {
+      key: "users",
+      newValue: JSON.stringify(users),
+    }),
+  )
+
+  console.log("[v0] User registered successfully:", username)
+
   await sendWebhook(WEBHOOKS.newUser, {
     content: `✅ New user registered: ${username} (${email}) from ${ipInfo.city}, ${ipInfo.country}`,
   })
 
   alert(currentLanguage === "en" ? "Registration successful!" : "Registro realizado com sucesso!")
+
+  document.getElementById("registerUsername").value = ""
+  document.getElementById("registerEmail").value = ""
+  document.getElementById("registerPassword").value = ""
+
   showLoginForm()
 }
 
 async function login() {
+  console.log("[v0] Login function called")
   const username = document.getElementById("loginUsername").value.trim()
   const password = document.getElementById("loginPassword").value
+
+  console.log("[v0] Login attempt for username:", username)
 
   if (username === "admin" && password === "admin") {
     const ipInfo = await getIPInfo()
@@ -953,19 +975,26 @@ async function login() {
       ipInfo,
     }
     localStorage.setItem("currentUser", JSON.stringify(currentUser))
+    console.log("[v0] Admin logged in successfully")
     closeAuthModal()
     updateUIForLoggedInUser()
+    addActiveUser("admin")
     return
   }
+
+  users = JSON.parse(localStorage.getItem("users") || "[]")
+  console.log("[v0] Total users in database:", users.length)
 
   const user = users.find((u) => u.username === username && u.password === password)
 
   if (!user) {
+    console.log("[v0] Login failed: Invalid credentials")
     alert(currentLanguage === "en" ? "Invalid credentials" : "Credenciais inválidas")
     return
   }
 
   if (user.banned) {
+    console.log("[v0] Login failed: User is banned")
     alert(currentLanguage === "en" ? "Your account is banned" : "Sua conta está banida")
     return
   }
@@ -975,12 +1004,16 @@ async function login() {
 
   if (user.ip !== currentIP && !user.isAdmin) {
     user.banned = true
+
+    const userIndex = users.findIndex((u) => u.username === username)
+    users[userIndex] = user
     localStorage.setItem("users", JSON.stringify(users))
 
     await sendWebhook(WEBHOOKS.suspended, {
       content: `🚫 Account suspended during login: ${username} (IP changed from ${user.ip} to ${currentIP})`,
     })
 
+    console.log("[v0] Account suspended due to IP change")
     alert(
       currentLanguage === "en"
         ? "Account suspended due to IP change. Contact admin."
@@ -990,8 +1023,18 @@ async function login() {
   }
 
   user.ipInfo = ipInfo
+  const userIndex = users.findIndex((u) => u.username === username)
+  users[userIndex] = user
+  localStorage.setItem("users", JSON.stringify(users))
+
   currentUser = user
   localStorage.setItem("currentUser", JSON.stringify(currentUser))
+
+  console.log("[v0] User logged in successfully:", username)
+
+  document.getElementById("loginUsername").value = ""
+  document.getElementById("loginPassword").value = ""
+
   closeAuthModal()
   updateUIForLoggedInUser()
   addActiveUser(username)
