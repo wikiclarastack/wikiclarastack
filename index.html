@@ -210,21 +210,26 @@
     <!-- Auth Modal -->
     <div id="authModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeAuthModal()">&times;</span>
-            <div id="loginForm">
+            <span class="close-modal">&times;</span>
+            <!-- Fixed form structure and IDs to match JavaScript -->
+            <div id="loginFormContainer">
                 <h2 data-en="Login" data-pt="Entrar">Entrar</h2>
-                <input type="text" id="loginUsername" placeholder="Username" data-en-placeholder="Username" data-pt-placeholder="Usuário" required>
-                <input type="password" id="loginPassword" placeholder="Password" data-en-placeholder="Password" data-pt-placeholder="Senha" required>
-                <button onclick="login()" data-en="Login" data-pt="Entrar" onkeypress="if(event.key==='Enter') login()">Entrar</button>
-                <p><a href="#" onclick="showRegisterForm(); return false;" data-en="Don't have an account? Register" data-pt="Não tem uma conta? Registre-se">Não tem uma conta? Registre-se</a></p>
+                <form id="loginForm">
+                    <input type="text" id="loginUsername" placeholder="Username" data-en-placeholder="Username" data-pt-placeholder="Usuário" required>
+                    <input type="password" id="loginPassword" placeholder="Password" data-en-placeholder="Password" data-pt-placeholder="Senha" required>
+                    <button type="submit" data-en="Login" data-pt="Entrar">Entrar</button>
+                </form>
+                <p><a href="#" id="showRegister" data-en="Don't have an account? Register" data-pt="Não tem uma conta? Registre-se">Não tem uma conta? Registre-se</a></p>
             </div>
-            <div id="registerForm" style="display: none;">
+            <div id="registerFormContainer" style="display: none;">
                 <h2 data-en="Register" data-pt="Registrar">Registrar</h2>
-                <input type="text" id="registerUsername" placeholder="Username" data-en-placeholder="Username" data-pt-placeholder="Usuário" required>
-                <input type="email" id="registerEmail" placeholder="Email" data-en-placeholder="Email" data-pt-placeholder="Email" required>
-                <input type="password" id="registerPassword" placeholder="Password" data-en-placeholder="Password" data-pt-placeholder="Senha" required>
-                <button onclick="register()" data-en="Register" data-pt="Registrar" onkeypress="if(event.key==='Enter') register()">Registrar</button>
-                <p><a href="#" onclick="showLoginForm(); return false;" data-en="Already have an account? Login" data-pt="Já tem uma conta? Entre">Já tem uma conta? Entre</a></p>
+                <form id="registerForm">
+                    <input type="text" id="registerUsername" placeholder="Username" data-en-placeholder="Username" data-pt-placeholder="Usuário" required>
+                    <input type="email" id="registerEmail" placeholder="Email" data-en-placeholder="Email" data-pt-placeholder="Email" required>
+                    <input type="password" id="registerPassword" placeholder="Password" data-en-placeholder="Password" data-pt-placeholder="Senha" required>
+                    <button type="submit" data-en="Register" data-pt="Registrar">Registrar</button>
+                </form>
+                <p><a href="#" id="showLogin" data-en="Already have an account? Login" data-pt="Já tem uma conta? Entre">Já tem uma conta? Entre</a></p>
             </div>
         </div>
     </div>
