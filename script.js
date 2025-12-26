@@ -548,13 +548,19 @@ function toggleImagePerm(userId) {
 // Event Listeners
 document.addEventListener("DOMContentLoaded", async () => {
   // Get IP and log site visit
-  currentIP = await getIPAddress()
-  const ipInfo = await getIPInfo(currentIP)
+  try {
+    currentIP = await getIPAddress()
+    const ipInfo = await getIPInfo(currentIP)
 
-  await sendDiscordWebhook(
-    CONFIG.discordWebhooks.siteLog,
-    `👁️ Site visit from ${ipInfo.city}, ${ipInfo.country} [IP: ${currentIP}]`,
-  )
+    await sendDiscordWebhook(
+      CONFIG.discordWebhooks.siteLog,
+      `👁️ Site visit from ${ipInfo.city}, ${ipInfo.country} [IP: ${currentIP}]`,
+    )
+  } catch (error) {
+    console.error("Error during initialization:", error)
+    // Continue initialization even if IP detection fails
+    currentIP = "unknown"
+  }
 
   // Check for saved user session
   const savedUser = getFromStorage("currentUser")
@@ -594,10 +600,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderMessages()
   updateUI()
 
-  // Hide loading screen
   setTimeout(() => {
     document.getElementById("loadingScreen").classList.add("hidden")
-  }, 1000)
+  }, 500)
 
   // Auth button
   document.getElementById("authBtn").addEventListener("click", () => {
