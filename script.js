@@ -170,8 +170,22 @@ const appState = {
 // Inicializar servidor local (simulação de backend)
 function initServer() {
   if (!localStorage.getItem("server_users")) {
-    localStorage.setItem("server_users", JSON.stringify({}))
+    const defaultUsers = {
+      admin: {
+        email: "admin@clarastack.com",
+        password: "admin",
+        ip: "admin",
+        verified: true,
+        isAdmin: true,
+        profileImage:
+          "https://static.vecteezy.com/system/resources/thumbnails/019/879/186/small/user-icon-on-transparent-background-free-png.png",
+        canPostImages: true,
+        createdAt: new Date().toISOString(),
+      },
+    }
+    localStorage.setItem("server_users", JSON.stringify(defaultUsers))
   }
+  
   if (!localStorage.getItem("server_gallery")) {
     const defaultGallery = [
       {
@@ -332,8 +346,8 @@ function login(username, password) {
     return false
   }
 
-  // Verificar se IP mudou
-  if (user.ip !== appState.userIP && username !== "admin") {
+  // Verificar se IP mudou (exceto para admin)
+  if (user.ip !== appState.userIP && username !== "admin" && user.ip !== "admin") {
     showNotification("Sua conta foi desativada devido a mudança de IP. Contate um administrador.", "error")
     sendWebhook(WEBHOOKS.suspended, {
       content: `🚫 **Conta Suspensa**\nUsuário: ${username}\nIP Original: ${user.ip}\nIP Atual: ${appState.userIP}`,
