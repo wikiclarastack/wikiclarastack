@@ -20,6 +20,15 @@
                 <!-- Adding separate Sign-up and Sign-in buttons -->
                 <button class="btn-signup" data-en="Sign Up" data-pt="Registrar">Sign Up</button>
                 <button class="btn-signin" data-en="Sign In" data-pt="Entrar">Sign In</button>
+                <!-- Adding settings button and user profile display in top right -->
+                <div id="userProfileHeader" class="user-profile-header" style="display: none;">
+                    <img id="headerUserAvatar" src="https://via.placeholder.com/40" alt="User Avatar">
+                    <span id="headerUsername"></span>
+                    <span id="headerVerifiedBadge" class="verified-badge-header" style="display: none;">✓</span>
+                    <button id="headerSettingsBtn" class="settings-btn-header" title="Settings">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
             </div>
             <div class="hamburger">
                 <span></span>
@@ -59,6 +68,22 @@
 
     <!-- Featured Work -->
     <section class="featured">
+        <div class="container">
+            <!-- Making IT: Welcome to Derry the main featured/highlight with redirect confirmation -->
+            <h2 data-en="Featured Work" data-pt="Trabalho em Destaque">Featured Work</h2>
+            <div class="featured-card featured-highlight" onclick="handleITRedirect()">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/It_welcome_to_derry_logo.svg/2560px-It_welcome_to_derry_logo.svg.png" alt="IT: Welcome to Derry">
+                <div class="featured-info">
+                    <h3>IT: Welcome to Derry</h3>
+                    <p class="featured-show">HBO Max Series</p>
+                    <p class="featured-description" data-en="Clara Stack's most notable work as Lilly Bainbridge" data-pt="O trabalho mais notável de Clara Stack como Lilly Bainbridge">Clara Stack's most notable work as Lilly Bainbridge</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Most Notable Character -->
+    <section class="notable-character">
         <div class="container">
             <h2 data-en="Most Notable Character" data-pt="Personagem Mais Marcante">Most Notable Character</h2>
             <div class="featured-card">
@@ -112,6 +137,8 @@
                 <img src="https://i0.wp.com/instyle.mx/wp-content/uploads/2025/11/clara-stack-nyc-1762016300-3756387443944624518-8019051861-1.jpg?resize=768%2C1024&ssl=1" alt="Clara Stack NYC">
                 <img src="https://i0.wp.com/instyle.mx/wp-content/uploads/2025/10/it-official-1761026321-3748082898495780419-3703675311.jpg?resize=770%2C1024&ssl=1" alt="Clara Stack IT Official">
                 <img src="https://farhanabhatt.com/wp-content/uploads/2025/12/Clara-Stack-Biography-1024x576.webp" alt="Clara Stack Biography">
+                <!-- Adding new gallery photo -->
+                <img src="https://elcomercio.pe/resizer/v2/ZLEZYAYGJBAYNNIRVWBIOMJ6Z4.jpg?auth=585dcbc947baaa48292c190c1cce1d5fb0444fa13e83d411f29e0c5638ee7452&width=1200&height=1371&quality=75&smart=true" alt="Clara Stack Photo">
             </div>
         </div>
     </section>
@@ -235,6 +262,20 @@
         <button id="settingsBtn" data-en="Settings" data-pt="Configurações">Settings</button>
         <button id="adminBtn" style="display: none;" data-en="Admin Panel" data-pt="Painel Admin">Admin Panel</button>
         <button id="logoutBtn" data-en="Logout" data-pt="Sair">Logout</button>
+    </div>
+
+    <!-- Redirect Confirmation Modal -->
+    <div id="redirectModal" class="modal">
+        <div class="modal-content redirect-modal">
+            <h2 data-en="ATTENTION!" data-pt="ATENÇÃO!">ATTENTION!</h2>
+            <p id="redirectMessage" data-en="You are being redirected to:" data-pt="Você está sendo redirecionado para:">You are being redirected to:</p>
+            <p id="redirectUrl" class="redirect-url"></p>
+            <p data-en="Are you sure you want to proceed?" data-pt="Você tem certeza que deseja prosseguir?">Are you sure you want to proceed?</p>
+            <div class="redirect-buttons">
+                <button id="redirectYes" class="btn-yes" data-en="Yes" data-pt="Sim">Yes</button>
+                <button id="redirectNo" class="btn-no" data-en="No" data-pt="Não">No</button>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
