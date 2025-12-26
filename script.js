@@ -234,12 +234,21 @@ function saveSettings(settings) {
 
 // Authentication Functions
 function showAuthModal() {
-  document.getElementById("authModal").style.display = "flex"
-  showLoginForm()
+  console.log("[v0] Abrindo modal de autenticação...")
+  const modal = document.getElementById("authModal")
+  if (modal) {
+    modal.style.display = "flex"
+    showLoginForm()
+  } else {
+    console.error("[v0] Modal authModal não encontrado!")
+  }
 }
 
 function closeAuthModal() {
-  document.getElementById("authModal").style.display = "none"
+  const modal = document.getElementById("authModal")
+  if (modal) {
+    modal.style.display = "none"
+  }
 }
 
 function showLoginForm() {
@@ -760,7 +769,7 @@ function setChatCooldown() {
 
 // Initialize
 async function init() {
-  console.log("[v0] Inicializando site...")
+  console.log("[v0] Inicializando aplicação...")
 
   // Detect language
   detectLanguage()
@@ -881,77 +890,76 @@ async function init() {
     updateOnlineUsersUI(onlineUsers)
   }
 
-  setupEventListeners()
-  console.log("[v0] Site inicializado com sucesso!")
-}
-
-// Setup event listeners
-function setupEventListeners() {
   // Navigation
-  document.querySelectorAll(".nav-link").forEach((link) => {
+  document.querySelectorAll("nav a[href^='#']").forEach((link) => {
     link.addEventListener("click", (e) => {
+      if (link.id === "authLink") {
+        e.preventDefault()
+        showAuthModal()
+        return
+      }
+
       e.preventDefault()
-      const target = link.getAttribute("data-section")
-      showSection(target)
+      const target = link.getAttribute("href").substring(1)
+      if (target) {
+        showSection(target)
+      }
     })
   })
-
-  // Auth buttons
-  document.getElementById("loginBtn")?.addEventListener("click", showAuthModal) // Use optional chaining
-  document.getElementById("registerBtn")?.addEventListener("click", showAuthModal) // This might be redundant if loginBtn handles both
 
   // Close modals
   document.querySelectorAll(".close-modal").forEach((btn) => {
     btn.addEventListener("click", () => {
-      document.querySelectorAll(".modal").forEach((modal) => (modal.style.display = "none"))
+      closeAuthModal()
     })
   })
 
-  // Auth forms
-  document.getElementById("showRegister")?.addEventListener("click", (e) => {
-    // Use optional chaining
-    e.preventDefault()
-    showRegisterForm()
+  // Switch between login and register
+  const showRegisterLink = document.getElementById("showRegister")
+  if (showRegisterLink) {
+    showRegisterLink.addEventListener("click", (e) => {
+      e.preventDefault()
+      showRegisterForm()
+    })
+  }
+
+  const showLoginLink = document.getElementById("showLogin")
+  if (showLoginLink) {
+    showLoginLink.addEventListener("click", (e) => {
+      e.preventDefault()
+      showLoginForm()
+    })
+  }
+
+  // Form submissions
+  const loginForm = document.getElementById("loginForm")
+  if (loginForm) {
+    loginForm.addEventListener("submit", handleLogin)
+  }
+
+  const registerForm = document.getElementById("registerForm")
+  if (registerForm) {
+    registerForm.addEventListener("submit", handleRegister)
+  }
+
+  // Settings and profile buttons
+  document.getElementById("settingsBtn")?.addEventListener("click", () => {
+    document.getElementById("settingsModal").style.display = "flex"
   })
 
-  document.getElementById("showLogin")?.addEventListener("click", (e) => {
-    // Use optional chaining
-    e.preventDefault()
-    showLoginForm()
+  document.getElementById("logoutBtn")?.addEventListener("click", logout)
+
+  // Close modal on background click
+  window.addEventListener("click", (event) => {
+    if (event.target.classList.contains("modal")) {
+      event.target.style.display = "none"
+    }
   })
-
-  document.getElementById("loginForm")?.addEventListener("submit", handleLogin) // Use optional chaining
-  document.getElementById("registerForm")?.addEventListener("submit", handleRegister) // Use optional chaining
-
-  // Chat
-  document.getElementById("sendChatBtn")?.addEventListener("click", sendMessage) // Use optional chaining
-  document.getElementById("chatInput")?.addEventListener("keypress", (e) => {
-    // Use optional chaining
-    if (e.key === "Enter") sendMessage()
-  })
-
-  // Settings
-  document.getElementById("settingsBtn")?.addEventListener("click", showSettings) // Use optional chaining
-  document.getElementById("settingsForm")?.addEventListener("submit", saveSettingsChanges) // Use optional chaining and correct handler name
-
-  // Theme
-  document.getElementById("themeSelect")?.addEventListener("change", (e) => {
-    // Use optional chaining
-    applyTheme(e.target.value)
-  })
-
-  // Language
-  document.getElementById("languageSelect")?.addEventListener("change", (e) => {
-    // Use optional chaining
-    currentLanguage = e.target.value
-    updateLanguage()
-  })
-
-  // Logout
-  document.getElementById("logoutBtn")?.addEventListener("click", logout) // Use optional chaining
 
   // Admin panel
-  document.getElementById("adminPanelBtn")?.addEventListener("click", showAdminPanel) // Use optional chaining
+  if (document.getElementById("adminBtn")) {
+    document.getElementById("adminBtn").addEventListener("click", showAdminPanel)
+  }
 }
 
 // Show section
@@ -1288,31 +1296,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Removed old initialization logic as it's now in init()
 })
 
-// Event Listeners (moved to init() for unified initialization)
-// document.addEventListener('DOMContentLoaded', init);
-
-// Login/Register form submissions (moved to init() for unified initialization)
-document.getElementById("loginForm")?.addEventListener("submit", handleLogin)
-document.getElementById("registerForm")?.addEventListener("submit", handleRegister)
-
-// Close modals on background click (moved to init() for unified initialization)
-window.onclick = (event) => {
-  if (event.target.className === "modal") {
-    // Assuming .modal class exists for background overlay
-    event.target.style.display = "none"
-  }
-}
-
-// Enter key support (moved to init() for unified initialization)
-document.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") {
-    const activeElement = document.activeElement
-    if (activeElement.id === "chatInput") {
-      sendMessage()
-    }
-  }
-})
-
 // Helper function to apply theme (moved from original script)
 function applyTheme(theme) {
   if (theme === "system") {
@@ -1333,11 +1316,3 @@ function initTheme() {
 
 // Initial call to initTheme when DOM is ready (moved into init())
 // document.addEventListener("DOMContentLoaded", initTheme);
-
-// Show maintenance screen (logic integrated into init and checkMaintenancePassword)
-// function showMaintenanceScreen() { ... }
-
-// Check maintenance password (logic integrated into checkMaintenancePassword)
-// window.checkMaintenancePassword = () => { ... }
-
-// window.checkMaintenancePassword = () => { ... }
