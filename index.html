@@ -3,48 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clara Stack - Official Website</title>
+    <title>Clara Stack - Atriz Oficial</title>
     <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="Site oficial da atriz Clara Stack - It: Welcome to Derry, The Naughty Nine, Hawkeye">
+    <meta property="og:title" content="Clara Stack - Atriz">
+    <meta property="og:image" content="https://image.tmdb.org/t/p/w500/yMK3IADqV2oReJMKdkrcEIBxdtu.jpg">
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div id="loadingScreen" class="loading-screen">
-        <div class="loader"></div>
+    <!-- Loader -->
+    <div id="loader" class="loader">
+        <div class="loader-spinner"></div>
     </div>
 
-    <!-- Maintenance Screen -->
-    <div id="maintenanceScreen" class="maintenance-screen hidden">
-        <h1>🔧 Site em Manutenção / Under Maintenance 🔧</h1>
-        <p>Voltaremos em breve / We'll be back soon</p>
-        <form id="maintenanceLogin" class="maintenance-form">
-            <input type="password" id="maintenancePassword" placeholder="Admin Password">
-            <button type="submit">Acessar / Access</button>
-        </form>
+    <!-- Maintenance Mode -->
+    <div id="maintenanceMode" class="maintenance-mode hidden">
+        <div class="maintenance-content">
+            <h1 data-translate="maintenance_title">🔧 Site em Manutenção</h1>
+            <p data-translate="maintenance_text">Voltaremos em breve!</p>
+            <form id="maintenancePasswordForm" class="maintenance-form">
+                <input type="password" id="maintenancePassword" placeholder="Senha de Acesso" required>
+                <button type="submit" data-translate="access_button">Acessar</button>
+            </form>
+        </div>
     </div>
 
-    <!-- Login/Register Modal -->
+    <!-- Auth Modal -->
     <div id="authModal" class="modal hidden">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
-            <div class="auth-tabs">
-                <button class="auth-tab active" data-tab="login">Login</button>
-                <button class="auth-tab" data-tab="register" data-lang-en="Register" data-lang-pt="Registrar">Registrar</button>
-            </div>
             
-            <form id="loginForm" class="auth-form">
-                <h2 data-lang-en="Login" data-lang-pt="Entrar">Entrar</h2>
-                <input type="text" id="loginUsername" placeholder="Username / Usuário" required>
-                <input type="password" id="loginPassword" placeholder="Password / Senha" required>
-                <button type="submit">Login</button>
-            </form>
+            <!-- Login Form -->
+            <div id="loginForm" class="auth-form">
+                <h2 data-translate="login_title">Login</h2>
+                <form id="loginFormElement">
+                    <input type="text" id="loginUsername" placeholder="Username" required>
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                    <button type="submit" data-translate="login_button">Entrar</button>
+                </form>
+                <p data-translate="no_account">Não tem conta? <a href="#" id="showRegister">Registre-se</a></p>
+            </div>
 
-            <form id="registerForm" class="auth-form hidden">
-                <h2 data-lang-en="Register" data-lang-pt="Registrar">Registrar</h2>
-                <input type="text" id="registerUsername" placeholder="Username / Usuário" required>
-                <input type="email" id="registerEmail" placeholder="Email" required>
-                <input type="password" id="registerPassword" placeholder="Password / Senha" required>
-                <button type="submit" data-lang-en="Create Account" data-lang-pt="Criar Conta">Criar Conta</button>
-            </form>
+            <!-- Register Form -->
+            <div id="registerForm" class="auth-form hidden">
+                <h2 data-translate="register_title">Registrar</h2>
+                <form id="registerFormElement">
+                    <input type="text" id="registerUsername" placeholder="Username" required>
+                    <input type="email" id="registerEmail" placeholder="Email" required>
+                    <input type="password" id="registerPassword" placeholder="Password" required>
+                    <button type="submit" data-translate="register_button">Criar Conta</button>
+                </form>
+                <p data-translate="have_account">Já tem conta? <a href="#" id="showLogin">Faça login</a></p>
+            </div>
         </div>
     </div>
 
@@ -52,121 +61,129 @@
     <div id="settingsModal" class="modal hidden">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
-            <h2 data-lang-en="Settings" data-lang-pt="Configurações">Configurações</h2>
+            <h2 data-translate="settings_title">Configurações</h2>
+            
             <div class="settings-section">
-                <label data-lang-en="Profile Picture" data-lang-pt="Foto de Perfil">Foto de Perfil</label>
-                <input type="file" id="profilePictureInput" accept="image/*">
-                <div id="profilePreview"></div>
+                <h3 data-translate="profile_section">Perfil</h3>
+                <div class="profile-image-selector">
+                    <img id="currentProfileImg" src="https://static.vecteezy.com/system/resources/thumbnails/019/879/186/small/user-icon-on-transparent-background-free-png.png" alt="Profile">
+                    <input type="file" id="profileImageInput" accept="image/*">
+                    <label for="profileImageInput" class="btn-secondary" data-translate="change_photo">Mudar Foto</label>
+                </div>
+                <input type="text" id="changeUsername" placeholder="Novo Username">
+                <button id="updateUsername" class="btn-primary" data-translate="update_username">Atualizar Username</button>
+                
+                <input type="password" id="changePassword" placeholder="Nova Senha">
+                <button id="updatePassword" class="btn-primary" data-translate="update_password">Atualizar Senha</button>
             </div>
+
             <div class="settings-section">
-                <label data-lang-en="Change Username" data-lang-pt="Mudar Nome">Mudar Nome</label>
-                <input type="text" id="changeUsername" placeholder="New Username / Novo Usuário">
-            </div>
-            <div class="settings-section">
-                <label data-lang-en="Change Password" data-lang-pt="Mudar Senha">Mudar Senha</label>
-                <input type="password" id="changePassword" placeholder="New Password / Nova Senha">
-            </div>
-            <div class="settings-section">
-                <label data-lang-en="Theme" data-lang-pt="Tema">Tema</label>
-                <select id="themeSelect">
-                    <option value="system" data-lang-en="System" data-lang-pt="Sistema">Sistema</option>
-                    <option value="light" data-lang-en="Light" data-lang-pt="Claro">Claro</option>
-                    <option value="dark" data-lang-en="Dark" data-lang-pt="Escuro">Escuro</option>
+                <h3 data-translate="appearance_section">Aparência</h3>
+                <select id="themeSelector">
+                    <option value="light" data-translate="light_mode">Modo Claro</option>
+                    <option value="dark" data-translate="dark_mode">Modo Escuro</option>
+                    <option value="system" data-translate="system_mode">Sistema</option>
                 </select>
             </div>
+
             <div class="settings-section">
-                <label data-lang-en="Language" data-lang-pt="Idioma">Idioma</label>
-                <select id="languageSelect">
-                    <option value="auto" data-lang-en="Auto Detect" data-lang-pt="Auto Detectar">Auto Detectar</option>
-                    <option value="en">English</option>
+                <h3 data-translate="language_section">Idioma</h3>
+                <select id="languageSelector">
                     <option value="pt">Português</option>
+                    <option value="en">English</option>
                 </select>
             </div>
-            <button id="saveSettings" data-lang-en="Save Changes" data-lang-pt="Salvar Mudanças">Salvar Mudanças</button>
+
+            <button id="logoutBtn" class="btn-danger" data-translate="logout_button">Sair</button>
         </div>
     </div>
 
     <!-- Admin Panel -->
     <div id="adminPanel" class="admin-panel hidden">
-        <div class="admin-content">
-            <span class="close-modal">&times;</span>
-            <h2>Admin Panel</h2>
-            
-            <div class="admin-tabs">
-                <button class="admin-tab-btn active" data-tab="users">Users</button>
-                <button class="admin-tab-btn" data-tab="gallery">Gallery</button>
-                <button class="admin-tab-btn" data-tab="posts">Posts</button>
-                <button class="admin-tab-btn" data-tab="chat-control">Chat Control</button>
-                <button class="admin-tab-btn" data-tab="site-control">Site Control</button>
-            </div>
-
-            <div class="admin-tab-content active" id="adminUsersTab">
-                <h3>Active Users: <span id="activeUsersCount">0</span></h3>
-                <div id="activeUsersList" class="users-list"></div>
-                
-                <h3>All Registered Users</h3>
-                <div id="allUsersList" class="users-list"></div>
-            </div>
-
-            <div class="admin-tab-content" id="adminGalleryTab">
-                <h3>Add Image to Gallery</h3>
-                <input type="text" id="adminGalleryUrl" placeholder="Image URL">
-                <input type="text" id="adminGalleryCaption" placeholder="Caption (optional)">
-                <button id="addGalleryImage">Add Image</button>
-                <div id="galleryManager" class="gallery-grid"></div>
-            </div>
-
-            <div class="admin-tab-content" id="adminPostsTab">
-                <h3>Create Post</h3>
-                <textarea id="adminPostContent" placeholder="Post content"></textarea>
-                <button id="createPost">Publish Post</button>
-                <div id="postsManager"></div>
-            </div>
-
-            <div class="admin-tab-content" id="adminChatControlTab">
-                <h3>Chat Controls</h3>
-                <label>Message Cooldown (seconds):</label>
-                <input type="number" id="chatCooldown" value="0" min="0">
-                <button id="setCooldown">Set Cooldown</button>
-                <button id="lockChat">Lock Chat</button>
-                <button id="clearChat">Clear All Messages</button>
-            </div>
-
-            <div class="admin-tab-content" id="adminSiteControlTab">
-                <h3>Site Controls</h3>
-                <button id="shutdownSite" class="danger-btn">Shutdown Site</button>
-                <button id="reopenSite" class="success-btn">Reopen Site</button>
-                
-                <h3>Notifications</h3>
-                <input type="text" id="notificationText" placeholder="Notification message">
-                <button id="sendNotification">Send Global Notification</button>
-            </div>
+        <div class="admin-header">
+            <h2 data-translate="admin_panel_title">Painel Administrativo</h2>
+            <button id="closeAdminPanel" class="close-admin">&times;</button>
         </div>
-    </div>
+        
+        <div class="admin-tabs">
+            <button class="admin-tab active" data-tab="users" data-translate="users_tab">Usuários</button>
+            <button class="admin-tab" data-tab="gallery" data-translate="gallery_tab">Galeria</button>
+            <button class="admin-tab" data-tab="posts" data-translate="posts_tab">Postagens</button>
+            <button class="admin-tab" data-tab="settings" data-translate="settings_tab">Configurações</button>
+        </div>
 
-    <!-- User Profile Popup -->
-    <div id="userProfile" class="user-profile">
-        <img id="userAvatar" src="https://static.vecteezy.com/system/resources/thumbnails/019/879/186/small/user-icon-on-transparent-background-free-png.png" alt="User">
-        <span id="userName">Guest</span>
-        <div class="user-menu">
-            <button id="openSettings"><span data-lang-en="Settings" data-lang-pt="Configurações">Configurações</span></button>
-            <button id="openAdminPanel" class="hidden">Admin Panel</button>
-            <button id="logoutBtn" data-lang-en="Logout" data-lang-pt="Sair">Sair</button>
+        <div class="admin-content">
+            <!-- Users Tab -->
+            <div class="admin-tab-content active" data-content="users">
+                <h3 data-translate="registered_users">Usuários Registrados</h3>
+                <div id="usersList" class="users-list"></div>
+                
+                <h3 data-translate="active_users">Usuários Ativos</h3>
+                <div id="activeUsersList" class="users-list"></div>
+            </div>
+
+            <!-- Gallery Tab -->
+            <div class="admin-tab-content" data-content="gallery">
+                <h3 data-translate="add_gallery_image">Adicionar Imagem à Galeria</h3>
+                <input type="url" id="galleryImageUrl" placeholder="URL da Imagem">
+                <input type="text" id="galleryImageCaption" placeholder="Legenda">
+                <button id="addGalleryImage" class="btn-primary" data-translate="add_button">Adicionar</button>
+            </div>
+
+            <!-- Posts Tab -->
+            <div class="admin-tab-content" data-content="posts">
+                <h3 data-translate="create_post">Criar Postagem</h3>
+                <input type="text" id="postTitle" placeholder="Título">
+                <textarea id="postContent" placeholder="Conteúdo" rows="4"></textarea>
+                <button id="createPost" class="btn-primary" data-translate="publish_button">Publicar</button>
+                
+                <div id="postsList" class="posts-list"></div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div class="admin-tab-content" data-content="settings">
+                <h3 data-translate="site_settings">Configurações do Site</h3>
+                
+                <div class="admin-setting">
+                    <label data-translate="chat_cooldown">Cooldown do Chat (segundos):</label>
+                    <input type="number" id="chatCooldown" value="3" min="0">
+                    <button id="updateCooldown" class="btn-primary" data-translate="update_button">Atualizar</button>
+                </div>
+
+                <div class="admin-setting">
+                    <button id="lockChatBtn" class="btn-warning" data-translate="lock_chat">Trancar Chat</button>
+                    <button id="clearChatBtn" class="btn-danger" data-translate="clear_chat">Limpar Chat</button>
+                </div>
+
+                <div class="admin-setting">
+                    <button id="shutdownSiteBtn" class="btn-danger" data-translate="shutdown_site">Modo Manutenção</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Header -->
     <header>
-        <nav>
-            <div class="logo">CLARA STACK</div>
-            <ul class="nav-links">
-                <li><a href="#home" data-lang-en="Home" data-lang-pt="Início">Início</a></li>
-                <li><a href="#about" data-lang-en="About" data-lang-pt="Sobre">Sobre</a></li>
-                <li><a href="#works" data-lang-en="Works" data-lang-pt="Trabalhos">Trabalhos</a></li>
-                <li><a href="#gallery" data-lang-en="Gallery" data-lang-pt="Galeria">Galeria</a></li>
-                <li><a href="#chat" data-lang-en="Chat" data-lang-pt="Chat">Chat</a></li>
-            </ul>
-            <button id="authBtn" class="auth-btn" data-lang-en="Login" data-lang-pt="Entrar">Entrar</button>
+        <nav class="navbar">
+            <div class="nav-brand">
+                <h1>Clara Stack</h1>
+            </div>
+            <div class="nav-links">
+                <a href="#home" data-translate="nav_home">Início</a>
+                <a href="#about" data-translate="nav_about">Sobre</a>
+                <a href="#projects" data-translate="nav_projects">Trabalhos</a>
+                <a href="#gallery" data-translate="nav_gallery">Galeria</a>
+                <a href="#chat" data-translate="nav_chat">Chat</a>
+            </div>
+            <div class="nav-user">
+                <div id="userProfile" class="user-profile hidden">
+                    <img id="userProfileImg" src="https://static.vecteezy.com/system/resources/thumbnails/019/879/186/small/user-icon-on-transparent-background-free-png.png" alt="Profile">
+                    <span id="usernameDisplay"></span>
+                    <button id="settingsBtn" class="btn-icon" title="Configurações">⚙️</button>
+                    <button id="adminBtn" class="btn-icon admin-only hidden" title="Admin">👑</button>
+                </div>
+                <button id="loginBtn" class="btn-primary" data-translate="login_button">Login</button>
+            </div>
         </nav>
     </header>
 
@@ -176,93 +193,113 @@
         <section id="home" class="hero">
             <div class="hero-content">
                 <img src="https://image.tmdb.org/t/p/w500/yMK3IADqV2oReJMKdkrcEIBxdtu.jpg" alt="Clara Stack" class="hero-image">
-                <h1>CLARA STACK</h1>
-                <p class="hero-subtitle" data-lang-en="Actress" data-lang-pt="Atriz">Atriz</p>
-                <div class="social-links">
-                    <a href="https://www.instagram.com/clarastacknyc" target="_blank">Instagram</a>
-                    <a href="https://www.tiktok.com/@clara.stack" target="_blank">TikTok</a>
+                <div class="hero-text">
+                    <h2 data-translate="hero_title">Clara Stack</h2>
+                    <p data-translate="hero_subtitle">Atriz | Lilly Bainbridge em IT: Welcome to Derry</p>
+                    <div class="social-links">
+                        <a href="https://instagram.com/clarastacknyc" target="_blank" class="social-btn">📷 Instagram</a>
+                        <a href="https://tiktok.com/@clara.stack" target="_blank" class="social-btn">🎵 TikTok</a>
+                    </div>
                 </div>
             </div>
         </section>
 
+        <!-- Notifications -->
+        <div id="notificationContainer" class="notification-container"></div>
+
+        <!-- Posts Section -->
+        <section id="posts" class="posts-section">
+            <h2 data-translate="news_title">Notícias</h2>
+            <div id="postsContainer" class="posts-container"></div>
+        </section>
+
         <!-- About Section -->
         <section id="about" class="about">
-            <h2 data-lang-en="About Clara" data-lang-pt="Sobre Clara">Sobre Clara</h2>
+            <h2 data-translate="about_title">Sobre Clara Stack</h2>
             <div class="about-content">
                 <img src="https://ntvb.tmsimg.com/assets/assets/GNLZZGG002G2JKZ.jpg" alt="Clara Stack">
                 <div class="about-text">
-                    <h3 data-lang-en="Fun Facts" data-lang-pt="Curiosidades">Curiosidades</h3>
+                    <p data-translate="about_text">Clara Stack é uma talentosa atriz americana conhecida por seu papel marcante como Lilly Bainbridge na série "IT: Welcome to Derry" da HBO Max. Ela começou sua carreira no teatro, interpretando Matilda no musical "Matilda the Musical" em Nova York.</p>
+                    
+                    <h3 data-translate="curiosities_title">Curiosidades</h3>
                     <ul>
-                        <li data-lang-en="She started in theater, playing Matilda in the musical Matilda the Musical in New York." data-lang-pt="Ela começou no teatro, interpretando Matilda no musical Matilda the Musical em Nova York.">Ela começou no teatro, interpretando Matilda no musical Matilda the Musical em Nova York.</li>
-                        <li data-lang-en="Her parents are Eoin and Amanda Stack, and she has a twin sister named Maggie Stack." data-lang-pt="Seus pais são Eoin e Amanda Stack, e ela tem uma irmã gêmea chamada Maggie Stack.">Seus pais são Eoin e Amanda Stack, e ela tem uma irmã gêmea chamada Maggie Stack.</li>
+                        <li data-translate="curiosity_1">Começou no teatro interpretando Matilda no musical Matilda the Musical em Nova York</li>
+                        <li data-translate="curiosity_2">Seus pais são Eoin e Amanda Stack</li>
+                        <li data-translate="curiosity_3">Tem uma irmã gêmea chamada Maggie Stack</li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <!-- Featured Work -->
-        <section class="featured-work">
-            <h2 data-lang-en="Most Notable Character" data-lang-pt="Personagem Mais Marcante">Personagem Mais Marcante</h2>
-            <div class="featured-card">
-                <img src="https://static.tvtropes.org/pmwiki/pub/images/img_4865_8.jpeg" alt="Lilly Bainbridge">
-                <div class="featured-info">
-                    <h3>Lilly Bainbridge</h3>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/It_welcome_to_derry_logo.svg/2560px-It_welcome_to_derry_logo.svg.png" alt="IT: Welcome to Derry" class="show-logo">
+        <!-- Projects Section -->
+        <section id="projects" class="projects">
+            <h2 data-translate="projects_title">Trabalhos</h2>
+            <div class="projects-grid">
+                <div class="project-card featured">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/It_welcome_to_derry_logo.svg/2560px-It_welcome_to_derry_logo.svg.png" alt="IT: Welcome to Derry">
+                    <div class="project-info">
+                        <h3>IT: Welcome to Derry</h3>
+                        <p data-translate="project_it_desc">Série HBO Max - Lilly Bainbridge</p>
+                        <span class="badge" data-translate="featured_badge">Destaque</span>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <img src="https://static.wikia.nocookie.net/disney/images/0/09/The_Naughty_Nine_Alternative_Poster.jpg" alt="The Naughty Nine">
+                    <div class="project-info">
+                        <h3>The Naughty Nine</h3>
+                        <p data-translate="project_naughty_desc">Filme Disney</p>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <img src="https://m.media-amazon.com/images/M/MV5BOGU5ZDBlOTAtOTZmYS00MWE0LTg0NzktNDcxZGJhN2FhZmM2XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Hawkeye">
+                    <div class="project-info">
+                        <h3>Hawkeye</h3>
+                        <p data-translate="project_hawkeye_desc">Minissérie Marvel</p>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <img src="https://m.media-amazon.com/images/M/MV5BYTVhZDkzNjUtMmQ2ZS00Y2MwLWI2YjEtYjFhOTE2NmRiNTU2XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Madam Secretary">
+                    <div class="project-info">
+                        <h3>Madam Secretary</h3>
+                        <p data-translate="project_madam_desc">Série de TV</p>
+                    </div>
                 </div>
             </div>
-        </section>
 
-        <!-- Works Section -->
-        <section id="works" class="works">
-            <h2 data-lang-en="Known For" data-lang-pt="Conhecida Por">Conhecida Por</h2>
-            <div class="works-grid">
-                <div class="work-card">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/It_welcome_to_derry_logo.svg/2560px-It_welcome_to_derry_logo.svg.png" alt="IT: Welcome to Derry">
-                    <h3>IT: Welcome to Derry</h3>
-                    <p data-lang-en="HBO Max Series" data-lang-pt="Série HBO Max">Série HBO Max</p>
-                </div>
-                <div class="work-card">
-                    <img src="https://static.wikia.nocookie.net/disney/images/0/09/The_Naughty_Nine_Alternative_Poster.jpg" alt="The Naughty Nine">
-                    <h3>The Naughty Nine</h3>
-                    <p data-lang-en="Disney Movie" data-lang-pt="Filme Disney">Filme Disney</p>
-                </div>
-                <div class="work-card">
-                    <img src="https://m.media-amazon.com/images/M/MV5BOGU5ZDBlOTAtOTZmYS00MWE0LTg0NzktNDcxZGJhN2FhZmM2XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Hawkeye">
-                    <h3>Hawkeye</h3>
-                    <p data-lang-en="Marvel Series" data-lang-pt="Minissérie Marvel">Minissérie Marvel</p>
-                </div>
-                <div class="work-card">
-                    <img src="https://m.media-amazon.com/images/M/MV5BYTVhZDkzNjUtMmQ2ZS00Y2MwLWI2YjEtYjFhOTE2NmRiNTU2XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Madam Secretary">
-                    <h3>Madam Secretary</h3>
-                    <p data-lang-en="TV Series" data-lang-pt="Série de TV">Série de TV</p>
+            <div class="character-spotlight">
+                <h3 data-translate="character_title">Personagem Mais Marcante</h3>
+                <div class="character-card">
+                    <img src="https://static.tvtropes.org/pmwiki/pub/images/img_4865_8.jpeg" alt="Lilly Bainbridge">
+                    <div class="character-info">
+                        <h4>Lilly Bainbridge</h4>
+                        <p>IT: Welcome to Derry</p>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Gallery Section -->
         <section id="gallery" class="gallery">
-            <h2 data-lang-en="Gallery" data-lang-pt="Galeria">Galeria</h2>
-            <div id="galleryGrid" class="gallery-grid">
-                <!-- Images will be loaded dynamically -->
-            </div>
-        </section>
-
-        <!-- Posts Section -->
-        <section id="posts" class="posts-section">
-            <h2 data-lang-en="Updates" data-lang-pt="Atualizações">Atualizações</h2>
-            <div id="postsContainer"></div>
+            <h2 data-translate="gallery_title">Galeria</h2>
+            <div id="galleryGrid" class="gallery-grid"></div>
         </section>
 
         <!-- Chat Section -->
         <section id="chat" class="chat-section">
-            <h2 data-lang-en="Global Chat" data-lang-pt="Chat Global">Chat Global</h2>
-            <div id="chatNotification" class="chat-notification"></div>
+            <h2 data-translate="chat_title">Chat Global</h2>
+            <div id="chatLocked" class="chat-locked hidden">
+                <p data-translate="chat_locked_message">🔒 O chat está trancado no momento</p>
+            </div>
             <div id="chatContainer" class="chat-container">
                 <div id="chatMessages" class="chat-messages"></div>
                 <form id="chatForm" class="chat-form">
-                    <input type="text" id="chatInput" placeholder="Type a message..." disabled>
-                    <button type="submit" disabled data-lang-en="Send" data-lang-pt="Enviar">Enviar</button>
+                    <input type="text" id="chatInput" placeholder="Digite sua mensagem..." data-translate-placeholder="chat_placeholder" required>
+                    <button type="submit" data-translate="send_button">Enviar</button>
                 </form>
+                <div id="chatCooldownIndicator" class="cooldown-indicator hidden"></div>
             </div>
         </section>
     </main>
@@ -271,24 +308,27 @@
     <footer>
         <div class="footer-content">
             <div class="footer-section">
+                <h3 data-translate="follow_title">Siga Clara Stack</h3>
+                <div class="social-links">
+                    <a href="https://instagram.com/clarastacknyc" target="_blank">Instagram: @clarastacknyc</a>
+                    <a href="https://tiktok.com/@clara.stack" target="_blank">TikTok: @clara.stack</a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3 data-translate="credits_title">Créditos</h3>
+                <p data-translate="credits_text">Site desenvolvido por <a href="https://portfoliosilva.github.io/portfoliosilva/" target="_blank">silva777only</a> sem custo algum para a atriz.</p>
+                <p><a href="https://linktr.ee/silva777only" target="_blank">Linktree</a> | <a href="https://portfoliosilva.github.io/portfoliosilva/" target="_blank" data-translate="portfolio_link">Portfólio</a></p>
+            </div>
+
+            <div class="footer-section">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg" alt="HBO Max" class="hbo-logo">
-                <p class="copyright-notice" data-lang-en="Images from IT: Welcome to Derry are property of HBO Max. For removal requests, contact the site owner." data-lang-pt="As imagens que envolvem a série IT: Welcome to Derry são de propriedade da HBO Max. Caso queira a remoção, entrar em contato com o dono do site.">
-                    As imagens que envolvem a série IT: Welcome to Derry são de propriedade da HBO Max. Caso queira a remoção, entrar em contato com o dono do site.
-                </p>
+                <p data-translate="copyright_hbo">As imagens que envolvem a série IT: Welcome to Derry são de propriedade da HBO Max. Para remoção, entre em contato via portfólio.</p>
             </div>
-            
-            <div class="footer-section">
-                <p data-lang-en="Website created by" data-lang-pt="Site feito por">Site feito por</p>
-                <a href="https://linktr.ee/silva777only" target="_blank">silva777only</a>
-                <p data-lang-en="at no cost to the actress" data-lang-pt="sem custo algum para a atriz">sem custo algum para a atriz</p>
-                <a href="https://portfoliosilva.github.io/portfoliosilva/" target="_blank" data-lang-en="View Portfolio" data-lang-pt="Ver Portfólio">Ver Portfólio</a>
-            </div>
-            
-            <div class="footer-section">
-                <p>&copy; 2025 Clara Stack Official Website. All rights reserved.</p>
-                <p data-lang-en="This site is protected by copyright and intellectual property laws." data-lang-pt="Este site é protegido por direitos autorais e leis de propriedade intelectual.">
-                    Este site é protegido por direitos autorais e leis de propriedade intelectual.
-                </p>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Clara Stack Official Website. <span data-translate="rights_reserved">Todos os direitos reservados.</span></p>
+                <p data-translate="unauthorized_warning">⚠️ Reprodução não autorizada é proibida.</p>
             </div>
         </div>
     </footer>
