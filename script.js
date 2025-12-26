@@ -101,10 +101,37 @@ function initializeEventListeners() {
     navLinks.classList.toggle("active")
   })
 
-  // Login Modal
+  const signupBtn = document.querySelector(".btn-signup")
+  const signinBtn = document.querySelector(".btn-signin")
   const loginBtn = document.querySelector(".btn-login")
   const loginModal = document.getElementById("loginModal")
   const closeModal = document.querySelector(".close")
+
+  // Sign-up button - opens modal in register mode
+  signupBtn?.addEventListener("click", () => {
+    if (currentUser) {
+      document.getElementById("userMenu").style.display =
+        document.getElementById("userMenu").style.display === "none" ? "block" : "none"
+    } else {
+      loginModal.style.display = "block"
+      document.getElementById("loginForm").style.display = "none"
+      document.getElementById("registerForm").style.display = "block"
+      document.getElementById("modalTitle").textContent = currentLanguage === "pt" ? "Registrar" : "Register"
+    }
+  })
+
+  // Sign-in button - opens modal in login mode
+  signinBtn?.addEventListener("click", () => {
+    if (currentUser) {
+      document.getElementById("userMenu").style.display =
+        document.getElementById("userMenu").style.display === "none" ? "block" : "none"
+    } else {
+      loginModal.style.display = "block"
+      document.getElementById("loginForm").style.display = "block"
+      document.getElementById("registerForm").style.display = "none"
+      document.getElementById("modalTitle").textContent = currentLanguage === "pt" ? "Entrar" : "Login"
+    }
+  })
 
   loginBtn?.addEventListener("click", () => {
     if (currentUser) {
@@ -303,8 +330,19 @@ function loginSuccess() {
 }
 
 function updateUserInterface() {
+  const signupBtn = document.querySelector(".btn-signup")
+  const signinBtn = document.querySelector(".btn-signin")
   const loginBtn = document.querySelector(".btn-login")
-  loginBtn.textContent = currentUser.username
+
+  if (signupBtn && signinBtn) {
+    signupBtn.style.display = "none"
+    signinBtn.style.display = "none"
+  }
+
+  if (loginBtn) {
+    loginBtn.style.display = "block"
+    loginBtn.textContent = currentUser.username
+  }
 
   document.getElementById("userDisplayName").textContent = currentUser.username
   document.getElementById("userAvatar").src = currentUser.avatar
@@ -324,7 +362,20 @@ function handleLogout() {
   currentUser = null
   localStorage.removeItem("currentUser")
   document.getElementById("userMenu").style.display = "none"
-  document.querySelector(".btn-login").textContent = currentLanguage === "pt" ? "Entrar" : "Login"
+
+  const signupBtn = document.querySelector(".btn-signup")
+  const signinBtn = document.querySelector(".btn-signin")
+  const loginBtn = document.querySelector(".btn-login")
+
+  if (signupBtn && signinBtn) {
+    signupBtn.style.display = "block"
+    signinBtn.style.display = "block"
+  }
+
+  if (loginBtn) {
+    loginBtn.style.display = "none"
+  }
+
   location.reload()
 }
 
@@ -351,6 +402,11 @@ function checkUserSession() {
 
     currentUser = savedUser
     updateUserInterface()
+  } else {
+    const loginBtn = document.querySelector(".btn-login")
+    if (loginBtn) {
+      loginBtn.style.display = "none"
+    }
   }
 }
 
