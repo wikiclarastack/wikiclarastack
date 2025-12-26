@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clara Stack - Atriz Oficial</title>
+    <title>Clara Stack - Official Actress Website</title>
     <link rel="stylesheet" href="styles.css">
-    <meta name="description" content="Site oficial da atriz Clara Stack - It: Welcome to Derry, The Naughty Nine, Hawkeye">
-    <meta property="og:title" content="Clara Stack - Atriz">
+    <meta name="description" content="Official website of actress Clara Stack - It: Welcome to Derry, The Naughty Nine, Hawkeye">
+    <meta property="og:title" content="Clara Stack - Actress">
     <meta property="og:image" content="https://image.tmdb.org/t/p/w500/yMK3IADqV2oReJMKdkrcEIBxdtu.jpg">
 </head>
 <body>
@@ -161,26 +161,27 @@
     <header>
         <nav class="navbar">
             <div class="nav-brand">
-                <h1>Clara Stack</h1>
+                <!-- Nome com destaque maior -->
+                <h1 class="brand-highlight">CLARA STACK</h1>
             </div>
             <div class="nav-links">
-                <a href="#home" data-translate="nav_home">Início</a>
-                <a href="#about" data-translate="nav_about">Sobre</a>
-                <a href="#projects" data-translate="nav_projects">Trabalhos</a>
-                <a href="#gallery" data-translate="nav_gallery">Galeria</a>
+                <a href="#home" data-translate="nav_home">Home</a>
+                <a href="#about" data-translate="nav_about">About</a>
+                <a href="#projects" data-translate="nav_projects">Works</a>
+                <a href="#gallery" data-translate="nav_gallery">Gallery</a>
                 <a href="#chat" data-translate="nav_chat">Chat</a>
             </div>
             <div class="nav-user">
                 <div id="userProfile" class="user-profile hidden">
                     <img id="userProfileImg" src="https://static.vecteezy.com/system/resources/thumbnails/019/879/186/small/user-icon-on-transparent-background-free-png.png" alt="Profile">
                     <span id="usernameDisplay"></span>
-                    <button id="settingsBtn" class="btn-icon" title="Configurações">⚙️</button>
+                    <button id="settingsBtn" class="btn-icon" title="Settings">⚙️</button>
                     <button id="adminBtn" class="btn-icon admin-only hidden" title="Admin">👑</button>
                 </div>
                 <!-- Adicionados botões separados de Login e Registrar -->
                 <div id="authButtons" class="auth-buttons">
                     <button id="loginBtn" class="btn-primary" data-translate="login_button">Login</button>
-                    <button id="registerBtn" class="btn-secondary" data-translate="register_button">Registrar</button>
+                    <button id="registerBtn" class="btn-secondary" data-translate="register_button">Register</button>
                 </div>
             </div>
         </nav>
@@ -188,16 +189,28 @@
 
     <!-- Main Content -->
     <main>
+        <!-- Adicionando disclaimer no início -->
+        <section class="disclaimer">
+            <p data-translate="disclaimer_text">ℹ️ All information and photos are sourced from the internet. This site is not affiliated with HBO Max or any other platform.</p>
+        </section>
+
         <!-- Hero Section -->
         <section id="home" class="hero">
             <div class="hero-content">
                 <img src="https://image.tmdb.org/t/p/w500/yMK3IADqV2oReJMKdkrcEIBxdtu.jpg" alt="Clara Stack" class="hero-image">
                 <div class="hero-text">
                     <h2 data-translate="hero_title">Clara Stack</h2>
-                    <p data-translate="hero_subtitle">Atriz | Lilly Bainbridge em IT: Welcome to Derry</p>
+                    <p data-translate="hero_subtitle">Actress | Lilly Bainbridge in IT: Welcome to Derry</p>
+                    <!-- Redes sociais apenas com logos -->
                     <div class="social-links">
-                        <a href="https://instagram.com/clarastacknyc" target="_blank" class="social-btn">📷 Instagram</a>
-                        <a href="https://tiktok.com/@clara.stack" target="_blank" class="social-btn">🎵 TikTok</a>
+                        <a href="https://instagram.com/clarastacknyc" target="_blank" class="social-btn instagram">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                            <span>@clarastacknyc</span>
+                        </a>
+                        <a href="https://tiktok.com/@clara.stack" target="_blank" class="social-btn tiktok">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.04-.1z"/></svg>
+                            <span>@clara.stack</span>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -307,27 +320,36 @@
     <footer>
         <div class="footer-content">
             <div class="footer-section">
-                <h3 data-translate="follow_title">Siga Clara Stack</h3>
-                <div class="social-links">
-                    <a href="https://instagram.com/clarastacknyc" target="_blank">Instagram: @clarastacknyc</a>
-                    <a href="https://tiktok.com/@clara.stack" target="_blank">TikTok: @clara.stack</a>
+                <h3 data-translate="follow_title">Follow Clara Stack</h3>
+                <div class="social-links-footer">
+                    <a href="https://instagram.com/clarastacknyc" target="_blank" class="social-link-footer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        @clarastacknyc
+                    </a>
+                    <a href="https://tiktok.com/@clara.stack" target="_blank" class="social-link-footer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.04-.1z"/></svg>
+                        @clara.stack
+                    </a>
                 </div>
             </div>
 
             <div class="footer-section">
-                <h3 data-translate="credits_title">Créditos</h3>
-                <p data-translate="credits_text">Site desenvolvido por <a href="https://portfoliosilva.github.io/portfoliosilva/" target="_blank">silva777only</a> sem custo algum para a atriz.</p>
-                <p><a href="https://linktr.ee/silva777only" target="_blank">Linktree</a> | <a href="https://portfoliosilva.github.io/portfoliosilva/" target="_blank" data-translate="portfolio_link">Portfólio</a></p>
+                <h3 data-translate="credits_title">Credits</h3>
+                <!-- Créditos do desenvolvedor -->
+                <p data-translate="credits_text">Website developed by <strong><a href="https://portfoliosilva.github.io/portfoliosilva/" target="_blank">silva777only</a></strong> at no cost to the actress.</p>
+                <p><a href="https://linktr.ee/silva777only" target="_blank">Linktree</a> | <a href="https://portfoliosilva.github.io/portfoliosilva/" target="_blank" data-translate="portfolio_link">Portfolio</a></p>
+                <p class="made-with-love" data-translate="made_with_love">Made with lots of love and care ❤️</p>
+                <p class="actor-offer" data-translate="actor_offer">Actors/actresses from IT: Welcome to Derry can have a website like this completely free! Just visit my portfolio and contact me via the "Contact" tab.</p>
             </div>
 
             <div class="footer-section">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg" alt="HBO Max" class="hbo-logo">
-                <p data-translate="copyright_hbo">As imagens que envolvem a série IT: Welcome to Derry são de propriedade da HBO Max. Para remoção, entre em contato via portfólio.</p>
+                <p data-translate="copyright_hbo">Images involving the IT: Welcome to Derry series are property of HBO Max. This site is not affiliated with HBO Max or any other platform. For removal requests, contact via portfolio.</p>
             </div>
 
             <div class="footer-bottom">
-                <p>&copy; 2025 Clara Stack Official Website. <span data-translate="rights_reserved">Todos os direitos reservados.</span></p>
-                <p data-translate="unauthorized_warning">⚠️ Reprodução não autorizada é proibida.</p>
+                <p>&copy; 2025 Clara Stack Official Website. <span data-translate="rights_reserved">All rights reserved.</span></p>
+                <p data-translate="unauthorized_warning">⚠️ Unauthorized reproduction is prohibited.</p>
             </div>
         </div>
     </footer>
