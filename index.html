@@ -358,17 +358,18 @@
             <!-- Chat Tab -->
             <div id="admin-chat" class="admin-tab-content">
                 <div class="admin-section">
-                    <h3 data-en="Chat Management" data-pt="Gerenciamento do Chat">Gerenciamento do Chat</h3>
-                    <label>
-                        <span data-en="Chat Cooldown (seconds)" data-pt="Cooldown do Chat (segundos)">Cooldown do Chat (segundos)</span>
-                    </label>
-                    <input type="number" id="chatCooldownInput" value="0" min="0">
-                    <button onclick="updateChatCooldown()">
-                        <span data-en="Update Cooldown" data-pt="Atualizar Cooldown">Atualizar Cooldown</span>
+                    <h3 data-en="Chat Control" data-pt="Controle do Chat">Controle do Chat</h3>
+                    
+                    <label data-en="Message Cooldown (seconds)" data-pt="Cooldown de Mensagens (segundos)">Cooldown de Mensagens (segundos)</label>
+                    <input type="number" id="chatCooldownInput" placeholder="0" min="0">
+                    <button onclick="updateChatCooldown()" data-en="Update Cooldown" data-pt="Atualizar Cooldown">Atualizar Cooldown</button>
+                    
+                    <!-- Added chat lock button -->
+                    <button id="chatLockBtn" onclick="toggleChatLock()" class="warning-btn" style="margin-top: 20px;">
+                        <span data-en="🔒 Lock Chat" data-pt="🔒 Bloquear Chat">🔒 Bloquear Chat</span>
                     </button>
-                    <button onclick="clearAllMessages()" class="danger-btn">
-                        <span data-en="Clear All Messages" data-pt="Limpar Todas as Mensagens">Limpar Todas as Mensagens</span>
-                    </button>
+                    
+                    <button onclick="clearAllMessages()" class="danger-btn" style="margin-top: 10px;" data-en="Clear All Messages" data-pt="Limpar Todas Mensagens">Limpar Todas Mensagens</button>
                 </div>
             </div>
 
