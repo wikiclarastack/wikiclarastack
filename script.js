@@ -98,6 +98,11 @@ const translations = {
     removeAdmin: "Remove Admin",
     online: "Online",
     logout: "Logout",
+    fillAllFields: "Please fill all fields!",
+    userNotFound: "User not found!",
+    incorrectPassword: "Incorrect password!",
+    accountSuspended: "Your account is suspended. Contact the administrator.",
+    loginSuccess: "Login successful!",
   },
   pt: {
     title: "Clara Stack",
@@ -157,6 +162,11 @@ const translations = {
     removeAdmin: "Remover Admin",
     online: "Online",
     logout: "Sair",
+    fillAllFields: "Por favor, preencha todos os campos!",
+    userNotFound: "Usuário não encontrado!",
+    incorrectPassword: "Senha incorreta!",
+    accountSuspended: "Sua conta está suspensa. Entre em contato com o administrador.",
+    loginSuccess: "Login realizado com sucesso!",
   },
 }
 
@@ -366,7 +376,10 @@ function suspendUser(username, newIP) {
     ],
   })
 
-  alert("Sua conta foi suspensa devido a mudança de IP. Entre em contato com o administrador.")
+  alert(
+    translations[currentLanguage].accountSuspended ||
+      "Sua conta foi suspensa devido a mudança de IP. Entre em contato com o administrador.",
+  )
   logout()
 }
 
@@ -455,7 +468,7 @@ function setupEventListeners() {
 
   // Auth buttons
   document.getElementById("loginBtn").addEventListener("click", showAuthModal)
-  // document.getElementById('registerBtn').addEventListener('click', showAuthModal) // This might be redundant if loginBtn handles both
+  document.getElementById("registerBtn").addEventListener("click", showAuthModal) // This might be redundant if loginBtn handles both
 
   // Close modals
   document.querySelectorAll(".close-modal").forEach((btn) => {
@@ -542,32 +555,40 @@ async function handleLogin(e) {
   e.preventDefault()
   console.log("[v0] Tentando fazer login...")
 
-  const username = document.getElementById("loginUsername").value
+  const username = document.getElementById("loginUsername").value.trim()
   const password = document.getElementById("loginPassword").value
+
+  if (!username || !password) {
+    alert(translations[currentLanguage].fillAllFields)
+    return
+  }
 
   try {
     const snapshot = await database.ref(`users/${username}`).once("value")
     const user = snapshot.val()
 
     if (!user) {
-      alert("Usuário não encontrado!")
+      alert(translations[currentLanguage].userNotFound || "Usuário não encontrado!")
       return
     }
 
     if (user.password !== password) {
-      alert("Senha incorreta!")
+      alert(translations[currentLanguage].incorrectPassword || "Senha incorreta!")
       return
     }
 
     if (user.suspended) {
-      alert("Sua conta está suspensa. Entre em contato com o administrador.")
+      alert(
+        translations[currentLanguage].accountSuspended ||
+          "Sua conta está suspensa. Entre em contato com o administrador.",
+      )
       return
     }
 
     const ipInfo = await getUserIPInfo()
 
     if (user.ip !== ipInfo.ip) {
-      suspendUser(username, ipInfo.ip)
+      await suspendUser(username, ipInfo.ip)
       return
     }
 
@@ -575,15 +596,17 @@ async function handleLogin(e) {
     localStorage.setItem("currentUser", JSON.stringify(user))
 
     console.log("[v0] Login realizado com sucesso")
-    updateUIForLoggedInUser()
-    setUserOnline(true)
+    await updateUIForLoggedInUser()
+    await setUserOnline(true)
     document.getElementById("authModal").style.display = "none"
 
     // Clear form
     document.getElementById("loginForm").reset()
+
+    alert(translations[currentLanguage].loginSuccess || "Login realizado com sucesso!")
   } catch (error) {
     console.error("[v0] Erro ao fazer login:", error)
-    alert("Erro ao fazer login. Tente novamente.")
+    alert("Erro ao fazer login: " + error.message)
   }
 }
 
