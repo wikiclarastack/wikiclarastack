@@ -80,6 +80,11 @@ const translations = {
     maintenance_text: "Voltaremos em breve!",
     access_button: "Acessar",
     news_title: "Notícias",
+    disclaimer_text:
+      "ℹ️ Todas as informações e fotos são retiradas da internet. Este site não é afiliado à HBO Max ou qualquer outra plataforma.",
+    made_with_love: "Feito com muito amor e carinho ❤️",
+    actor_offer:
+      "Atores/atrizes de IT: Welcome to Derry podem ter um site como este totalmente de graça! Basta visitar meu portfólio e entrar em contato via aba 'Contact'.",
   },
   en: {
     nav_home: "Home",
@@ -154,6 +159,11 @@ const translations = {
     maintenance_text: "We will be back soon!",
     access_button: "Access",
     news_title: "News",
+    disclaimer_text:
+      "ℹ️ All information and photos are sourced from the internet. This site is not affiliated with HBO Max or any other platform.",
+    made_with_love: "Made with lots of love and care ❤️",
+    actor_offer:
+      "Actors/actresses from IT: Welcome to Derry can have a website like this completely free! Just visit my portfolio and contact me via the 'Contact' tab.",
   },
 }
 
@@ -939,47 +949,30 @@ document.addEventListener("DOMContentLoaded", async () => {
   initServer()
 
   await detectUserRegion()
+
+  // Idioma inglês por padrão
+  if (!localStorage.getItem("language")) {
+    appState.currentLanguage = "en"
+    document.documentElement.lang = "en"
+  }
+
   translatePage()
 
-  const savedTheme = localStorage.getItem("theme") || "system"
-  appState.currentTheme = savedTheme
-  applyTheme(savedTheme)
-  document.getElementById("themeSelector").value = savedTheme
-
-  const savedLanguage = localStorage.getItem("language")
-  if (savedLanguage) {
-    appState.currentLanguage = savedLanguage
-    document.getElementById("languageSelector").value = savedLanguage
-    translatePage()
-  }
-
-  const config = JSON.parse(localStorage.getItem("server_config"))
-  if (config.maintenance) {
-    const savedUser = localStorage.getItem("current_user")
-    const users = JSON.parse(localStorage.getItem("server_users"))
-    if (!savedUser || !users[savedUser]?.isAdmin) {
-      document.getElementById("maintenanceMode").classList.remove("hidden")
-      return
-    }
-  }
-
+  // Verificar se há usuário logado
   const savedUser = localStorage.getItem("current_user")
   if (savedUser) {
     const users = JSON.parse(localStorage.getItem("server_users"))
     const user = users[savedUser]
-    if (user && (user.ip === appState.userIP || user.isAdmin || user.ip === "any")) {
+    if (user) {
       appState.currentUser = { username: savedUser, ...user }
       addActiveUser(savedUser)
       updateUserInterface()
-    } else {
-      localStorage.removeItem("current_user")
     }
   }
 
   loadGallery()
   loadChat()
   loadPosts()
-  updateChatConfig()
 
   setInterval(cleanupInactiveUsers, 60000)
   setInterval(updateActiveUsersList, 5000)
