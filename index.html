@@ -5,14 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clara Stack - Official Website</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Added Firebase SDK for real-time database -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 </head>
 <body>
     <!-- User Profile Corner -->
     <div id="userProfileCorner" class="user-profile-corner" style="display: none;">
-        <img id="cornerUserAvatar" src="https://via.placeholder.com/40" alt="User">
+        <img id="cornerUserAvatar" src="https://static.vecteezy.com/system/resources/thumbnails/019/879/186/small/user-icon-on-transparent-background-free-png.png" alt="User">
         <span id="cornerUserName">User</span>
     </div>
 
@@ -36,9 +33,10 @@
             <div class="nav-links">
                 <a href="#home" data-en="Home" data-pt="Início">Início</a>
                 <a href="#about" data-en="About" data-pt="Sobre">Sobre</a>
+                <a href="#character" data-en="Character" data-pt="Personagem">Personagem</a>
                 <a href="#works" data-en="Works" data-pt="Trabalhos">Trabalhos</a>
+                <a href="#trivia" data-en="Trivia" data-pt="Curiosidades">Curiosidades</a>
                 <a href="#gallery" data-en="Gallery" data-pt="Galeria">Galeria</a>
-                <a href="#chat" data-en="Chat" data-pt="Chat">Chat</a>
                 <a href="#" id="authLink" onclick="showAuthModal()">Login</a>
                 <a href="#" id="settingsLink" onclick="showSettings()" style="display: none;">
                     <span data-en="Settings" data-pt="Configurações">Configurações</span>
@@ -74,9 +72,6 @@
         </div>
     </section>
 
-    <!-- Notifications -->
-    <div id="notificationsContainer" class="notifications-container"></div>
-
     <!-- About Section -->
     <section id="about" class="section">
         <div class="container">
@@ -89,6 +84,26 @@
                     </p>
                     <p data-en="Known for her versatility and natural charisma, Clara has quickly become one of the most promising rising stars in Hollywood." data-pt="Conhecida por sua versatilidade e carisma natural, Clara rapidamente se tornou uma das estrelas mais promissoras de Hollywood.">
                         Conhecida por sua versatilidade e carisma natural, Clara rapidamente se tornou uma das estrelas mais promissoras de Hollywood.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Added Character Section for Lilly Bainbridge -->
+    <section id="character" class="section">
+        <div class="container">
+            <h2 class="section-title" data-en="Most Notable Character" data-pt="Personagem Mais Marcante">Personagem Mais Marcante</h2>
+            <div class="character-feature">
+                <div class="character-images">
+                    <img src="https://static.tvtropes.org/pmwiki/pub/images/img_4865_8.jpeg" alt="Lilly Bainbridge" class="character-main-image">
+                    <img src="https://media.gettyimages.com/id/2242313791/photo/los-angeles-premiere-of-hbo-original-series-it-welcome-to-derry.jpg?s=1024x1024&w=gi&k=20&c=ozLhw5EvhFSpQeDS36PfCZIG0bY4ofPNxelcsJSN3ew=" alt="Clara as Lilly Bainbridge" class="character-secondary-image">
+                </div>
+                <div class="character-info">
+                    <h3>Lilly Bainbridge</h3>
+                    <p class="character-series" data-en="IT: Welcome to Derry (HBO Max)" data-pt="IT: Welcome to Derry (HBO Max)">IT: Welcome to Derry (HBO Max)</p>
+                    <p class="character-description" data-en="Clara Stack brings the character Lilly Bainbridge to life in HBO's horror series set in the terrifying world of Stephen King's IT. Her performance showcases her incredible range as a young actress, navigating the dark and suspenseful atmosphere of Derry." data-pt="Clara Stack dá vida à personagem Lilly Bainbridge na série de terror da HBO ambientada no aterrorizante mundo de IT de Stephen King. Sua performance mostra sua incrível versatilidade como jovem atriz, navegando pela atmosfera sombria e suspense de Derry.">
+                        Clara Stack dá vida à personagem Lilly Bainbridge na série de terror da HBO ambientada no aterrorizante mundo de IT de Stephen King. Sua performance mostra sua incrível versatilidade como jovem atriz, navegando pela atmosfera sombria e suspense de Derry.
                     </p>
                 </div>
             </div>
@@ -142,7 +157,30 @@
         </div>
     </section>
 
-    <!-- Gallery Section -->
+    <!-- Added Trivia Section -->
+    <section id="trivia" class="section trivia-section">
+        <div class="container">
+            <h2 class="section-title" data-en="Trivia" data-pt="Curiosidades">Curiosidades</h2>
+            <div class="trivia-content">
+                <div class="trivia-card">
+                    <div class="trivia-icon">🎭</div>
+                    <h3 data-en="Theatre Beginnings" data-pt="Começo no Teatro">Começo no Teatro</h3>
+                    <p data-en="She started in theatre, playing Matilda in the musical Matilda the Musical in New York." data-pt="Ela começou no teatro, interpretando Matilda no musical Matilda the Musical em Nova York.">
+                        Ela começou no teatro, interpretando Matilda no musical Matilda the Musical em Nova York.
+                    </p>
+                </div>
+                <div class="trivia-card">
+                    <div class="trivia-icon">👨‍👩‍👧‍👦</div>
+                    <h3 data-en="Family" data-pt="Família">Família</h3>
+                    <p data-en="Her parents are Eoin and Amanda Stack, and she has a twin sister named Maggie Stack." data-pt="Seus pais são Eoin e Amanda Stack, e ela tem uma irmã gêmea chamada Maggie Stack.">
+                        Seus pais são Eoin e Amanda Stack, e ela tem uma irmã gêmea chamada Maggie Stack.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Updated Gallery Section with new images -->
     <section id="gallery" class="section">
         <div class="container">
             <h2 class="section-title" data-en="Photo Gallery" data-pt="Galeria de Fotos">Galeria de Fotos</h2>
@@ -150,27 +188,9 @@
                 <img src="https://image.tmdb.org/t/p/w500/yMK3IADqV2oReJMKdkrcEIBxdtu.jpg" alt="Clara Stack">
                 <img src="https://ntvb.tmsimg.com/assets/assets/GNLZZGG002G2JKZ.jpg" alt="Clara Stack">
                 <img src="https://media.gettyimages.com/id/2242330361/photo/los-angeles-premiere-of-hbo-original-series-it-welcome-to-derry-red-carpet.jpg?s=1024x1024&w=gi&k=20&c=SATqk9OF8uyP8-6xKlIUS4AhKcPg3unpDSieOnkrGrc=" alt="Matilda and Clara Stack">
-            </div>
-        </div>
-    </section>
-
-    <!-- Global Chat Section -->
-    <section id="chat" class="section">
-        <div class="container">
-            <h2 class="section-title" data-en="Global Chat" data-pt="Chat Global">Chat Global</h2>
-            <div id="chatLoginPrompt" class="chat-login-prompt">
-                <p data-en="Please login to use the chat" data-pt="Faça login para usar o chat">Faça login para usar o chat</p>
-                <button onclick="showAuthModal()" data-en="Login" data-pt="Entrar">Entrar</button>
-            </div>
-            <div id="chatContainer" class="chat-container" style="display: none;">
-                <div id="chatMessages" class="chat-messages"></div>
-                <div class="chat-input-container">
-                    <input type="text" id="chatInput" placeholder="Digite sua mensagem..." data-en-placeholder="Type your message..." data-pt-placeholder="Digite sua mensagem...">
-                    <button onclick="sendMessage()" data-en="Send" data-pt="Enviar">Enviar</button>
-                </div>
-                <div id="chatCooldown" class="chat-cooldown" style="display: none;">
-                    <span data-en="Please wait" data-pt="Aguarde">Aguarde</span> <span id="cooldownTimer">0</span>s
-                </div>
+                <img src="https://media.gettyimages.com/id/2242313791/photo/los-angeles-premiere-of-hbo-original-series-it-welcome-to-derry.jpg?s=1024x1024&w=gi&k=20&c=ozLhw5EvhFSpQeDS36PfCZIG0bY4ofPNxelcsJSN3ew=" alt="Clara Stack at IT Premiere">
+                <img src="https://elcomercio.pe/resizer/v2/ZLEZYAYGJBAYNNIRVWBIOMJ6Z4.jpg?auth=585dcbc947baaa48292c190c1cce1d5fb0444fa13e83d411f29e0c5638ee7452&width=1200&height=1371&quality=75&smart=true" alt="Clara Stack">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvTMnnpP9p4yr3TbS1aqUktmPvVVyy7lvwqQ&s" alt="Clara Stack">
             </div>
         </div>
     </section>
@@ -211,7 +231,6 @@
     <div id="authModal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
-            <!-- Fixed form structure and IDs to match JavaScript -->
             <div id="loginFormContainer">
                 <h2 data-en="Login" data-pt="Entrar">Entrar</h2>
                 <form id="loginForm">
@@ -243,7 +262,7 @@
             <div class="settings-section">
                 <h3 data-en="Profile" data-pt="Perfil">Perfil</h3>
                 <div class="profile-picture-upload">
-                    <img id="currentProfilePic" src="https://via.placeholder.com/100" alt="Profile">
+                    <img id="currentProfilePic" src="https://static.vecteezy.com/system/resources/thumbnails/019/879/186/small/user-icon-on-transparent-background-free-png.png" alt="Profile">
                     <input type="file" id="profilePicInput" accept="image/*" onchange="updateProfilePicture()">
                     <label for="profilePicInput" data-en="Change Photo" data-pt="Mudar Foto">Mudar Foto</label>
                 </div>
@@ -293,14 +312,8 @@
                 <button class="admin-tab-btn" onclick="showAdminTab('users')">
                     <span data-en="Users" data-pt="Usuários">Usuários</span>
                 </button>
-                <button class="admin-tab-btn" onclick="showAdminTab('posts')">
-                    <span data-en="Posts" data-pt="Postagens">Postagens</span>
-                </button>
                 <button class="admin-tab-btn" onclick="showAdminTab('gallery')">
                     <span data-en="Gallery" data-pt="Galeria">Galeria</span>
-                </button>
-                <button class="admin-tab-btn" onclick="showAdminTab('chat')">
-                    <span data-en="Chat" data-pt="Chat">Chat</span>
                 </button>
                 <button class="admin-tab-btn" onclick="showAdminTab('settings')">
                     <span data-en="Site Settings" data-pt="Config. Site">Config. Site</span>
@@ -311,92 +324,46 @@
             <div id="admin-dashboard" class="admin-tab-content active">
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <h3 id="totalUsers">0</h3>
+                        <h3 id="totalUsersCount">0</h3>
                         <p data-en="Total Users" data-pt="Total de Usuários">Total de Usuários</p>
                     </div>
                     <div class="stat-card">
-                        <h3 id="activeUsersCount">0</h3>
-                        <p data-en="Active Now" data-pt="Ativos Agora">Ativos Agora</p>
+                        <h3 id="verifiedUsersCount">0</h3>
+                        <p data-en="Verified Users" data-pt="Usuários Verificados">Usuários Verificados</p>
                     </div>
                     <div class="stat-card">
-                        <h3 id="totalMessages">0</h3>
-                        <p data-en="Chat Messages" data-pt="Mensagens no Chat">Mensagens no Chat</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3 id="totalVisitors">0</h3>
-                        <p data-en="Total Visitors" data-pt="Total de Visitantes">Total de Visitantes</p>
+                        <h3 id="totalGalleryCount">6</h3>
+                        <p data-en="Gallery Photos" data-pt="Fotos na Galeria">Fotos na Galeria</p>
                     </div>
                 </div>
-
-                <h3 data-en="Active Users" data-pt="Usuários Ativos">Usuários Ativos</h3>
-                <div id="activeUsersList" class="active-users-list"></div>
             </div>
 
             <!-- Users Tab -->
             <div id="admin-users" class="admin-tab-content">
                 <div class="admin-section">
                     <h3 data-en="User Management" data-pt="Gerenciamento de Usuários">Gerenciamento de Usuários</h3>
-                    <div id="usersList" class="users-list"></div>
-                </div>
-            </div>
-
-            <!-- Posts Tab -->
-            <div id="admin-posts" class="admin-tab-content">
-                <div class="admin-section">
-                    <h3 data-en="Create New Post" data-pt="Criar Nova Postagem">Criar Nova Postagem</h3>
-                    <input type="text" id="postTitle" placeholder="Post Title / Título da Postagem">
-                    <textarea id="postContent" rows="4" placeholder="Post Content / Conteúdo da Postagem"></textarea>
-                    <button onclick="createPost()">
-                        <span data-en="Create Post" data-pt="Criar Postagem">Criar Postagem</span>
-                    </button>
+                    <div id="adminUsersList" class="users-list"></div>
                 </div>
             </div>
 
             <!-- Gallery Tab -->
             <div id="admin-gallery" class="admin-tab-content">
                 <div class="admin-section">
-                    <h3 data-en="Add Image to Gallery" data-pt="Adicionar Imagem à Galeria">Adicionar Imagem à Galeria</h3>
-                    <input type="url" id="galleryImageUrl" placeholder="Image URL">
-                    <button onclick="addToGallery()">
-                        <span data-en="Add to Gallery" data-pt="Adicionar à Galeria">Adicionar à Galeria</span>
-                    </button>
+                    <h3 data-en="Gallery Management" data-pt="Gerenciamento de Galeria">Gerenciamento de Galeria</h3>
+                    <input type="url" id="newGalleryImage" placeholder="Image URL" data-en-placeholder="Image URL" data-pt-placeholder="URL da Imagem">
+                    <button onclick="addGalleryImage()" data-en="Add Image" data-pt="Adicionar Imagem">Adicionar Imagem</button>
+                    <div id="adminGalleryList" class="gallery-grid" style="margin-top: 20px;"></div>
                 </div>
             </div>
 
-            <!-- Chat Tab -->
-            <div id="admin-chat" class="admin-tab-content">
-                <div class="admin-section">
-                    <h3 data-en="Chat Control" data-pt="Controle do Chat">Controle do Chat</h3>
-                    
-                    <label data-en="Message Cooldown (seconds)" data-pt="Cooldown de Mensagens (segundos)">Cooldown de Mensagens (segundos)</label>
-                    <input type="number" id="chatCooldownInput" placeholder="0" min="0">
-                    <button onclick="updateChatCooldown()" data-en="Update Cooldown" data-pt="Atualizar Cooldown">Atualizar Cooldown</button>
-                    
-                    <!-- Added chat lock button -->
-                    <button id="chatLockBtn" onclick="toggleChatLock()" class="warning-btn" style="margin-top: 20px;">
-                        <span data-en="🔒 Lock Chat" data-pt="🔒 Bloquear Chat">🔒 Bloquear Chat</span>
-                    </button>
-                    
-                    <button onclick="clearAllMessages()" class="danger-btn" style="margin-top: 10px;" data-en="Clear All Messages" data-pt="Limpar Todas Mensagens">Limpar Todas Mensagens</button>
-                </div>
-            </div>
-
-            <!-- Site Settings Tab -->
+            <!-- Settings Tab -->
             <div id="admin-settings" class="admin-tab-content">
                 <div class="admin-section">
-                    <h3 data-en="Site Control" data-pt="Controle do Site">Controle do Site</h3>
-                    <button onclick="toggleMaintenance()" id="maintenanceBtn" class="warning-btn">
-                        <span data-en="Enable Maintenance Mode" data-pt="Ativar Modo Manutenção">Ativar Modo Manutenção</span>
-                    </button>
-                    <div id="maintenancePasswordSection" style="display: none; margin-top: 20px;">
-                        <label>
-                            <span data-en="Set Access Password" data-pt="Definir Senha de Acesso">Definir Senha de Acesso</span>
-                        </label>
-                        <input type="password" id="maintenancePasswordInput" placeholder="Enter password">
-                        <button onclick="setMaintenancePassword()">
-                            <span data-en="Save Password" data-pt="Salvar Senha">Salvar Senha</span>
-                        </button>
-                    </div>
+                    <h3 data-en="Maintenance Mode" data-pt="Modo Manutenção">Modo Manutenção</h3>
+                    <p data-en="Enable maintenance mode to restrict site access" data-pt="Ative o modo manutenção para restringir o acesso ao site">
+                        Ative o modo manutenção para restringir o acesso ao site
+                    </p>
+                    <button onclick="toggleMaintenance()" class="warning-btn" id="maintenanceBtn" data-en="Enable Maintenance" data-pt="Ativar Manutenção">Ativar Manutenção</button>
                 </div>
             </div>
         </div>
