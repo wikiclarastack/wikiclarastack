@@ -33,17 +33,16 @@
             <div class="nav-links">
                 <a href="#home" data-en="Home" data-pt="Início">Início</a>
                 <a href="#about" data-en="About" data-pt="Sobre">Sobre</a>
-                <a href="#character" data-en="Character" data-pt="Personagem">Personagem</a>
                 <a href="#works" data-en="Works" data-pt="Trabalhos">Trabalhos</a>
-                <a href="#trivia" data-en="Trivia" data-pt="Curiosidades">Curiosidades</a>
                 <a href="#gallery" data-en="Gallery" data-pt="Galeria">Galeria</a>
-                <a href="#" id="authLink" onclick="showAuthModal()">Login</a>
-                <a href="#" id="settingsLink" onclick="showSettings()" style="display: none;">
-                    <span data-en="Settings" data-pt="Configurações">Configurações</span>
-                </a>
-                <a href="#" id="adminPanelLink" onclick="openAdminPanel()" style="display: none;">
-                    <span data-en="Admin Panel" data-pt="Painel Admin">Painel Admin</span>
-                </a>
+                <a href="#character" data-en="Character" data-pt="Personagem">Personagem</a>
+                <a href="#trivia" data-en="Trivia" data-pt="Curiosidades">Curiosidades</a>
+                <!-- Removed inline onclick, using event listener instead -->
+                <a href="#" id="authLink">Login</a>
+                <div id="userProfile" style="display: none;">
+                    <img id="userAvatar" src="https://static.vecteezy.com/system/resources/thumbnails/019/879/186/small/user-icon-on-transparent-background-free-png.png" alt="User Avatar">
+                    <span id="usernameDisplay"></span>
+                </div>
             </div>
         </div>
     </nav>
